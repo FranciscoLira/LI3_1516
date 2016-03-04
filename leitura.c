@@ -18,6 +18,49 @@ typedef struct venda {
 
 
 /*Retorna 1 se existir na lista o código*/
+/*
+int findLista(char* codigo, char **lista, int n){
+	int i=0,r=0;
+	while (i<n){
+		if((strcmp(lista[i++],codigo))==0){
+			r=1;
+			break;
+		}
+	}
+	return r;
+}
+*/
+/*
+	Retorna um bool, se for valida é um senão retorna 0
+*/
+/*
+int verificadorVendaseProdutos(char **clientes, char **produtos,Venda v, int x){
+	int r=0;
+
+	r=findLista(v->compra, clientes,x);
+	return r;
+}
+*/
+int verificaFilial (int filial) {
+	if (filial >= 1 && filial <=3) return 1;
+	else return 0;
+}
+
+int verificaMes (int mes) {
+	if (mes >=1 && mes <= 12) return 1;
+	else return 0;
+}
+
+int verificaQuantidade (int quantidade) {
+	if (quantidade >= 1 && quantidade <= 200) return 1;
+	else return 0;
+}
+
+int verificaPreco (double preco) {
+	if (preco >= 0.0 && preco <= 999.99) return 1;
+	else return 0;
+}
+
 int findLista(char* codigo, char **lista, int n){
 	int i=0,r=0;
 	while (i<n){
@@ -29,15 +72,26 @@ int findLista(char* codigo, char **lista, int n){
 	return r;
 }
 
-/*
-	Retorna um bool, se for valida é um senão retorna 0
-*/
-
-int verificadorVendas(char **clientes, char **produtos,Venda v, int x){
-	int r=0;
-
-	/*r=findLista(v->compra, clientes,x);*/
+int verificaClientes(char *cliente, char *clientes[], int qclient) {
+	int r = 0;
+	r = findLista(cliente, clientes, qclient);
 	return r;
+}
+
+int verificaProdutos(char *compra, char *produtos[], int qprodut) {
+	int r = 0;
+	r = findLista(compra, produtos, qprodut);
+	return r;
+}
+
+
+int verifica (Venda v, char *clientes[], char *produtos[], int qclient, int qprodut) {
+	struct venda *p = v;
+	if (verificaFilial(p->filial) && verificaMes(p->mes) && verificaQuantidade(p->quantidade) && verificaPreco(p->preco)) {
+			if (verificaClientes(p->cliente, clientes, qclient) && verificaProdutos(p->compra, produtos, qprodut));
+			else return 0;
+		}
+    return 1;
 }
 
 int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
@@ -69,9 +123,9 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
          printf("%s %.2f %d %s %d %d\n",v->compra,v->preco,v->quantidade, v->cliente, v->mes, v->filial); */
          
          /*chamada funçao verifica*/
-         cont += verificadorVendas(clientes, produtos, v,qclient);
-         printf("%d\n",cont );
+         cont = cont + verifica(v, clientes, produtos,qclient, qprodut);
         }
+        printf("%d\n",cont );
         return i;
 }
 
