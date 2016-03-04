@@ -7,29 +7,16 @@
 #define BufferM 128 
 
 typedef struct venda {
-	char compra[10];
+	char produto[10];
 	double preco;
 	int quantidade;
+	char promo; 
 	char cliente[10];
 	int mes;
 	int filial;
-	char promo; /*Faltava este*/
 }*Venda;
 
 
-/*Retorna 1 se existir na lista o código*/
-/*
-int findLista(char* codigo, char **lista, int n){
-	int i=0,r=0;
-	while (i<n){
-		if((strcmp(lista[i++],codigo))==0){
-			r=1;
-			break;
-		}
-	}
-	return r;
-}
-*/
 /*
 	Retorna um bool, se for valida é um senão retorna 0
 */
@@ -72,23 +59,9 @@ int findLista(char* codigo, char **lista, int n){
 	return r;
 }
 
-int verificaClientes(char *cliente, char *clientes[], int qclient) {
-	int r = 0;
-	r = findLista(cliente, clientes, qclient);
-	return r;
-}
-
-int verificaProdutos(char *compra, char *produtos[], int qprodut) {
-	int r = 0;
-	r = findLista(compra, produtos, qprodut);
-	return r;
-}
-
-
-int verifica (Venda v, char *clientes[], char *produtos[], int qclient, int qprodut) {
-	struct venda *p = v;
-	if (verificaFilial(p->filial) && verificaMes(p->mes) && verificaQuantidade(p->quantidade) && verificaPreco(p->preco)) {
-			if (verificaClientes(p->cliente, clientes, qclient) && verificaProdutos(p->compra, produtos, qprodut));
+int verifica (Venda v, char **clientes, char **produtos, int qclient, int qprodut) {
+	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && verificaPreco(v->preco)) {
+			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut));
 			else return 0;
 		}
     return 1;
@@ -102,11 +75,13 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	char buffer[BufferM];
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
          aux = strtok(buffer, " ");
-         strcpy(v->compra, aux);
+         strcpy(v->produto, aux);
          aux = strtok(NULL, " ");
          preco = atof(aux);
          aux = strtok(NULL, " ");
          quant=atoi(aux);
+         aux = strtok(NULL, " ");
+         v->promo=aux[0];
          aux = strtok(NULL, " ");
          strcpy(v->cliente,aux);
          aux = strtok(NULL, " ");
@@ -117,18 +92,18 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
          v->quantidade = quant;
          v->mes = mes;
          v->filial = filial;
-         /*Falta pegar no código de promo que não sei como é passado À frente*/
-
          /*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
-         printf("%s %.2f %d %s %d %d\n",v->compra,v->preco,v->quantidade, v->cliente, v->mes, v->filial); */
-         
-         /*chamada funçao verifica*/
-         cont = cont + verifica(v, clientes, produtos,qclient, qprodut);
+         printf("%s %.2f %d %c %s %d %d\n",v->produto,v->preco,v->quantidade,v->promo, v->cliente, v->mes, v->filial); */
+         cont += verifica(v, clientes, produtos,qclient,qprodut);	
+         /*Quem não quiser olhar para o ecra sem nada durante uns bons minutos, tem isto, demora mais mas ao menos
+         sabe-se onde vai:*/
+         printf("Iteração %d completa \n", i+1);
+         /*Dei fix no que estavas a fazer, estavas a procurar clientes nos produtos
+           É para abortar isto porque demora mesmo muito xD Tem mesmo que ser uma AVL*/
         }
         printf("%d\n",cont );
         return i;
 }
-
 
 int lerclientouprod(char **str, int x){
 	FILE *f1;
