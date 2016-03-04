@@ -16,9 +16,9 @@ typedef struct venda {
 }*Venda;
 
 int leituravendas(FILE *p2, char **clientes, char **produtos) {
-    int i, cont=0,mes,filial,quant; //cont, para quê?
+    int i, cont=0,mes,filial,quant; /* cont, para quê? */
     Venda v=(Venda)malloc(sizeof(struct venda));
-	char *aux, *help=malloc(10); // help, para quê?
+	char *aux, *help=malloc(10); /* help, para quê? */
 	double preco;
 	char buffer[BufferM];
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
@@ -39,7 +39,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos) {
          v->mes = mes;
          v->filial = filial;
          /*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
-         printf("%s %f %d %s %d %d\n",v->compra,v->preco,v->quantidade, v->cliente, v->mes, v->filial);*/
+         printf("%s %.2f %d %s %d %d\n",v->compra,v->preco,v->quantidade, v->cliente, v->mes, v->filial); */
          /*chamada funçao verifica*/
         }
         return i;
@@ -47,10 +47,10 @@ int leituravendas(FILE *p2, char **clientes, char **produtos) {
 
 int lerclientouprod(char **str, int x){
 	FILE *f1;
+	int i=0,r=0; /* r, para quê? vai ser alterado ainda? */
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
-	int i=0,r=0; // r, para quê?
 	while(1){
 		str[i]=(char *)malloc(sizeof(char)*12);
 		if(fgets(str[i],9,f1)!=NULL)

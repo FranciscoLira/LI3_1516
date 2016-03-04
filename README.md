@@ -26,3 +26,12 @@ Todo o código aqui presente foi escrito por Francisco Lira, José Silva e Pedro
 #### git add
 #### git commit 
 #### git push
+
+## Make
+
+A Make foi posta mas tem de ser verificada e temos de perguntar ao prof que flags devemos usar, estão todas as que eles sugere no ppt de apresentação
+
+Comandos:
+
+make do // compiles all the files on the folder and execute them
+make clean // cleans all the files that compilation generate
