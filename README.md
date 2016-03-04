@@ -33,5 +33,5 @@ A Make foi posta mas tem de ser verificada e temos de perguntar ao prof que flag
 
 Comandos:
 
-make do // compiles all the files on the folder and execute them
-make clean // cleans all the files that compilation generate
+1. make do // compiles all the files on the folder and execute them
+2. make clean // cleans all the files that compilation generate
