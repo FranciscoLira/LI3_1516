@@ -16,9 +16,9 @@ typedef struct venda {
 }*Venda;
 
 int leituravendas(FILE *p2, char **clientes, char **produtos) {
-    int i, cont=0,mes,filial,quant; /* cont, para quê? */
+    int i, cont=0,mes,filial,quant; /* cont, para quê? Para já nada, mas depois vai contar só as válidas*/
     Venda v=(Venda)malloc(sizeof(struct venda));
-	char *aux, *help=malloc(10); /* help, para quê? */
+	char *aux;/*Tinha aqui um help para os testes que fiz, não servia para nada*/
 	double preco;
 	char buffer[BufferM];
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
@@ -47,7 +47,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos) {
 
 int lerclientouprod(char **str, int x){
 	FILE *f1;
-	int i=0,r=0; /* r, para quê? vai ser alterado ainda? */
+	int i=0,r=0; /* r, para quê? vai ser alterado ainda? Realmente não era preciso o r, mas ele conta(podia fazer return do i, mas pronto xD)*/
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
