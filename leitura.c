@@ -16,9 +16,9 @@ typedef struct venda {
 }*Venda;
 
 int leituravendas(FILE *p2, char **clientes, char **produtos) {
-    int i, cont=0,mes,filial,quant;
+    int i, cont=0,mes,filial,quant; //cont, para quê?
     Venda v=(Venda)malloc(sizeof(struct venda));
-	char *aux, *help=malloc(10);
+	char *aux, *help=malloc(10); // help, para quê?
 	double preco;
 	char buffer[BufferM];
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
@@ -50,7 +50,7 @@ int lerclientouprod(char **str, int x){
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
-	int i=0,r=0;
+	int i=0,r=0; // r, para quê?
 	while(1){
 		str[i]=(char *)malloc(sizeof(char)*12);
 		if(fgets(str[i],9,f1)!=NULL)
