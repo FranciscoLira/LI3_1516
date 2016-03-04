@@ -22,7 +22,7 @@ Todo o código aqui presente foi escrito por Francisco Lira, José Silva e Pedro
 6. git push // when you will start your work, make sure that you have the last online version, so make it every time
 
 
-## So in case of fire:
-### git add
-### git commit 
-### git push
+### So in case of fire:
+#### git add
+#### git commit 
+#### git push
