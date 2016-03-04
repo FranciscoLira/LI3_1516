@@ -13,12 +13,37 @@ typedef struct venda {
 	char cliente[10];
 	int mes;
 	int filial;
+	char promo; /*Faltava este*/
 }*Venda;
 
-int leituravendas(FILE *p2, char **clientes, char **produtos) {
+
+/*Retorna 1 se existir na lista o código*/
+int findLista(char* codigo, char **lista, int n){
+	int i=0,r=0;
+	while (i<n){
+		if((strcmp(lista[i++],codigo))==0){
+			r=1;
+			break;
+		}
+	}
+	return r;
+}
+
+/*
+	Retorna um bool, se for valida é um senão retorna 0
+*/
+
+int verificadorVendas(char **clientes, char **produtos,Venda v, int x){
+	int r=0;
+
+	/*r=findLista(v->compra, clientes,x);*/
+	return r;
+}
+
+int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
     int i, cont=0,mes,filial,quant; /* cont, para quê? Para já nada, mas depois vai contar só as válidas*/
     Venda v=(Venda)malloc(sizeof(struct venda));
-	char *aux;/*Tinha aqui um help para os testes que fiz, não servia para nada*/
+	char *aux;
 	double preco;
 	char buffer[BufferM];
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
@@ -38,12 +63,18 @@ int leituravendas(FILE *p2, char **clientes, char **produtos) {
          v->quantidade = quant;
          v->mes = mes;
          v->filial = filial;
+         /*Falta pegar no código de promo que não sei como é passado À frente*/
+
          /*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
          printf("%s %.2f %d %s %d %d\n",v->compra,v->preco,v->quantidade, v->cliente, v->mes, v->filial); */
+         
          /*chamada funçao verifica*/
+         cont += verificadorVendas(clientes, produtos, v,qclient);
+         printf("%d\n",cont );
         }
         return i;
 }
+
 
 int lerclientouprod(char **str, int x){
 	FILE *f1;
@@ -71,7 +102,7 @@ int main(){
 	p=fopen("Dados/Vendas_1M.txt", "r");
 	qclient = lerclientouprod(clientes,0);
 	qprodut = lerclientouprod(produtos,1);
-	qvenda = leituravendas(p,clientes,produtos);
+	qvenda = leituravendas(p,clientes,produtos,qclient,qprodut);
 	fclose(p);
 	printf("Foram lidos %d Clientes, %d Produtos e %d Vendas\n",qclient,qprodut,qvenda);
 	printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);
