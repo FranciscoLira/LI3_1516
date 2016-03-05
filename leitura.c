@@ -16,38 +16,6 @@ typedef struct venda {
 	int filial;
 }*Venda;
 
-
-/*
-	Retorna um bool, se for valida é um senão retorna 0
-*/
-/*
-int verificadorVendaseProdutos(char **clientes, char **produtos,Venda v, int x){
-	int r=0;
-
-	r=findLista(v->compra, clientes,x);
-	return r;
-}
-*/
-int verificaFilial (int filial) {
-	if (filial >= 1 && filial <=3) return 1;
-	else return 0;
-}
-
-int verificaMes (int mes) {
-	if (mes >=1 && mes <= 12) return 1;
-	else return 0;
-}
-
-int verificaQuantidade (int quantidade) {
-	if (quantidade >= 1 && quantidade <= 200) return 1;
-	else return 0;
-}
-
-int verificaPreco (double preco) {
-	if (preco >= 0.0 && preco <= 999.99) return 1;
-	else return 0;
-}
-
 int findLista(char* codigo, char **lista, int n){
 	int i=0,r=0;
 	while (i<n){
@@ -62,11 +30,9 @@ int findLista(char* codigo, char **lista, int n){
 
 
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
-	
-	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && verificaPreco(v->preco)) {
-			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)) fprintf(p, "%s %2f %d %c %s %d %d\n", v->produto, v->preco, v->quantidade, v->promo, v->cliente, v->mes, v->filial);
+			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut))
+			 fprintf(p, "%s %.2f %d %c %s %d %d\n\r", v->produto, v->preco, v->quantidade, v->promo, v->cliente, v->mes, v->filial);
 			else return 0;
-		}
     return 1;
 }
 
@@ -101,11 +67,6 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
          /*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
          printf("%s %.2f %d %c %s %d %d\n",v->produto,v->preco,v->quantidade,v->promo, v->cliente, v->mes, v->filial); */
          cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);	
-         /*Quem não quiser olhar para o ecra sem nada durante uns bons minutos, tem isto, demora mais mas ao menos
-         sabe-se onde vai:*/
-         printf("Iteração %d completa \n", i+1);
-         /*Dei fix no que estavas a fazer, estavas a procurar clientes nos produtos
-           É para abortar isto porque demora mesmo muito xD Tem mesmo que ser uma AVL*/
         }
         fclose(p);
         printf("%d\n",cont );
