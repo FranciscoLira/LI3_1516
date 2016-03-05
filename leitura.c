@@ -59,13 +59,17 @@ int findLista(char* codigo, char **lista, int n){
 	return r;
 }
 
-int verifica (Venda v, char **clientes, char **produtos, int qclient, int qprodut) {
+
+
+int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
+	
 	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && verificaPreco(v->preco)) {
-			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut));
+			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)) fprintf(p, "%s %2f %d %c %s %d %d\n", v->produto, v->preco, v->quantidade, v->promo, v->cliente, v->mes, v->filial);
 			else return 0;
 		}
     return 1;
 }
+
 
 int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
     int i, cont=0,mes,filial,quant; /* cont, para quê? Para já nada, mas depois vai contar só as válidas*/
@@ -73,6 +77,8 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	char *aux;
 	double preco;
 	char buffer[BufferM];
+	FILE *p;
+	p = fopen("ficheirofinal.txt", "w");
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
          aux = strtok(buffer, " ");
          strcpy(v->produto, aux);
@@ -94,13 +100,14 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
          v->filial = filial;
          /*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
          printf("%s %.2f %d %c %s %d %d\n",v->produto,v->preco,v->quantidade,v->promo, v->cliente, v->mes, v->filial); */
-         cont += verifica(v, clientes, produtos,qclient,qprodut);	
+         cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);	
          /*Quem não quiser olhar para o ecra sem nada durante uns bons minutos, tem isto, demora mais mas ao menos
          sabe-se onde vai:*/
          printf("Iteração %d completa \n", i+1);
          /*Dei fix no que estavas a fazer, estavas a procurar clientes nos produtos
            É para abortar isto porque demora mesmo muito xD Tem mesmo que ser uma AVL*/
         }
+        fclose(p);
         printf("%d\n",cont );
         return i;
 }
