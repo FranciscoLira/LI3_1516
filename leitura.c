@@ -68,8 +68,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
          cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);	
         }
         fclose(p);
-        printf("%d\n",cont );
-        return i;
+        return cont;
 }
 
 int lerclientouprod(char **str, int x){
