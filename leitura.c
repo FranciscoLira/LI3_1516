@@ -27,15 +27,14 @@ int findLista(char* codigo, char **lista, int n){
 	return r;
 }
 
-
-
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
-			if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut))
-			 fprintf(p, "%s %.2f %d %c %s %d %d\n\r", v->produto, v->preco, v->quantidade, v->promo, v->cliente, v->mes, v->filial);
-			else return 0;
+	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
+	fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
+	fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
+}
+	else return 0;
     return 1;
 }
-
 
 int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
     int i, cont=0,mes,filial,quant; /* cont, para quê? Para já nada, mas depois vai contar só as válidas*/
@@ -44,7 +43,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	double preco;
 	char buffer[BufferM];
 	FILE *p;
-	p = fopen("ficheirofinal.txt", "w");
+	p = fopen("Dados/Vendasfinal.txt", "w");
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
          aux = strtok(buffer, " ");
          strcpy(v->produto, aux);
@@ -89,7 +88,6 @@ int lerclientouprod(char **str, int x){
 	fclose(f1);
 	return r;
 }
-
 
 int main(){
 	FILE *p;
