@@ -101,6 +101,5 @@ int main(){
 	printf("Foram lidos %d Clientes, %d Produtos e %d Vendas\n",qclient,qprodut,qvenda);
 	printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);
 	printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);
-	printf("Vendas lidas:%d\n",qvenda);
 	return 0;
 }
