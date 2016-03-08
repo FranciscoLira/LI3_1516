@@ -81,7 +81,6 @@ int cstring_cmp(const void *a, const void *b)
 
 int lerclientouprod(char **str, int x){
 	FILE *f1;
-	size_t size;
 	int i=0,r=0;
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
@@ -93,8 +92,8 @@ int lerclientouprod(char **str, int x){
 		else break;
 		i++;r++;
 	}
-	size= (sizeof(str) / sizeof(char *));
-	qsort(str, size, sizeof(char *), cstring_cmp);
+	qsort(str, r, sizeof(char *), cstring_cmp);
+	printf("Sorted\n");
 	fclose(f1);
 	return r;
 }
