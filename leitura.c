@@ -29,21 +29,21 @@ int findLista(char* codigo, char **lista, int n){
 
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
 	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
-	fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
-	fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
-}
+		fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
+		fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
+	}
 	else return 0;
 	return 1;
 }
 
 int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
-	int i, cont=0,mes,filial,quant; /* cont, para quê? Para já nada, mas depois vai contar só as válidas*/
+	int i, cont=0,mes,filial,quant; 
 	Venda v=(Venda)malloc(sizeof(struct venda));
 	char *aux;
 	double preco;
 	char buffer[BufferM];
 	FILE *p;
-	p = fopen("Dados/Vendasfinal2.txt", "w");
+	p = fopen("Dados/Vendasfinal.txt", "w");
 	for (i = 0; fgets(buffer,BufferM,p2); i++){
 	aux = strtok(buffer, " ");
 	strcpy(v->produto, aux);
@@ -77,7 +77,7 @@ int lerclientouprod(char **str, int x){
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
-	while(i<1000){
+	while(1){
 		str[i]=(char *)malloc(sizeof(char)*12);
 		if(fgets(str[i],9,f1)!=NULL)
 			strtok(str[i],"\n\r");
