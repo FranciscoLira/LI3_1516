@@ -16,6 +16,7 @@ typedef struct venda {
 	int filial;
 }*Venda;
 
+/*Lira, podes mudar lindo <3*/
 int findLista(char* codigo, char **lista, int n){
 	int i=0,r=0;
 	while (i<n){
@@ -71,9 +72,17 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	return cont;
 }
 
+int cstring_cmp(const void *a, const void *b) 
+{ 
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib); 
+}
+
 int lerclientouprod(char **str, int x){
 	FILE *f1;
-	int i=0,r=0; /* r, para quê? vai ser alterado ainda? Realmente não era preciso o r, mas ele conta(podia fazer return do i, mas pronto xD)*/
+	size_t size;
+	int i=0,r=0;
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
@@ -84,6 +93,8 @@ int lerclientouprod(char **str, int x){
 		else break;
 		i++;r++;
 	}
+	size= (sizeof(str) / sizeof(char *));
+	qsort(str, size, sizeof(char *), cstring_cmp);
 	fclose(f1);
 	return r;
 }
