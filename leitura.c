@@ -25,48 +25,11 @@ int cstring_cmp(const void *a, const void *b)
 
 /*Lira, podes mudar lindo <3*/
 /*OBRIGADO!!*/
-int findLista(char* codigo, char **lista, int n){
-	/*int i=0,r=0,f=n-1;*/
+int findLista(char *codigo, char **lista, int n){
 	int r=0;
 	int *p;
-	/*int pos=(f+i)/2;
-	int cm;*/
-	/*Otimizado, espero eu!*/
-	printf("Here3\n");
 	p = (int*) bsearch(&codigo, lista, n, sizeof(char*), cstring_cmp);
-	printf("Here4\n");
-	if(*p){r=1;}
-	
-/* Meu bsearch antes de descobrir que tal como o qsort este já existe
-	while(i<=f && r!=1){
-		cm=strcmp(codigo,lista[pos]);
-		if(cm==0){
-			r=1;
-			printf("Here\n");
-			break;
-		}
-		else {
-			if(cm>0){
-				f=pos-1;
-				pos=(f+i)/2;
-			}
-			else{
-				i=pos+1;
-				pos=(f+i)/2;
-			}
-		}
-	}
-
-*/
-
-	/* Original
-	while (i<n){
-		if((strcmp(lista[i++],codigo))==0){
-			r=1;
-			break;
-		}
-	}*/
-		printf("Here2\n");
+	if(p) r=1;
 	return r;
 }
 
@@ -74,10 +37,8 @@ int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, in
 	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
 		fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
 		fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
-		printf("Here1\n");
 	}
 	else {
-		printf("Also\n");
 		return 0;
 	}
 	return 1;
@@ -110,10 +71,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	v->quantidade = quant;
 	v->mes = mes;
 	v->filial = filial;
-	/*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
-	printf("%s %.2f %d %c %s %d %d\n",v->produto,v->preco,v->quantidade,v->promo, v->cliente, v->mes, v->filial); */
 	cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);
-	printf("%d\n", cont );
 	}
 	fclose(p);
 	return cont;
