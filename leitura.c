@@ -16,15 +16,57 @@ typedef struct venda {
 	int filial;
 }*Venda;
 
+int cstring_cmp(const void *a, const void *b) 
+{ 
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib); 
+}
+
 /*Lira, podes mudar lindo <3*/
+/*OBRIGADO!!*/
 int findLista(char* codigo, char **lista, int n){
-	int i=0,r=0;
+	/*int i=0,r=0,f=n-1;*/
+	int r=0;
+	int *p;
+	/*int pos=(f+i)/2;
+	int cm;*/
+	/*Otimizado, espero eu!*/
+	printf("Here3\n");
+	p = (int*) bsearch(&codigo, lista, n, sizeof(char*), cstring_cmp);
+	printf("Here4\n");
+	if(*p){r=1;}
+	
+/* Meu bsearch antes de descobrir que tal como o qsort este já existe
+	while(i<=f && r!=1){
+		cm=strcmp(codigo,lista[pos]);
+		if(cm==0){
+			r=1;
+			printf("Here\n");
+			break;
+		}
+		else {
+			if(cm>0){
+				f=pos-1;
+				pos=(f+i)/2;
+			}
+			else{
+				i=pos+1;
+				pos=(f+i)/2;
+			}
+		}
+	}
+
+*/
+
+	/* Original
 	while (i<n){
 		if((strcmp(lista[i++],codigo))==0){
 			r=1;
 			break;
 		}
-	}
+	}*/
+		printf("Here2\n");
 	return r;
 }
 
@@ -32,8 +74,12 @@ int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, in
 	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
 		fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
 		fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
+		printf("Here1\n");
 	}
-	else return 0;
+	else {
+		printf("Also\n");
+		return 0;
+	}
 	return 1;
 }
 
@@ -66,22 +112,17 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	v->filial = filial;
 	/*descomentar isto para quem gostar de ver muitas cenas a aparecer no terminal xD
 	printf("%s %.2f %d %c %s %d %d\n",v->produto,v->preco,v->quantidade,v->promo, v->cliente, v->mes, v->filial); */
-	cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);	
+	cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);
+	printf("%d\n", cont );
 	}
 	fclose(p);
 	return cont;
 }
 
-int cstring_cmp(const void *a, const void *b) 
-{ 
-    const char **ia = (const char **)a;
-    const char **ib = (const char **)b;
-    return strcmp(*ia, *ib); 
-}
-
 int lerclientouprod(char **str, int x){
 	FILE *f1;
 	int i=0,r=0;
+	/*size_t str_len = sizeof(str) / sizeof(char*);*/
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
@@ -93,6 +134,13 @@ int lerclientouprod(char **str, int x){
 		i++;r++;
 	}
 	qsort(str, r, sizeof(char *), cstring_cmp);
+	/* Verificação de que funciona;
+	i=0;
+	while(i<r){
+		printf("%s\n",str[i]);
+		i++;
+	}
+	*/
 	printf("Sorted\n");
 	fclose(f1);
 	return r;
@@ -113,3 +161,24 @@ int main(){
 	printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);
 	return 0;
 }
+/*Tester
+int main(){
+	int i=0, q=0;
+	char* array[]={"ole","ola","Ola","mas","ist","ass","nao","fun","ume"};
+	int tam=9;
+	size_t array_len = sizeof(array) / sizeof(char*);
+	while(i<tam){
+		printf("%s\n",array[i] );
+		i++;
+	}
+	i=0;
+	printf("\n");
+	qsort(array, array_len, sizeof(char*), cstring_cmp);
+	while(i<tam){
+		q+=findLista(array[i], array,tam);
+		printf("%s\n",array[i] );
+		i++;
+	}
+	printf("%d\n",q );
+	return 0;
+}*/
