@@ -23,8 +23,6 @@ int cstring_cmp(const void *a, const void *b)
     return strcmp(*ia, *ib); 
 }
 
-/*Lira, podes mudar lindo <3*/
-/*OBRIGADO!!*/
 int findLista(char *codigo, char **lista, int n){
 	int r=0;
 	int *p;
@@ -80,7 +78,6 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 int lerclientouprod(char **str, int x){
 	FILE *f1;
 	int i=0,r=0;
-	/*size_t str_len = sizeof(str) / sizeof(char*);*/
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
@@ -92,13 +89,6 @@ int lerclientouprod(char **str, int x){
 		i++;r++;
 	}
 	qsort(str, r, sizeof(char *), cstring_cmp);
-	/* Verificação de que funciona;
-	i=0;
-	while(i<r){
-		printf("%s\n",str[i]);
-		i++;
-	}
-	*/
 	printf("Sorted\n");
 	fclose(f1);
 	return r;
@@ -119,24 +109,3 @@ int main(){
 	printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);
 	return 0;
 }
-/*Tester
-int main(){
-	int i=0, q=0;
-	char* array[]={"ole","ola","Ola","mas","ist","ass","nao","fun","ume"};
-	int tam=9;
-	size_t array_len = sizeof(array) / sizeof(char*);
-	while(i<tam){
-		printf("%s\n",array[i] );
-		i++;
-	}
-	i=0;
-	printf("\n");
-	qsort(array, array_len, sizeof(char*), cstring_cmp);
-	while(i<tam){
-		q+=findLista(array[i], array,tam);
-		printf("%s\n",array[i] );
-		i++;
-	}
-	printf("%d\n",q );
-	return 0;
-}*/
