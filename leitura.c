@@ -5,7 +5,7 @@
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
 #define BufferM 128 
-
+ /*Struct que armazena temporariamente os dados que vêm das vendas, uma linha de cada vez*/
 typedef struct venda {
 	char produto[10];
 	double preco;
@@ -16,13 +16,15 @@ typedef struct venda {
 	int filial;
 }*Venda;
 
+/*Função para comparar duas strings, é básicamente a strcmp*/
 int cstring_cmp(const void *a, const void *b) 
-{ 
-    const char **ia = (const char **)a;
-    const char **ib = (const char **)b;
-    return strcmp(*ia, *ib); 
+{
+	const char **ia = (const char **)a;
+	const char **ib = (const char **)b;
+	return strcmp(*ia, *ib); 
 }
 
+/*Procura numa lista de "codigos" um certo código, serve para procurar nas listas, usa o bsearch para ser mais eficiente*/
 int findLista(char *codigo, char **lista, int n){
 	int r=0;
 	int *p;
@@ -31,6 +33,7 @@ int findLista(char *codigo, char **lista, int n){
 	return r;
 }
 
+/*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
 	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
 		fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
@@ -42,6 +45,7 @@ int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, in
 	return 1;
 }
 
+/*Cria o apontador para FILE e insere as linhas válidas*/
 int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
 	int i, cont=0,mes,filial,quant; 
 	Venda v=(Venda)malloc(sizeof(struct venda));
@@ -75,6 +79,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	return cont;
 }
 
+/*Lê o ficheiro */
 int lerclientouprod(char **str, int x){
 	FILE *f1;
 	int i=0,r=0;
@@ -89,7 +94,6 @@ int lerclientouprod(char **str, int x){
 		i++;r++;
 	}
 	qsort(str, r, sizeof(char *), cstring_cmp);
-	printf("Sorted\n");
 	fclose(f1);
 	return r;
 }
