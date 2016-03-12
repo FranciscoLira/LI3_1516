@@ -56,16 +56,11 @@ int verificaPreco (double preco) {
 	else return 0;
 }
 
-/* Verifica se ambos os codigos existem */
-int codigosExistem (char *c1, char *c2) {
-	if (c1 != NULL && c2 != NULL) return 1;
-	else return 0;
-}
-
 /*Procura numa lista de "codigos" um certo código, serve para procurar nas listas, usa o bsearch para ser mais eficiente*/
 int findLista(char *codigo, char **lista, int n){
 	int r=0;
 	int *p;
+	if(codigo==NULL)return 0;
 	p = (int*) bsearch(&codigo, lista, n, sizeof(char*), cstring_cmp);
 	if(p) r=1;
 	return r;
@@ -75,7 +70,7 @@ int findLista(char *codigo, char **lista, int n){
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
 	int cont = 0;
 	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && 
-		verificaPreco(v->preco) && verificaVenda(v->promo) && codigosExistem(v->produto, v->cliente)) {
+		verificaPreco(v->preco) && verificaVenda(v->promo)) {
 	    if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
 		    fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
 		    fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
@@ -117,7 +112,7 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	}
 	printf("O número de Vendas válidas é: %d\n", cont);
 	fclose(p);
-	return i;
+	return cont;
 }
 
 /*Lê o ficheiro */
