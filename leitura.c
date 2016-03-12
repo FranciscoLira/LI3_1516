@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
 #define BufferM 128 
+
  /*Struct que armazena temporariamente os dados que vêm das vendas, uma linha de cada vez*/
 typedef struct venda {
 	char produto[10];
@@ -24,6 +26,42 @@ int cstring_cmp(const void *a, const void *b)
 	return strcmp(*ia, *ib); 
 }
 
+/* Verifica se a venda é N ou P*/
+int verificaVenda (char promo) {
+	if (promo == 'N' || promo == 'P') return 1;
+	else return 0;
+}
+
+/* Verifica se a filial se encontra entre os valores 1 e 3*/
+int verificaFilial (int filial) {
+	if (filial >= 1 && filial <=3) return 1;
+	else return 0;
+}
+
+/* Verifica se a mês se encontra entre os valores 1 e 12*/
+int verificaMes (int mes) {
+	if (mes >=1 && mes <= 12) return 1;
+	else return 0;
+}
+
+/* Verifica se as quantidades são positivas (e menores que 200) */
+int verificaQuantidade (int quantidade) {
+	if (quantidade >= 1 && quantidade <= 200) return 1;
+	else return 0;
+}
+
+/* Verifica se o preço dos produtos é positivo/igual a 0.0 */
+int verificaPreco (double preco) {
+	if (preco >= 0.0 && preco <= 999.99) return 1;
+	else return 0;
+}
+
+/* Verifica se ambos os codigos existem */
+int codigosExistem (char *c1, char *c2) {
+	if (c1 != NULL && c2 != NULL) return 1;
+	else return 0;
+}
+
 /*Procura numa lista de "codigos" um certo código, serve para procurar nas listas, usa o bsearch para ser mais eficiente*/
 int findLista(char *codigo, char **lista, int n){
 	int r=0;
@@ -35,10 +73,13 @@ int findLista(char *codigo, char **lista, int n){
 
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
-	if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
-		fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
-		fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
-	}
+	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && 
+		verificaPreco(v->preco) && verificaVenda(v->promo) && codigosExistem(v->produto, v->cliente)) {
+	    if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
+		    fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
+		    fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
+	    }
+    } 
 	else {
 		return 0;
 	}
