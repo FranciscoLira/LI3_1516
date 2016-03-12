@@ -73,17 +73,16 @@ int findLista(char *codigo, char **lista, int n){
 
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, int qprodut, FILE *p) {
+	int cont = 0;
 	if (verificaFilial(v->filial) && verificaMes(v->mes) && verificaQuantidade(v->quantidade) && 
 		verificaPreco(v->preco) && verificaVenda(v->promo) && codigosExistem(v->produto, v->cliente)) {
 	    if (findLista(v->cliente, clientes, qclient) && findLista(v->produto, produtos, qprodut)){
 		    fprintf(p, "%s %.2f %d ", v->produto, v->preco, v->quantidade);
 		    fprintf(p, "%c %s %d %d\r\n",v->promo, v->cliente, v->mes, v->filial);
+		    cont = 1;
 	    }
     } 
-	else {
-		return 0;
-	}
-	return 1;
+	return cont;
 }
 
 /*Cria o apontador para FILE e insere as linhas válidas*/
@@ -116,8 +115,9 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 	v->filial = filial;
 	cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);
 	}
+	printf("O número de Vendas válidas é: %d\n", cont);
 	fclose(p);
-	return cont;
+	return i;
 }
 
 /*Lê o ficheiro */
