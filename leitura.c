@@ -80,40 +80,119 @@ int verificaEescreve (Venda v, char **clientes, char **produtos, int qclient, in
 	return cont;
 }
 
-/*Cria o apontador para FILE e insere as linhas válidas*/
-int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut) {
-	int i, cont=0,mes,filial,quant; 
-	Venda v=(Venda)malloc(sizeof(struct venda));
-	char *aux;
-	double preco;
-	char buffer[BufferM];
-	FILE *p;
-	p = fopen("Dados/Vendasfinal.txt", "w");
-	for (i = 0; fgets(buffer,BufferM,p2); i++){
-	aux = strtok(buffer, " ");
-	strcpy(v->produto, aux);
-	aux = strtok(NULL, " ");
-	preco = atof(aux);
-	aux = strtok(NULL, " ");
-	quant=atoi(aux);
-	aux = strtok(NULL, " ");
-	v->promo=aux[0];
-	aux = strtok(NULL, " ");
-	strcpy(v->cliente,aux);
-	aux = strtok(NULL, " ");
-	mes=atoi(aux);
-	aux = strtok(NULL, "\n\r");
-	filial=atoi(aux);
-	v->preco = preco;
-	v->quantidade = quant;
-	v->mes = mes;
-	v->filial = filial;
-	cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);
+int clientemesaux(Venda v, int c[], char opcional[]) {
+	if (strcmp(opcional,v->cliente) == 0) {c[v->mes]++;
+		                                   return (v->quantidade);
+		                               }
+    else return 0;
+}
+
+void clientemes(int clientesmes[], int sum, int valor, double faturacao) {
+	int i;
+	for (i = 1; i <= 12; i++) { sum = sum + clientesmes[i];
+		                        printf("Mes %d: %d \n", i, clientesmes[i]);
+		                      }   
+    printf("Total de registo de compras do cliente: %d\n", sum);
+    printf("Quantidade total: %d\nFaturação total: %f\n", valor, faturacao);
+}
+
+void inicializacoes (int clientesmes[], int produtosmesP[], int produtosmesN[], double faturacaoP[], double faturacaoN[]) {
+	int i;
+	for (i = 0; i <= 12; i++) {clientesmes[i] = 0;
+		                       produtosmesN[i] = 0;
+		                       produtosmesP[i] = 0;
+		                       faturacaoN[i] = 0;
+		                       faturacaoP[i] = 0;
+		                   }
+}
+
+int produtomesaux(Venda v, int c[], int p[], double faturacaop[], double faturacaon[], char opcional[]) {
+	if (strcmp(opcional,v->produto) == 0) {
+		if (v->promo == 'N') {c[v->mes] = v->quantidade;
+			                  faturacaon[v->mes] = faturacaon[v->mes] + (v->preco*v->quantidade);
+		                      return (v->quantidade);
+		                     }
+		else {p[v->mes]= v->quantidade;
+			 faturacaop[v->mes] = faturacaop[v->mes] + (v->preco*v->quantidade);
+		     return (v->quantidade);
+		      }
 	}
-	printf("O número de Vendas válidas é: %d\n", cont);
+    else return 0;
+}
+
+void produtomes(int produtomesP[], int produtomesN[], double faturacaop[], double faturacaon[], int sum, int valor, double faturacao) {
+	int i; int j = 0;
+	for (i = 1; i <= 12; i++) {
+		sum = sum + produtomesP[i] + produtomesN[i];
+		faturacao = faturacao + faturacaon[i] + faturacaop[i];
+		if (produtomesN[i] != 0) {j++; printf("Mes %d N: %d Faturacao N: %f\n", i, produtomesN[i], faturacaon[i]);}
+	    if  (produtomesP[i] != 0) {j++; printf ("Mes %d P: %d Faturacao P: %f\n", i, produtomesP[i], faturacaop[i]);}
+	}      
+	 printf("Numero de Clientes: %d\n", j);
+	 printf("Total de vendas do produto: %d\n", sum);
+	 printf("Faturação total: %f\n", faturacao);
+             
+    }
+
+
+/*Cria o apontador para FILE e insere as linhas válidas*/
+int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qprodut, int c, char opcional[], char q, double valor) {
+	Venda v;
+	FILE *p;
+	int i, cont=0,mes,filial,quant; char *aux; double preco; char buffer[BufferM]; int clientesmes[13]; int sum = 0; double faturacao = 0; int k = 0;
+	int produtomesP[13]; int produtomesN[13]; double faturacaoP[13]; double faturacaoN[13];
+	inicializacoes(clientesmes, produtomesP, produtomesN, faturacaoP, faturacaoN);
+	v = (Venda)malloc(sizeof(struct venda));
+	if (c == 0) p = fopen("Dados/Vendasfinal.txt", "w");
+	else p = fopen("Dados/Vendasfinal.txt", "r");
+	for (i = 0; fgets(buffer,BufferM,p2); i++){
+	     aux = strtok(buffer, " ");
+	     strcpy(v->produto, aux);
+	     aux = strtok(NULL, " ");
+	     preco = atof(aux);
+	     aux = strtok(NULL, " ");
+	     quant=atoi(aux);
+	     aux = strtok(NULL, " ");
+	     v->promo=aux[0];
+	     aux = strtok(NULL, " ");
+	     strcpy(v->cliente,aux);
+	     aux = strtok(NULL, " ");
+	     mes=atoi(aux);
+	     aux = strtok(NULL, "\n\r");
+	     filial=atoi(aux); v->preco = preco; v->quantidade = quant; v->mes = mes; v->filial = filial;
+         if (c == 0) cont += verificaEescreve(v, clientes, produtos,qclient,qprodut, p);
+         else  { 
+    	        switch (q) {
+		           case 'A':k = clientemesaux(v, clientesmes, opcional);
+		                    valor = valor + k;
+		                    faturacao = faturacao + (k*v->preco);
+		                    break;
+		           case 'B':k = produtomesaux(v,produtomesN, produtomesP, faturacaoP, faturacaoN, opcional);
+		                    break;
+		           case 'D': valor = valor + v->quantidade;
+		                     break;
+		           case 'E': valor = valor + (v->preco*v->quantidade);
+		                     break;
+                 }
+         }
+     }
 	fclose(p);
+	if (c == 1) {
+	    switch (q) {
+		    case 'A': clientemes(clientesmes,sum, valor, faturacao);
+		              break;
+		    case 'B': produtomes(produtomesP, produtomesN, faturacaoP, faturacaoN, sum, valor, faturacao);
+		              break;
+		    case 'D': printf("O numero de unidades vendidas foi de: %.0f\n",valor);
+		              break;
+		    case 'E': printf("A faturação total foi de: %f\n", valor);
+		              break;
+         }
+    }
+    else printf("O número de Vendas válidas é: %d\n", cont);
 	return cont;
 }
+
 
 /*Lê o ficheiro */
 int lerclientouprod(char **str, int x){
@@ -135,17 +214,43 @@ int lerclientouprod(char **str, int x){
 }
 
 int main(){
+	double valor = 0;
+	int j = 0;
 	FILE *p;
+	char cmd[BufferM];
 	int qclient, qprodut, qvenda;
 	char *clientes[NR_CLIENTES];
 	char *produtos[NR_PRODUTOS];
+	char opcional[BufferM];
 	p=fopen("Dados/Vendas_1M.txt", "r");
 	qclient = lerclientouprod(clientes,0);
 	qprodut = lerclientouprod(produtos,1);
-	qvenda = leituravendas(p,clientes,produtos,qclient,qprodut);
+	qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
 	fclose(p);
-	printf("Foram lidos %d Clientes, %d Produtos e %d Vendas\n",qclient,qprodut,qvenda);
-	printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);
-	printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);
+	j = 1;
+	/*printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);*/
+	/*printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);*/
+	printf("A. TESTAR CLIENTE \nB. TESTAR PRODUTO\nC. TODOS OS VALORES LIDOS\nD. UNIDADES VENDIDAS\nE. FATURAÇAO TOTAL\nQ. SAIR\n");
+	if (fgets(cmd,BufferM,stdin)!=NULL) {;} /*Maneira manhosa de tirar warnings, se alguem souber como tirar que diga...tambem podemos usar scanf mas tambem da warning*/
+	while (cmd[0] != 'Q') {
+		   valor = 0;
+	       switch(cmd[0]) {
+		      case 'A': printf("Por favor introduza o cliente que deseja consultar: ");
+		              if(scanf("%s", opcional)!= 0) {;}
+		              qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
+		              break;
+		      case 'B': printf("Por favor introduza o produto que deseja consultar: ");
+		              if(scanf("%s", opcional)!= 0) {;}
+		              qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
+		              break;       
+		      case 'C': printf("Foram lidos %d Clientes, %d Produtos e %d Vendas\n",qclient,qprodut,qvenda);
+		                break;
+		      case 'D': qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
+		                break;
+		      case 'E': qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
+		                break;
+	       }
+	if (fgets(cmd,BufferM,stdin)!=NULL) {;}
+    }
 	return 0;
 }
