@@ -18,7 +18,7 @@ typedef struct venda {
 	int filial;
 }*Venda;
 
-/*Função para comparar duas strings, é básicamente a strcmp*/
+/*Função para comparar duas strings, é básicamente a strcmp, é necessária para o qsorte e bsearch*/
 int cstring_cmp(const void *a, const void *b) 
 {
 	const char **ia = (const char **)a;
@@ -50,7 +50,7 @@ int verificaQuantidade (int quantidade) {
 	else return 0;
 }
 
-/* Verifica se o preço dos produtos é positivo/igual a 0.0 */
+/* Verifica se o preço dos produtos é positivo ou igual a 0.0 */
 int verificaPreco (double preco) {
 	if (preco >= 0.0 && preco <= 999.99) return 1;
 	else return 0;
