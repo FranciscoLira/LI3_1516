@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <avl.c>
 
 typedef int bool;
 #define true 1
