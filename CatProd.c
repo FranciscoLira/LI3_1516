@@ -1,4 +1,4 @@
-#include <CatProds.h>
+#include <CatProd.h>
 
 CatProds initCatProds() {
 	int i;
