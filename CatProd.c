@@ -2,31 +2,51 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "avl.h"
+#include "avltree.h"
 
 
-typedef struct avl {
-	int tamanho;
-	avl_tree_t *puta;
-} *AVL;
 
-struct prods {
-	AVL catalogoProd[26];
-};
 
-struct prod {
- 	char* nomeprod;
-};
+
+
+Produto inserep(char *x){
+    Produto p=malloc(sizeof(struct prod));
+    strcpy(p->nomeprod,x);
+    return p;
+}
+
+Produto alterap(char *x,Produto p){
+    strcpy(p->nomeprod,x);
+    return p;
+}
 
 CatProds initCatProds() {
 	int i;
-    CatProds p;
+    CatProds p=malloc(sizeof(struct prods));
     for (i = 0; i < 26; i++) {
-        p->catalogoProd[i] = (malloc)(sizeof(struct avl));
-        p->catalogoProd[i]->tamanho = 0;
-        p->catalogoProd[i]->puta = avl_create();
+        p->cP[i] = (malloc)(sizeof(struct avl));
+        p->cP[i]->tamanho = 0;
+        p->cP[i]->root = NULL;
     }
     return p;
 }
+
+CatProds insereProduto(CatProds cps, Produto p){
+    int i = (p->nomeprod[0] - 65);
+    printf("%d\n",i );
+    if(cps->cP[i]->tamanho==0)
+        cps->cP[i]->root = newNode(p->nomeprod);
+    else {
+    cps->cP[i]->root = insert(cps->cP[i]->root,p->nomeprod);
+    }
+    cps->cP[i]->tamanho++;
+    
+    return cps;
+}
+
+
+
+
+
 
 

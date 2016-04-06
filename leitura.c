@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "CatProd.h"
+#include "avltree.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -195,24 +197,32 @@ int leituravendas(FILE *p2, char **clientes, char **produtos,int qclient,int qpr
 
 
 /*Lê o ficheiro */
-int lerclientouprod(char **str, int x){
+CatProds lerclientouprod(CatProds cps, int x){
 	FILE *f1;
+	char str[10];
+	Produto p = inserep("");
 	int i=0,r=0;
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
+	printf("ola\n");
 	while(1){
-		str[i]=(char *)malloc(sizeof(char)*12);
-		if(fgets(str[i],9,f1)!=NULL)
-			strtok(str[i],"\n\r");
+
+		if(fgets(str,9,f1)!=NULL){
+			strtok(str,"\n\r");
+			printf("%s\n",str );
+			p = alterap(str,p);
+			printf("%s\n",p->nomeprod);
+			cps = insereProduto(cps,p);
+	
+		}
 		else break;
 		i++;r++;
 	}
-	qsort(str, r, sizeof(char *), cstring_cmp);
 	fclose(f1);
-	return r;
+	return cps;
 }
-
+/*
 int main(){
 	double valor = 0;
 	int j = 0;
@@ -228,10 +238,10 @@ int main(){
 	qvenda = leituravendas(p,clientes,produtos,qclient,qprodut,j, opcional, cmd[0], valor);
 	fclose(p);
 	j = 1;
-	/*printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);*/
-	/*printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);*/
+	printf("EXEMPLO DE CLIENTE: %s\n", clientes[15672]);
+	printf("EXEMPLO DE PRODUTO: %s\n", produtos[156098]);
 	printf("A. TESTAR CLIENTE \nB. TESTAR PRODUTO\nC. TODOS OS VALORES LIDOS\nD. UNIDADES VENDIDAS\nE. FATURAÇAO TOTAL\nQ. SAIR\n");
-	if (fgets(cmd,BufferM,stdin)!=NULL) {;} /*Maneira manhosa de tirar warnings, se alguem souber como tirar que diga...tambem podemos usar scanf mas tambem da warning*/
+	if (fgets(cmd,BufferM,stdin)!=NULL) {;} Maneira manhosa de tirar warnings, se alguem souber como tirar que diga...tambem podemos usar scanf mas tambem da warning
 	while (cmd[0] != 'Q') {
 		   valor = 0;
 	       switch(cmd[0]) {
@@ -252,5 +262,15 @@ int main(){
 	       }
 	if (fgets(cmd,BufferM,stdin)!=NULL) {;}
     }
+	return 0;
+}
+*/
+int main () {
+	CatProds cps;
+	cps = initCatProds();
+	cps = lerclientouprod(cps,0);
+	if(cps->cP[0]->root->left == NULL)
+	printf("%s\n", cps->cP[1]->root->right->key);
+	preOrder(cps->cP[5]->root);
 	return 0;
 }
