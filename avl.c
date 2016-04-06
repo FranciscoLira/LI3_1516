@@ -13,12 +13,11 @@ struct avl_node_s *right;
 int value;
 };
 
-typedef struct avl_node_s avl_node_t;
 struct avl_tree_s {
 struct avl_node_s *root;
 };
 
-typedef struct avl_tree_s avl_tree_t;
+
 /* Create a new AVL tree. */
 avl_tree_t *avl_create() {
 avl_tree_t *tree = NULL;
@@ -102,13 +101,14 @@ return( b );
 
 /* Balance a given node */
 avl_node_t *avl_balance_node( avl_node_t *node ) {
+int bf;
 avl_node_t *newroot = NULL;
 /* Balance our children, if they exist. */
 if( node->left )
 node->left = avl_balance_node( node->left );
 if( node->right )
 node->right = avl_balance_node( node->right );
-int bf = avl_balance_factor( node );
+bf = avl_balance_factor( node );
 if( bf >= 2 ) {
 /* Left Heavy */	
 if( avl_balance_factor( node->left ) <= -1 )
