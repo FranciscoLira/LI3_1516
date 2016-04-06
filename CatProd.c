@@ -26,7 +26,7 @@ CatProds initCatProds() {
     for (i = 0; i < 26; i++) {
         p->cP[i] = (malloc)(sizeof(struct avl));
         p->cP[i]->tamanho = 0;
-        p->cP[i]->root = NULL;
+        p->cP[i]->root = avl_create();
     }
     return p;
 }
@@ -34,13 +34,8 @@ CatProds initCatProds() {
 CatProds insereProduto(CatProds cps, Produto p){
     int i = (p->nomeprod[0] - 65);
     printf("%d\n",i );
-    if(cps->cP[i]->tamanho==0)
-        cps->cP[i]->root = newNode(p->nomeprod);
-    else {
-    cps->cP[i]->root = insert(cps->cP[i]->root,p->nomeprod);
-    }
+    avl_insert(cps->cP[i]->root,p->nomeprod);
     cps->cP[i]->tamanho++;
-    
     return cps;
 }
 

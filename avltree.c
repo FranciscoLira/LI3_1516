@@ -1,186 +1,242 @@
-#include <stdio.h>
+
+#define _XOPEN_SOURCE 500 /* Enable certain library functions (strdup) on linux. See feature_test_macros(7) */
+
+#include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
 #include <string.h>
+#include <assert.h>
 #include "avltree.h"
 
+/* Create a new AVL tree. */
+avl_tree_t *avl_create() {
+    avl_tree_t *tree = NULL;
 
+    if( ( tree = malloc( sizeof( avl_tree_t ) ) ) == NULL ) {
+        return NULL;
+    }
 
-int height(Node N)
-{
-    if (N == NULL)
-        return 0;
-    return N->height;
+    tree->root = NULL;
+
+    return tree;
 }
- 
-int max(int a, int b)
-{
-    return (a > b)? a : b;
-}
- 
-/* Helper function that allocates a new node with the given key and
-    NULL left and right pointers. */
-Node newNode(char* key)
-{
-    struct node* node = (struct node*)
-                        malloc(sizeof(struct node));
-    strcpy(node->key,key);
-    node->left   = NULL;
-    node->right  = NULL;
-    node->height = 1;
-    return(node);
-}
- 
-Node rightRotate(Node y)
-{
-    struct node *x = y->left;
-    struct node *T2 = x->right;
-    x->right = y;
-    y->left = T2;
-    y->height = max(height(y->left), height(y->right))+1;
-    x->height = max(height(x->left), height(x->right))+1;
-    return x;
-}
- 
-Node leftRotate(Node x)
-{
-    struct node *y = x->right;
-    struct node *T2 = y->left;
-    y->left = x;
-    x->right = T2;
-    x->height = max(height(x->left), height(x->right))+1;
-    y->height = max(height(y->left), height(y->right))+1;
-    return y;
-}
- 
-int getBalance(Node N)
-{
-    if (N == NULL)
-        return 0;
-    return height(N->left) - height(N->right);
-}
- 
-Node insert(Node node, char* key)
-{
-    int balance;
-    if (node == NULL)
-        return(newNode(key));
-    if (key < node->key)
-        node->left  = insert(node->left, key);
-    else
-        node->right = insert(node->right, key);
-    node->height = max(height(node->left), height(node->right)) + 1;
-    balance = getBalance(node);
-    if (balance > 1 && key < node->left->key)
-        return rightRotate(node);
-    if (balance < -1 && key > node->right->key)
-        return leftRotate(node);
-    if (balance > 1 && key > node->left->key)
-    {
-        node->left =  leftRotate(node->left);
-        return rightRotate(node);
+
+/* Initialize a new node. */
+avl_node_t *avl_create_node() {
+    avl_node_t *node = NULL;
+    
+    if( ( node = malloc( sizeof( avl_node_t ) ) ) == NULL ) {
+        return NULL;
     }
-    if (balance < -1 && key < node->right->key)
-    {
-        node->right = rightRotate(node->right);
-        return leftRotate(node);
-    }
- 
-    /* return the (unchanged) node pointer */
-    return node;
+
+    node->left = NULL;
+    node->right = NULL;
+    strcpy(node->value,"");
+
+    return node;    
 }
- 
-/* Given a non-empty binary search tree, return the node with minimum
-   key value found in that tree. Note that the entire tree does not
-   need to be searched. */
-Node minValueNode(Node node)
-{
-    struct node* current = node;
- 
-    /* loop down to find the leftmost leaf */
-    while (current->left != NULL)
-        current = current->left;
- 
+
+/* Find the height of an AVL node recursively */
+int avl_node_height( avl_node_t *node ) {
+    int height_left = 0;
+    int height_right = 0;
+
+    if( node->left ) height_left = avl_node_height( node->left );
+    if( node->right ) height_right = avl_node_height( node->right );
+
+    return height_right > height_left ? ++height_right : ++height_left;
+}
+
+/* Find the balance of an AVL node */
+int avl_balance_factor( avl_node_t *node ) {
+    int bf = 0;
+
+    if( node->left  ) bf += avl_node_height( node->left );
+    if( node->right ) bf -= avl_node_height( node->right );
+
+    return bf ;
+}
+
+/* Left Left Rotate */
+avl_node_t *avl_rotate_leftleft( avl_node_t *node ) {
+    avl_node_t *a = node;
+    avl_node_t *b = a->left;
+    
+    a->left = b->right;
+    b->right = a;
+
+    return( b );
+}
+
+/* Left Right Rotate */
+avl_node_t *avl_rotate_leftright( avl_node_t *node ) {
+    avl_node_t *a = node;
+    avl_node_t *b = a->left;
+    avl_node_t *c = b->right;
+    
+    a->left = c->right;
+    b->right = c->left; 
+    c->left = b;
+    c->right = a;
+
+    return( c );
+}
+
+/* Right Left Rotate */
+avl_node_t *avl_rotate_rightleft( avl_node_t *node ) {
+    avl_node_t *a = node;
+    avl_node_t *b = a->right;
+    avl_node_t *c = b->left;
+    
+    a->right = c->left;
+    b->left = c->right; 
+    c->right = b;
+    c->left = a;
+
+    return( c );
+}
+
+/* Right Right Rotate */
+avl_node_t *avl_rotate_rightright( avl_node_t *node ) {
+    avl_node_t *a = node;
+    avl_node_t *b = a->right;
+    
+    a->right = b->left;
+    b->left = a; 
+
+    return( b );
+}
+
+/* Balance a given node */
+avl_node_t *avl_balance_node( avl_node_t *node ) {
+    avl_node_t *newroot = NULL;
+    int bf;
+
+    /* Balance our children, if they exist. */
+    if( node->left )
+        node->left  = avl_balance_node( node->left  );
+    if( node->right ) 
+        node->right = avl_balance_node( node->right );
+
+    bf = avl_balance_factor( node );
+
+    if( bf >= 2 ) {
+        /* Left Heavy */    
+
+        if( avl_balance_factor( node->left ) <= -1 ) 
+            newroot = avl_rotate_leftright( node );
+        else 
+            newroot = avl_rotate_leftleft( node );
+
+    } else if( bf <= -2 ) {
+        /* Right Heavy */
+
+        if( avl_balance_factor( node->right ) >= 1 )
+            newroot = avl_rotate_rightleft( node );
+        else 
+            newroot = avl_rotate_rightright( node );
+
+    } else {
+        /* This node is balanced -- no change. */
+
+        newroot = node;
+    }
+
+    return( newroot );  
+}
+
+/* Balance a given tree */
+void avl_balance( avl_tree_t *tree ) {
+
+    avl_node_t *newroot = NULL;
+
+    newroot = avl_balance_node( tree->root );
+
+    if( newroot != tree->root )  {
+        tree->root = newroot; 
+    }
+}
+
+/* Insert a new node. */
+void avl_insert( avl_tree_t *tree, char* value ) {
+    avl_node_t *node = NULL;
+    avl_node_t *next = NULL;
+    avl_node_t *last = NULL;
+
+    /* Well, there must be a first case */  
+    if( tree->root == NULL ) {
+        node = avl_create_node();
+        strcpy(node->value,value);
+
+        tree->root = node;
+
+    /* Okay.  We have a root already.  Where do we put this? */
+    } else {
+        next = tree->root;
+
+        while( next != NULL ) {
+            last = next;
+
+            if( strcmp(value,next->value)<0)  {
+                next = next->left;
+
+            } else if( strcmp(value,next->value) > 0 ){
+                next = next->right;
+
+            /* Have we already inserted this node? */
+            } else if( strcmp(value,next->value) == 0 ) {
+                /* This shouldn't happen. */    
+            }
+        }
+
+        node = avl_create_node();
+        strcpy(node->value,value);
+
+        if( strcmp(value,last->value)<0) last->left = node;
+        if( strcmp(value,last->value)>0) last->right = node;
+        
+    }
+
+    avl_balance( tree );
+}
+
+/* Find the node containing a given value */
+avl_node_t *avl_find( avl_tree_t *tree, char* value ) {
+    avl_node_t *current = tree->root;
+
+    while( current && current->value != value ) {
+        if( strcmp(value,current->value)>0 )
+            current = current->right;
+        else
+            current = current->left;
+    }
+
     return current;
 }
- 
-Node deleteNode(Node root, char* key)
-{
-    int balance;
-    if (root == NULL)
-        return root;
-    if ( key < root->key )
-        root->left = deleteNode(root->left, key);
-    else if( key > root->key )
-        root->right = deleteNode(root->right, key);
-    else
-    {
-        if( (root->left == NULL) || (root->right == NULL) )
-        {
-            struct node *temp = root->left ? root->left : root->right;
-            if(temp == NULL)
-            {
-                temp = root;
-                root = NULL;
-            }
-            else 
-             *root = *temp; 
-            free(temp);
-        }
-        else
-        {
-            struct node* temp = minValueNode(root->right);
-            strcpy(root->key,temp->key);
-            root->right = deleteNode(root->right, temp->key);
-        }
-    }
-    if (root == NULL)
-      return root;
-    root->height = max(height(root->left), height(root->right)) + 1;
-    balance = getBalance(root);
-    if (balance > 1 && getBalance(root->left) >= 0)
-        return rightRotate(root);
-    if (balance > 1 && getBalance(root->left) < 0)
-    {
-        root->left =  leftRotate(root->left);
-        return rightRotate(root);
-    }
-    if (balance < -1 && getBalance(root->right) <= 0)
-        return leftRotate(root);
-    if (balance < -1 && getBalance(root->right) > 0)
-    {
-        root->right = rightRotate(root->right);
-        return leftRotate(root);
-    }
- 
-    return root;
+
+/* Do a depth first traverse of a node. */
+void avl_traverse_node_dfs( avl_node_t *node, int depth ) {
+    int i = 0;
+
+    if( node->left ) avl_traverse_node_dfs( node->left, depth + 2 );
+
+    for( i = 0; i < depth; i++ ) putchar( ' ' );
+    printf( "%s: %d\n", node->value, avl_balance_factor( node ) );
+
+    if( node->right ) avl_traverse_node_dfs( node->right, depth + 2 );
 }
- 
-void preOrder(Node root)
-{
-    if(root != NULL)
-    {
-        printf("%s ", root->key);
-        preOrder(root->left);
-        preOrder(root->right);
+
+/* Do a depth first traverse of a tree. */
+void avl_traverse_dfs( avl_tree_t *tree ) {
+    avl_traverse_node_dfs( tree->root, 0 );
+}
+
+void preorder (avl_node_t *t) {
+    if (t != NULL) {
+        preorder(t->left);
+        printf("%s\n", t->value);
+        preorder(t->right);
     }
 }
- 
-/* Drier program to test above function*/
-/*int main()
-{
-    Node root = NULL;
-    root = insert(root, "XN111");
-    root = insert(root, "xn22");
-    root = insert(root, "asf");
-    root = insert(root, "ola");
-    root = insert(root, "asf");
-    root = insert(root, "asfa");
-    root = insert(root, "jasnfkjasnf");
-    root = insert(root, "KJHABFJHASDBF");
-    root = insert(root, "kjahsdf");
-    printf("Pre order traversal of the constructed AVL tree is \n");
-    preOrder(root);
-    printf("\nPre order traversal after deletion of 10 \n");
-    preOrder(root);
-    return 0;
-}*/
+

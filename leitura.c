@@ -269,8 +269,7 @@ int main () {
 	CatProds cps;
 	cps = initCatProds();
 	cps = lerclientouprod(cps,0);
-	if(cps->cP[0]->root->left == NULL)
-	printf("%s\n", cps->cP[1]->root->right->key);
-	preOrder(cps->cP[5]->root);
+	printf("%s\n", cps->cP[1]->root->root->right->value);
+	preorder(cps->cP[5]->root->root);
 	return 0;
 }

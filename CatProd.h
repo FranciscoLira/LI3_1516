@@ -7,7 +7,7 @@ typedef int Boolean;
 #define false 0
 typedef struct avl {
 	int tamanho;
-	Node root;
+	avl_tree_t *root;
 } *AVL;
 
 
