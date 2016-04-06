@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <string.h>
 #include <assert.h>
+#include "avl.h"
 
 struct avl_node_s {
 struct avl_node_s *left;

@@ -1,25 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <avl.c>
+#ifndef CatProds_H_  
+#define CatProds_H_
 
-typedef int bool;
+
+typedef int Boolean;
 #define true 1
 #define false 0
 
-// (faturaçao organizada por mes)
 typedef struct prods* CatProds;
-struct prods {
-	AVL catalogoProd[26];
-};
-
-typedef struct avl {
-	int tamanho;
-	avl_tree_t root;
-} *AVL;
-
 typedef struct prod* Produto;
-struct prod {
- 	char* nomeprod;
-};
+
+CatProds initCatProds();
+
+#endif
