@@ -9,6 +9,16 @@
 #include <assert.h>
 #include "avltree.h"
 
+struct avl_node_s {
+    struct avl_node_s *left;
+    struct avl_node_s *right;
+    char value[10];
+};
+
+struct avl_tree_s {
+    struct avl_node_s *root;
+};
+
 /* Create a new AVL tree. */
 avl_tree_t *avl_create() {
     avl_tree_t *tree = NULL;
@@ -205,7 +215,7 @@ void avl_insert( avl_tree_t *tree, char* value ) {
 avl_node_t *avl_find( avl_tree_t *tree, char* value ) {
     avl_node_t *current = tree->root;
 
-    while( current && current->value != value ) {
+    while( current && strcmp(current->value,value)!=0 ) {
         if( strcmp(value,current->value)>0 )
             current = current->right;
         else

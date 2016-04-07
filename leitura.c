@@ -201,23 +201,16 @@ CatProds lerclientouprod(CatProds cps, int x){
 	FILE *f1;
 	char str[10];
 	Produto p = inserep("");
-	int i=0,r=0;
 	if(x==0) f1= fopen("Dados/Clientes.txt","r");
 	else  f1 = fopen("Dados/Produtos.txt","r");
 	if(f1==NULL) return 0;
-	printf("ola\n");
 	while(1){
-
 		if(fgets(str,9,f1)!=NULL){
 			strtok(str,"\n\r");
-			printf("%s\n",str );
 			p = alterap(str,p);
-			printf("%s\n",p->nomeprod);
 			cps = insereProduto(cps,p);
-	
 		}
 		else break;
-		i++;r++;
 	}
 	fclose(f1);
 	return cps;
@@ -268,8 +261,7 @@ int main(){
 int main () {
 	CatProds cps;
 	cps = initCatProds();
-	cps = lerclientouprod(cps,0);
-	printf("%s\n", cps->cP[1]->root->root->right->value);
-	preorder(cps->cP[5]->root->root);
+	cps = lerclientouprod(cps,1);
+	printf("%d\n",totalProdutos(cps));
 	return 0;
 }
