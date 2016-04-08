@@ -260,9 +260,11 @@ int main(){
 */
 int main () {
 	CatProds cps;
+	Produto p = inserep("001927");
 	cps = initCatProds();
 	cps = lerclientouprod(cps,1);
 	printlindo(cps);
 	printf("%d\n",totalProdutos(cps));
+	if(existeProduto(cps,p)) printf("EXISTE\n");
 	return 0;
 }

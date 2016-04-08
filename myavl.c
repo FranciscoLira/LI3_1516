@@ -163,3 +163,13 @@ void preorder(Tree t){
 		preorder(t->right);
 }
 }
+
+Tree avl_find(Tree t, int key){
+	Tree aux=t;
+	while(aux){
+		if(aux->key==key) return aux;
+		else if(key>aux->key) aux=aux->right;
+		else aux=aux->left;
+	}
+	return NULL;
+}

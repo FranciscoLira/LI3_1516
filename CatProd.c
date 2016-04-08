@@ -19,7 +19,7 @@ typedef struct prods {
 }Cat;
 
 void printlindo(CatProds cps){
-    preorder(cps->cP[12]->root);
+    preorder(cps->cP[5]->root);
 }
 
 int getKey(Produto p){
@@ -60,15 +60,16 @@ CatProds insereProduto(CatProds cps, Produto p){
     cps->cP[i]->tamanho++;
     return cps;
 }
-/*
+
 Boolean existeProduto(CatProds cps, Produto p){
     int i = (p->nomeprod[0] - 65);
-    avl_node_t *node;
-    node=avl_find(cps->cP[i]->root,p->nomeprod);
+    if(i<0 || i>25) return false;
+    Tree node;
+    node=avl_find(cps->cP[i]->root,getKey(p));
     if(node==NULL) return false;
     else return true;
 }
-*/
+
 int totalProdutos(CatProds cps){
     int i, r=0;
     for(i=0; i<26; i++){

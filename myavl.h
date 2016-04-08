@@ -15,5 +15,6 @@ Tree rotateLeft(Tree t);
 Tree insertLeft(Tree t, TreeKey e, TreeInfo *i, int *cresceu);
 Tree balanceLeft(Tree t);
 void preorder(Tree t);
+Tree avl_find(Tree t, int key);
 
 #endif
