@@ -3,6 +3,8 @@
 #include <string.h>
 #include "myavl.h"
 
+/* Todo o código aqui escrito foi obtido nos slides da Unidade Curricular Algoritmos e Complexidade */
+
 typedef enum balancefactor { LH , EH , RH } BalanceFactor;
 
 typedef struct treenode {
@@ -83,8 +85,8 @@ t->right = rotateRight(t->right);
 t = rotateLeft(t);
 switch (t->bf) {
 case EH:
-if(t->left)t->left->bf = EH;
-if(t->right)t->right->bf = EH;
+t->left->bf = EH;
+t->right->bf = EH;
 break;
 case LH:
 t->left->bf = EH;
@@ -140,8 +142,8 @@ Tree balanceLeft(Tree t) {
 		t->left = rotateLeft(t->left);
 		t = rotateRight(t);
 		switch (t->bf) {
-			case EH: if(t->right)t->right->bf = EH;
-					 if(t->left)t->left->bf = EH;
+			case EH: t->right->bf = EH;
+					 t->left->bf = EH;
 					 break;
 			case LH: t->right->bf = EH;
 					 t->left->bf = RH;

@@ -19,7 +19,7 @@ typedef struct prods {
 }Cat;
 
 void printlindo(CatProds cps){
-    preorder(cps->cP[25]->root);
+    preorder(cps->cP[12]->root);
 }
 
 int getKey(Produto p){
