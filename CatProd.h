@@ -1,6 +1,5 @@
 #ifndef CatProds_H_  
 #define CatProds_H_
-#include "avltree.h"
 
 typedef int Boolean;
 #define true 1
@@ -20,10 +19,10 @@ CatProds initCatProds();
 /* Insere um Produto novo no catálogo */
 CatProds insereProduto(CatProds cps, Produto p);
 
-/* Verifica se um produto existe no catálogo de produtos */
-Boolean existeProduto(CatProds cps, Produto p);
-
+/* Verifica se um produto existe no catálogo de produtos 
+Boolean existeProduto(CatProds cps, Produto p*/
 /* Dá quantos produtos estão no catálogo */
 int totalProdutos(CatProds cps);
+void printlindo(CatProds cps);
 
 #endif

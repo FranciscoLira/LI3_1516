@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "CatProd.h"
-#include "avltree.h"
+#include "myavl.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -262,6 +262,7 @@ int main () {
 	CatProds cps;
 	cps = initCatProds();
 	cps = lerclientouprod(cps,1);
+	printlindo(cps);
 	printf("%d\n",totalProdutos(cps));
 	return 0;
 }
