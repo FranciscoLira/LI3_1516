@@ -18,7 +18,7 @@ typedef struct prods {
 	int cresceu[26];
 }Cat;
 
-void printlindo(CatProds cps){
+void printx(CatProds cps){
 	preorder(cps->cP[5]->root);
 }
 
@@ -76,6 +76,20 @@ int totalProdutos(CatProds cps){
 		r+=cps->cP[i]->tamanho;
 	}
 	return r;
+}
+
+int totalProdutosLetra(CatProds cps, char letra){
+	int i = letra - 65;
+	return (cps->cP[i]->tamanho);
+}
+
+void removeCatProd(CatProds cps){
+	int i;
+	for(i=0; i<26;i++){
+		freetree(cps->cP[i]->root);
+		free(cps->cP[i]);
+	}
+	free(cps);
 }
 
 

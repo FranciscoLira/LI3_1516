@@ -278,12 +278,13 @@ int main(){
 */
 
 int main(){
-	CatProds cps;
-	Produto p = inserep("001927");
+	CatProds cps,c;
+	Produto p = inserep("FZ1927");
 	cps = initCatProds();
 	cps = lerclientouprod(cps,1);
-	printlindo(cps);
-	printf("%d\n",totalProdutos(cps));
+	printx(cps);
+	printf("%d\n",totalProdutosLetra(cps,'F'));
 	if(existeProduto(cps,p)) printf("EXISTE\n");
+	removeCatProd(cps);
 	return 0;
 }

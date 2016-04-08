@@ -21,8 +21,15 @@ CatProds insereProduto(CatProds cps, Produto p);
 
 /* Verifica se um produto existe no catálogo de produtos */
 Boolean existeProduto(CatProds cps, Produto p);
+
 /* Dá quantos produtos estão no catálogo */
 int totalProdutos(CatProds cps);
-void printlindo(CatProds cps);
+
+/* Dá quantos produtos existem com uma dada letra */
+int totalProdutosLetra(CatProds cps, char letra);
+
+/* Temp */
+void printx(CatProds cps);
+void removeCatProd(CatProds cps);
 
 #endif

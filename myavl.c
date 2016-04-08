@@ -175,3 +175,11 @@ Tree avl_find(Tree t, int key){
 	}
 	return NULL;
 }
+
+void freetree(Tree t){
+	if(t){
+		freetree(t->left);
+		freetree(t->right);
+		free(t);
+	}
+}
