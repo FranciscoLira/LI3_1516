@@ -37,6 +37,7 @@ Tree rotateRight(Tree t) {
 Tree insertTree(Tree t, TreeKey e, TreeInfo *i, int *cresceu) {
 	if (t==NULL) {
 		t = (Tree)malloc(sizeof(struct treenode));
+		if(t==NULL)printf("FALHOY\n");
 		t->key = e;
 		strcpy(t->info,i);
 		t->right = t->left = NULL;
@@ -168,7 +169,7 @@ void preorder(Tree t){
 
 Tree avl_find(Tree t, int key){
 	Tree aux=t;
-	while(aux){
+	while(aux!=NULL){
 		if(aux->key==key) return aux;
 		else if(key>aux->key) aux=aux->right;
 		else aux=aux->left;

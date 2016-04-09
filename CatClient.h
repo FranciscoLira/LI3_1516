@@ -25,8 +25,6 @@ int totalClientes(CatClients ccl);
 
 /* Dá quantos clientes existem com uma dada letra */
 int totalClientesLetra(CatClients ccl, char letra);
-
-/* Temp */
 void printy(CatClients ccl);
 void removeCatClient(CatClients ccl);
 

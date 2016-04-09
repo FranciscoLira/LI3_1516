@@ -19,7 +19,7 @@ typedef struct clients {
 }Cat;
 
 void printy(CatClients ccl){
-	preorder(ccl->cP[5]->root);
+	preorder(ccl->cP[11]->root);
 }
 
 int getKeyc(Cliente p){
@@ -43,7 +43,7 @@ CatClients initCatClients() {
 	int i;
 	CatClients p=malloc(sizeof(struct clients));
 	for (i = 0; i < 26; i++) {
-		p->cP[i] = (malloc)(sizeof(struct avl));
+		p->cP[i] = malloc(sizeof(struct avl));
 		p->cP[i]->tamanho = 0;
 		p->cP[i]->root = newAvl();
 	}
@@ -60,11 +60,10 @@ CatClients insereCliente(CatClients ccl, Cliente c){
 
 Boolean existeCliente(CatClients ccl, Cliente c){
 	int i = (c->nomeclient[0] - 65);
-	Tree node;
 	if(i<0 || i>25) return false;
-	node=avl_find(ccl->cP[i]->root,getKeyc(c));
-	if(node==NULL) return false;
-	else return true;
+	if(avl_find(ccl->cP[i]->root,getKeyc(c))!=NULL)
+		return true;
+	else return false;
 }
 
 int totalClientes(CatClients ccl){
@@ -82,6 +81,7 @@ int totalClientesLetra(CatClients ccl, char letra){
 
 void removeCatClient(CatClients ccl){
 	int i;
+	if(ccl==NULL)return;
 	for(i=0; i<26;i++){
 		freetree(ccl->cP[i]->root);
 		free(ccl->cP[i]);
