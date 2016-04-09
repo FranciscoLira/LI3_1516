@@ -1,6 +1,9 @@
 #ifndef AVL_H_
 #define AVL_H_
 
+typedef int Boolean;
+#define true 1
+#define false 0
 
 typedef int TreeKey;
 typedef char TreeInfo;

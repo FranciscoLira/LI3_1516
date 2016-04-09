@@ -25,7 +25,7 @@ void printx(CatProds cps){
 int getKey(Produto p){
 	int i;
 	int key=0;
-	key+=atoi(&(p->nomeprod[3]));
+	key+=atoi(&(p->nomeprod[2]));
 	i=p->nomeprod[1] - 65;
 	key+=10000*i;
 	return key;
