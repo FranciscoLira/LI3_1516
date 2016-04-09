@@ -20,5 +20,6 @@ Tree balanceLeft(Tree t);
 void preorder(Tree t);
 Tree avl_find(Tree t, int key);
 void freetree(Tree t);
+char** auxiliarImprime(char **lista,Tree t, int *i);
 
 #endif

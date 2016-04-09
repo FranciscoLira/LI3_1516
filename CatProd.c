@@ -4,6 +4,10 @@
 #include <string.h>
 #include "myavl.h"
 
+typedef struct conjProds {
+	char** lista;
+}*lstProd;
+
 typedef struct avl {
 	int tamanho;
 	Tree root;
@@ -91,6 +95,23 @@ void removeCatProd(CatProds cps){
 	}
 	free(cps);
 }
+void printarray(char ** l, int n){
+	int i=0;
+	while(i<n)
+		printf("%s\n",l[i++]);
+	/*Por isto pag a pag and done */
+}
+
+void imprimeLista (CatProds cps, char letra) {
+    int n = totalProdutosLetra(cps,letra);
+	int i = 0;
+	int k = letra - 65;
+	lstProd l = malloc(sizeof(struct conjProds));
+	l->lista=malloc(sizeof(char*)*n);
+	l->lista = auxiliarImprime(l->lista,cps->cP[k]->root, &i);
+	printarray(l->lista,n);
+  }
+
 
 
 

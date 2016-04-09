@@ -183,3 +183,13 @@ void freetree(Tree t){
 		free(t);
 	}
 }
+
+char** auxiliarImprime(char** lista, Tree t, int *i) {
+	if (t!=NULL) {
+		lista = auxiliarImprime(lista, t->left, i);
+		lista[*i] =malloc(sizeof(char)*10);
+		strcpy(lista[(*i)++], t->info);
+		lista = auxiliarImprime(lista, t->right, i);
+	}
+	return lista;
+}

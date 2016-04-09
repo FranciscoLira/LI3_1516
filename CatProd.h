@@ -29,5 +29,6 @@ int totalProdutosLetra(CatProds cps, char letra);
 /* Temp */
 void printx(CatProds cps);
 void removeCatProd(CatProds cps);
+void imprimeLista (CatProds cps, char letra);
 
 #endif
