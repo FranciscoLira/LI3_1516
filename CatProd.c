@@ -8,32 +8,18 @@ typedef struct conjProds {
 	char** lista;
 }*lstProd;
 
-typedef struct avl {
+typedef struct avlp {
 	int tamanho;
-	Tree root;
-} *AVL;
+	AVL root;
+} *Trees;
 
 typedef struct prod {
 	char nomeprod[10];
 }Prod;
 
 typedef struct prods {
-	AVL cP[26];
-	int cresceu[26];
+	Trees cP[26];
 }Cat;
-
-void printx(CatProds cps){
-	preorder(cps->cP[5]->root);
-}
-
-int getKey(Produto p){
-	int i;
-	int key=0;
-	key+=atoi(&(p->nomeprod[2]));
-	i=p->nomeprod[1] - 65;
-	key+=10000*i;
-	return key;
-}
 
 Produto inserep(char *x){
 	Produto p=malloc(sizeof(struct prod));
@@ -50,28 +36,26 @@ CatProds initCatProds() {
 	int i;
 	CatProds p=malloc(sizeof(struct prods));
 	for (i = 0; i < 26; i++) {
-		p->cP[i] = (malloc)(sizeof(struct avl));
+		p->cP[i] = malloc(sizeof(struct avlp));
 		p->cP[i]->tamanho = 0;
-		p->cP[i]->root = newAvl();
+		p->cP[i]->root = NULL;
 	}
 	return p;
 }
 
 CatProds insereProduto(CatProds cps, Produto p){
 	int i = (p->nomeprod[0] - 65);
-	int key = getKey(p);
-	cps->cP[i]->root = insertTree(cps->cP[i]->root, key,p->nomeprod, &(cps->cresceu[i]));
+	cps->cP[i]->root = insereAVL(cps->cP[i]->root,p->nomeprod);
 	cps->cP[i]->tamanho++;
 	return cps;
 }
 
 Boolean existeProduto(CatProds cps, Produto p){
 	int i = (p->nomeprod[0] - 65);
-	Tree node;
 	if(i<0 || i>25) return false;
-	node=avl_find(cps->cP[i]->root,getKey(p));
-	if(node==NULL) return false;
-	else return true;
+	if(existeAVL(cps->cP[i]->root,p->nomeprod))
+		return true;
+	else return false;
 }
 
 int totalProdutos(CatProds cps){
@@ -91,7 +75,7 @@ void removeCatProd(CatProds cps){
 	int i;
 	if (cps==NULL)return;
 	for(i=0; i<26;i++){
-		freetree(cps->cP[i]->root);
+		freeTree(cps->cP[i]->root);
 		free(cps->cP[i]);
 	}
 	free(cps);

@@ -62,26 +62,36 @@ void showmenu(){
 	printf("Q. Quit\n");
 }
 
-char* divideTest(char *l){
+CatClients levendaf(CatClients cps){
+	FILE *f = fopen("Dados/Vendasfinal.txt","r");
 	char *token;
-	strtok(l," ");
-	strtok(NULL," ");
-	strtok(NULL," ");
-	strtok(NULL," ");
-	token = strtok(NULL," ");
-	return token;
+	char str[50];
+	Cliente p = inserec("");
+	if(f==NULL) return 0;
+	while(1){
+		if(fgets(str,50,f)!=NULL){
+			strtok(str," ");
+			strtok(NULL," ");
+			strtok(NULL," ");
+			strtok(NULL," ");
+			token=strtok(NULL," ");
+			p = alterac(token,p);
+			if(!existeCliente(cps,p))
+				cps = insereCliente(cps,p);
+			}
+		else break;
+	}
+	fclose(f);
+	return cps;
 }
 
 void interpretador () {
-	Cliente c;
-	FILE *f = fopen("Dados/Vendasfinal.txt","r");
 	CatProds cps = NULL;
 	CatClients ccl = NULL;
 	CatClients clientes =NULL;
 	char letra;
 	int verifica = 0;
 	char cmd[BufferM];
-	char *linha = malloc(BufferM);
 	showmenu();
 	if (fgets(cmd,BufferM,stdin)!=NULL);
 	while (cmd[0] != 'Q') {
@@ -110,14 +120,8 @@ void interpretador () {
 				 break;
 		case '3':
 				clientes=initCatClients();
-				c=inserec("");
-				while (fgets (linha, BufferM, f)){
-                linha =divideTest(linha);
-               	c=alterac(linha,c);
-               	printf("%s\n",linha);
-                if (!existeCliente(clientes,c))
-                    clientes = insereCliente(clientes,c);
-                }
+				clientes=levendaf(clientes);
+				printf("%d\n",totalClientes(clientes));
 				break;
 		case '4': 
 				break;

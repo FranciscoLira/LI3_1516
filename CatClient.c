@@ -4,29 +4,18 @@
 #include <string.h>
 #include "myavl.h"
 
-typedef struct avl {
+typedef struct avlc {
 	int tamanho;
-	Tree root;
-} *AVL;
+	AVL root;
+} *Trees;
 
 typedef struct client {
 	char nomeclient[10];
 }Cli;
 
 typedef struct clients {
-	AVL cP[26];
-	int cresceu[26];
+	Trees cP[26];
 }Cat;
-
-void printy(CatClients ccl){
-	preorder(ccl->cP[11]->root);
-}
-
-int getKeyc(Cliente p){
-	int key=0;
-	key+=atoi(&(p->nomeclient[1]));
-	return key;
-}
 
 Cliente inserec(char *x){
 	Cliente c = malloc(sizeof(struct client));
@@ -41,19 +30,19 @@ Cliente alterac(char *x,Cliente c){
 
 CatClients initCatClients() {
 	int i;
-	CatClients p=malloc(sizeof(struct clients));
+	CatClients p=NULL;
+	p=malloc(sizeof(struct clients));
 	for (i = 0; i < 26; i++) {
-		p->cP[i] = malloc(sizeof(struct avl));
+		p->cP[i] = malloc(sizeof(struct avlc));
 		p->cP[i]->tamanho = 0;
-		p->cP[i]->root = newAvl();
+		p->cP[i]->root = NULL;
 	}
 	return p;
 }
 
 CatClients insereCliente(CatClients ccl, Cliente c){
 	int i = (c->nomeclient[0] - 65);
-	int key = getKeyc(c);
-	ccl->cP[i]->root = insertTree(ccl->cP[i]->root, key,c->nomeclient, &(ccl->cresceu[i]));
+	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient);
 	ccl->cP[i]->tamanho++;
 	return ccl;
 }
@@ -61,13 +50,14 @@ CatClients insereCliente(CatClients ccl, Cliente c){
 Boolean existeCliente(CatClients ccl, Cliente c){
 	int i = (c->nomeclient[0] - 65);
 	if(i<0 || i>25) return false;
-	if(avl_find(ccl->cP[i]->root,getKeyc(c))!=NULL)
+	if(existeAVL(ccl->cP[i]->root,c->nomeclient))
 		return true;
 	else return false;
 }
 
 int totalClientes(CatClients ccl){
 	int i, r=0;
+	if(ccl==NULL)return 0;
 	for(i=0; i<26; i++){
 		r+=ccl->cP[i]->tamanho;
 	}
@@ -83,7 +73,7 @@ void removeCatClient(CatClients ccl){
 	int i;
 	if(ccl==NULL)return;
 	for(i=0; i<26;i++){
-		freetree(ccl->cP[i]->root);
+		freeTree(ccl->cP[i]->root);
 		free(ccl->cP[i]);
 	}
 	free(ccl);

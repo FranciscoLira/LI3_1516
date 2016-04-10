@@ -5,21 +5,19 @@ typedef int Boolean;
 #define true 1
 #define false 0
 
-typedef int TreeKey;
-typedef char TreeInfo;
-typedef struct treenode *Tree;
+typedef struct avl *AVL;
 
-Tree newAvl();
-Tree insertTree(Tree t, TreeKey e, TreeInfo *i, int *cresceu);
-Tree rotateRight(Tree t);
-Tree insertRight(Tree t, TreeKey e, TreeInfo *i, int *cresceu);
-Tree balanceRight(Tree t);
-Tree rotateLeft(Tree t);
-Tree insertLeft(Tree t, TreeKey e, TreeInfo *i, int *cresceu);
-Tree balanceLeft(Tree t);
-void preorder(Tree t);
-Tree avl_find(Tree t, int key);
-void freetree(Tree t);
-char** auxiliarImprime(char **lista,Tree t, int *i);
+int max (int a, int b);
+int altura (AVL a);
+int diferenca (AVL a, AVL b);
+AVL rotacaoEsq (AVL a);
+
+AVL rotacaoDir (AVL a);
+AVL insereDir (AVL a, char* codigo);
+AVL insereEsq (AVL a, char* codigo);
+AVL insereAVL (AVL a, char* codigo);
+Boolean existeAVL (AVL a, char* codigo);
+void freeTree(AVL a);
+char** auxiliarImprime(char **lista,AVL t, int *i);
 
 #endif

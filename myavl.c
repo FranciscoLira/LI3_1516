@@ -3,194 +3,115 @@
 #include <string.h>
 #include "myavl.h"
 
-/* Todo o código aqui escrito foi obtido nos slides da Unidade Curricular Algoritmos e Complexidade */
+/* Todo o código aqui apresentado foi desenvolvido por Fábio Baião */
 
-typedef enum balancefactor { LH , EH , RH } BalanceFactor;
+typedef struct avl {
+	int altura;
+	char *codigo;
+	struct avl* esq;
+	struct avl* dir;
+}Nodo;
 
-typedef struct treenode{
-	BalanceFactor bf;
-	TreeKey key;
-	TreeInfo info[10];
-	struct treenode *left;
-	struct treenode *right;
-} TreeNode;
-
-Tree newAvl() {
-	Tree t = NULL;
-	return t;
+int max (int a, int b){
+	return (a > b ? a : b);
 }
 
-Tree rotateRight(Tree t) {
-	Tree aux;
-	if ((! t) || (! t->left)) {
-		printf("Erro\n");
-	}
-	else {
-		aux = t->left;
-		t->left = aux->right;
-		aux->right = t;
-		t = aux;
-	}
-	return t;
+int altura (AVL a){
+	if (a)
+		return a->altura;
+	return 0;
 }
 
-Tree insertTree(Tree t, TreeKey e, TreeInfo *i, int *cresceu) {
-	if (t==NULL) {
-		t = (Tree)malloc(sizeof(struct treenode));
-		if(t==NULL)printf("FALHOY\n");
-		t->key = e;
-		strcpy(t->info,i);
-		t->right = t->left = NULL;
-		t->bf = EH;
-		*cresceu = 1;
-	}
-	else if (e==t->key) {
-		strcpy(t->info,i); /* actualiza¸c~ao do valor associado `a chave */
-	}
-	else if (e>t->key)
-		t = insertRight(t,e,i,cresceu);
-	else
-		t = insertLeft(t,e,i,cresceu);
-	return(t);
+int diferenca (AVL a, AVL b){
+	return altura (a) - altura (b);
 }
 
-Tree insertRight(Tree t, TreeKey e, TreeInfo *i, int *cresceu) {
-	t->right = insertTree(t->right,e,i,cresceu);
-	if (*cresceu){
-		switch (t->bf) {
-			case LH:
-			t->bf = EH;
-			*cresceu = 0;
-			break;
-			case EH:
-			t->bf = RH;
-			*cresceu = 1;
-			break;
-			case RH:
-			t = balanceRight(t);
-			*cresceu = 0;
-		}
-	}
-	return t;
+AVL rotacaoEsq (AVL a){
+	AVL aux = a->dir;
+	a->dir = aux->esq;
+	aux->esq = a;
+	a->altura = max (altura(a->dir), altura(a->esq)) + 1;
+	aux->altura = max (altura(aux->dir), altura(aux->esq)) + 1;
+	return aux;
 }
 
-Tree balanceRight(Tree t) {
-	if (t->right->bf==RH) {
-		/* Rotacao simples a esquerda */
-		t = rotateLeft(t);
-		t->bf = EH;
-		t->left->bf = EH;
-	}
-	else {
-/* Dupla rotacao */
-		t->right = rotateRight(t->right);
-		t = rotateLeft(t);
-		switch (t->bf) {
-			case EH:
-			t->left->bf = EH;
-			t->right->bf = EH;
-			break;
-			case LH:
-			t->left->bf = EH;
-			t->right->bf = RH;
-			break;
-			case RH:
-			t->left->bf = LH;
-			t->right->bf = EH;
-		}
-		t->bf = EH;
-	}
-	return t;
+AVL rotacaoDir (AVL a){
+	AVL aux = a->esq;
+	a->esq = aux->dir;
+	aux->dir = a;
+	a->altura = max (altura(a->dir), altura(a->esq)) + 1;
+	aux->altura = max (altura(aux->dir), altura(aux->esq)) + 1;
+	return aux;
 }
 
-Tree rotateLeft(Tree t) {
-	Tree aux;
-	if ((! t) || (! t->right))
-		printf("Erro\n");
-	else {
-		aux = t->right;
-		t->right = aux->left;
-		aux->left = t;
-		t = aux;
+AVL insereDir (AVL a, char* codigo){
+	a->dir = insereAVL (a->dir, codigo);
+	if (diferenca (a->dir, a->esq) == 2){
+		AVL aux = a->dir;
+		if (diferenca (aux->dir, aux->esq) > 0)
+			return rotacaoEsq (a);
+		a->dir = rotacaoDir (a->dir);
+		return rotacaoEsq (a);
 	}
-	return t;
+	a->altura = max (altura(a->dir), altura(a->esq)) + 1;
+	return a;
 }
 
-Tree insertLeft(Tree t, TreeKey e, TreeInfo *i, int *cresceu) {
-	t->left = insertTree(t->left,e,i,cresceu);
-	if (*cresceu){
-		switch (t->bf) {
-			case RH: t->bf = EH;
-			*cresceu = 0;
-			break;
-			case EH: t->bf = LH;
-			*cresceu = 1;
-			break;
-			case LH: t = balanceLeft(t);
-			*cresceu = 0;
-		}
+AVL insereEsq (AVL a, char* codigo){
+	a->esq = insereAVL (a->esq, codigo);
+	if (diferenca (a->esq, a->dir) == 2){
+		AVL aux = a->esq;
+		if (diferenca (aux->esq, aux->dir) > 0)
+			return rotacaoDir (a);
+		a->esq = rotacaoEsq (a->esq);
+		return rotacaoDir (a);
 	}
-	return t;
+	a->altura = max (altura(a->esq), altura(a->dir)) + 1;
+	return a;
 }
 
-Tree balanceLeft(Tree t) {
-	if (t->left->bf==LH) {
-		/* Rotação simples à esquerda */
-		t = rotateRight(t);
-		t->bf = EH;
-		t->right->bf = EH;
+AVL insereAVL (AVL a, char* codigo){
+	if (!a){
+		a = malloc (sizeof (struct avl));
+		a->codigo = strdup (codigo);
+		a->esq = a->dir = NULL;
+		a->altura = 1;
+		return a;
 	}
-	else {
-		/* Dupla rotação */
-		t->left = rotateLeft(t->left);
-		t = rotateRight(t);
-		switch (t->bf) {
-			case EH: t->right->bf = EH;
-			t->left->bf = EH;
-			break;
-			case LH: t->right->bf = EH;
-			t->left->bf = RH;
-			break;
-			case RH: t->right->bf = LH;
-			t->left->bf = EH;
-		}
-		t->bf = EH;
-	}
-	return t;
+	if (strcmp (codigo, a->codigo) > 0)
+		return insereDir (a, codigo);
+	return insereEsq (a, codigo);
 }
 
-void preorder(Tree t){
-	if(t!=NULL){
-		preorder(t->left);
-		printf("%s\n",t->info);
-		preorder(t->right);
-	}
+Boolean existeAVL (AVL a, char* codigo){
+        AVL aux = a;
+        int i;
+        while (aux){
+                i = strcmp (codigo, aux->codigo);
+                if (i == 0)
+                        return true;
+                if (i > 0)
+                        aux = aux->dir;
+                else
+                        aux = aux->esq;
+        }
+        return false;
 }
 
-Tree avl_find(Tree t, int key){
-	Tree aux=t;
-	while(aux!=NULL){
-		if(aux->key==key) return aux;
-		else if(key>aux->key) aux=aux->right;
-		else aux=aux->left;
-	}
-	return NULL;
+void freeTree (AVL a){
+        if (a){
+                freeTree (a->esq);
+                freeTree (a->dir);
+                free (a);
+        }
 }
 
-void freetree(Tree t){
-	if(t){
-		freetree(t->left);
-		freetree(t->right);
-		free(t);
-	}
-}
-
-char** auxiliarImprime(char** lista, Tree t, int *i) {
+char** auxiliarImprime(char** lista, AVL t, int *i) {
 	if (t!=NULL) {
-		lista = auxiliarImprime(lista, t->left, i);
+		lista = auxiliarImprime(lista, t->esq, i);
 		lista[*i] =malloc(sizeof(char)*10);
-		strcpy(lista[(*i)++], t->info);
-		lista = auxiliarImprime(lista, t->right, i);
+		strcpy(lista[(*i)++], t->codigo);
+		lista = auxiliarImprime(lista, t->dir, i);
 	}
 	return lista;
 }
