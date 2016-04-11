@@ -1,14 +1,14 @@
-#include "CatProd.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "myavl.h"
+#include "CatProd.h"
 
-typedef struct conjProds {
+struct conjProd {
 	char** lista;
-	int* size;
+	int size;
 	int pagina;
-}Lst;
+};
 
 typedef struct avlp {
 	int tamanho;
@@ -91,7 +91,7 @@ void printarray(char ** l, int n){
 }
 
 ConjProds initconjProds(int n) {
-	ConjProds l = malloc(sizeof(struct conjProds));
+	ConjProds l = malloc(sizeof(struct conjProd));
 	l->lista=malloc(sizeof(char*)*n);
 	l->size = 0;
 	l->pagina = 1;

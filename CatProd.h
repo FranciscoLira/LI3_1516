@@ -4,7 +4,7 @@
 
 typedef struct prods* CatProds;
 typedef struct prod* Produto;
-typedef struct conjProds* ConjProds;
+typedef struct conjProd* ConjProds;
 
 /*Insere string em Produto */
 Produto inserep(char *x);
