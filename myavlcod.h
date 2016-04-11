@@ -1,4 +1,4 @@
-#ifndef AVL_H_
+/*#ifndef AVL_H_
 #define AVL_H_
 
 typedef int Boolean;
@@ -6,14 +6,15 @@ typedef int Boolean;
 #define false 0
 
 typedef struct avlcod *AVLcod;
-typedef struct venda {
+typedef struct venda {*/
 	/* char produto[10]; */
-	double preco;
-	int quantidade;
+/*	double preco;
+	int quantidade; */
 	/* int promo; */
-	char cliente[10];
+/*	char cliente[10];*/
 	/* int mes; */
 	/* int filial; */
+/*
 }*Venda;
 
 typedef struct vendatmp *Vendatmp;
@@ -32,3 +33,4 @@ char** auxiliarImprimecod (char **lista,AVLcod t, int *i);
 int findclienteaux(AVLcod cod, char* cliente);
 
 #endif
+*/

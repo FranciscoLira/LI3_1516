@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "CatProd.h"
 #include "myavl.h"
+#include "CatProd.h"
 #include "CatClient.h"
 #include "faturacao.h"
 
@@ -45,6 +45,44 @@ CatClients lerclient(CatClients cps){
 	}
 	fclose(f1);
 	return cps;
+}
+
+void imprimeLista(CatProds l, char letra) {
+	char a;
+	int up, down, j, m;
+	int n = totalProdutosLetra(cps,letra);
+	ConjProds l = initconjProds(n);
+	l = getList(l, cps, letra);
+    printf("Numero total de elementos:%d\n", n);
+	down = 0; up = 15*4;
+	while (a != 'Q') {
+		  printf("Página %d\n\n", l->pagina);
+		  j = down; m = up;
+	      while (down < up) printf("%s    %s    %s    %s\n", l->lista[down++]);
+	      printf("\n\n");
+	      printf("O que pretende fazer a seguir: \n\n");
+	      if (j == 0) printf("(Q) SAIR                    (S) PÁGINA SEGUINTE\n");
+              else if (j != 0 && m != n)  printf("(Q) SAIR     (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n");
+                   else printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n");
+	      if(scanf("%s", &a) != 0) {;}
+          if (a == 'S') {
+          	 if (m == n) printf("Esta operação não é permitida! Encontra-se na ultima página.");
+             else {
+             	  if (up + t > n ) up = n; 
+              	  else up = up + constante;
+              	  l->pagina++;
+              	  }
+           }
+              else if (a == 'A') {
+              	   if (j == 0) printf("Esta operação não é permitida! Encontra-se na primeira página.")
+              	   else {        
+              	   	    up = j; 
+              	        if (j-constante <= 0 ) down = 0; 
+              	        else down = j - constante; 
+              	        l->pagina--;
+              	        }
+              	}
+    }
 }
 
 void showmenu(){

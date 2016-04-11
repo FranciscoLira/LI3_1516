@@ -1,26 +1,27 @@
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "myavlcod.h"
 
-/* Todo o código aqui apresentado foi desenvolvido por Fábio Baião e depois modificado por Francisco Lira */
+ Todo o código aqui apresentado foi desenvolvido por Fábio Baião e depois modificado por Francisco Lira 
 
-/*É necessário estarem aqui?(faturacao.c)*/
+É necessário estarem aqui?(faturacao.c)
 struct venda {
-	/* char produto[10]; */
+	 char produto[10]; 
 	double preco;
 	int quantidade;
-	/* int promo; */
+	int promo; 
 	char cliente[10];
-	/* int mes; */
-	/* int filial; */
+	int mes; 
+	 int filial; 
 };
 
 struct vendatmp {
 	char produto[10]; 
 	double preco;
 	int quantidade;
-	int promo; /*1 se P*/
+	int promo; 1 se P
 	char cliente[10];
 	int mes; 
 	int filial; 
@@ -29,8 +30,8 @@ struct vendatmp {
 
 struct avlcod {
 	int altura;
-	char codigo[10]; /*Código do produto, podia ser também do cliente, mas há mais produtos*/
-	Venda codigoV; /*dentro deste elementos temos cod cliente, quantidade e preço */
+	char codigo[10]; Código do produto, podia ser também do cliente, mas há mais produtos
+	Venda codigoV; dentro deste elementos temos cod cliente, quantidade e preço 
 	struct avlcod* esq; 
 	struct avlcod* dir;
 };
@@ -158,3 +159,4 @@ int findclienteaux(AVLcod cod, char* cliente){
 	return r;
 
 }
+*/

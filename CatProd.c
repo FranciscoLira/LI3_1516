@@ -6,7 +6,9 @@
 
 typedef struct conjProds {
 	char** lista;
-}*lstProd;
+	int* size;
+	int pagina;
+}Lst;
 
 typedef struct avlp {
 	int tamanho;
@@ -80,54 +82,27 @@ void removeCatProd(CatProds cps){
 	}
 	free(cps);
 }
+
 void printarray(char ** l, int n){
 	int i=0;
 	while(i<n)
 		printf("%s\n",l[i++]);
 	/*Por isto pag a pag and done */
 }
-void imprimeLista (CatProds cps, char letra) {
-	char a;
-	int t, up, down, pag, j, m, constante;
-    int n = totalProdutosLetra(cps,letra);
-	int i = 0;
-	int k = letra - 65;
-	lstProd l = malloc(sizeof(struct conjProds));
+
+ConjProds initconjProds(int n) {
+	ConjProds l = malloc(sizeof(struct conjProds));
 	l->lista=malloc(sizeof(char*)*n);
-	l->lista = auxiliarImprime(l->lista,cps->cP[k]->root, &i);
-	printf("Numero Total de elementos: %d\nIntroduza o número de produtos que deseja consultar por página (O recomendado é 700) : ", n);
-	if(scanf("%d", &t) != 0) {;}
-	printf("\n");
-	down = 0; up = t; pag = 1;
-	constante = t;
-	while (a != 'Q') {
-		      printf("                                                                            Página %d\n\n", pag);
-		      j=down;
-		      m = up;
-	          while (down < up) {
-		             printf("%s  ", l->lista[down]);
-		             down++;
-	          }
-	          printf("\n\n");
-	          printf("O que pretende fazer a seguir: \n\n");
-	          if (j == 0) printf("                                                             (Q) SAIR                    (S) PÁGINA SEGUINTE\n");
-              else if (j != 0 && m != n)  printf("                                                          (Q) SAIR     (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n");
-              else printf("                                                             (Q) SAIR                    (A) PÁGINA ANTERIOR\n");
-	          if(scanf("%s", &a) != 0) {;}
-              if (a == 'S') {
-              	             if (up + t > n ) up = n; 
-              	             else up = up + constante;
-              	             pag++;
-              	            }
-              else if (a == 'A') {
-              	                 up = j; 
-              	                 if (j-constante <= 0 ) down = 0; 
-              	                 else down = j - constante; 
-              	                 pag--;
-              	             }
-    }
+	l->size = 0;
+	l->pagina = 1;
+	return l;
 }
 
+ ConjProds getList (ConjProds l, CatProds cps, char letra) {
+	int k = letra - 65;
+	l = auxiliarImprime(l->lista,cps->cP[k]->root);
+	return l;
+}
 
 
 

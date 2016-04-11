@@ -4,6 +4,7 @@
 
 typedef struct prods* CatProds;
 typedef struct prod* Produto;
+typedef struct conjProds* ConjProds;
 
 /*Insere string em Produto */
 Produto inserep(char *x);
@@ -28,6 +29,8 @@ int totalProdutosLetra(CatProds cps, char letra);
 
 /* Temp */
 void removeCatProd(CatProds cps);
-void imprimeLista (CatProds cps, char letra);
+ConjProds initconjProds(int n);
+ConjProds getList (ConjProds l, CatProds cps, char letra);
+
 
 #endif
