@@ -63,7 +63,6 @@ Fatall initFatall(){
 	return r;
 }
 
-
 Emp initEmpresa (int quant){
 	int i=quant;
 	Emp r = (Emp)malloc(sizeof(struct empresa));
@@ -90,4 +89,19 @@ Boolean existeVenda(Emp e, Vendatmp v){
 o número total de vendas e o total facturado com esse produto em tal mês,
 distinguindo os totais em modo N e os totais em modo P. O utilizador deverá
 decidir se pretende o resultado global ou os valores totais filial a filial. */
+
+/*Recebe qual a filial(f) e qual o mes(imes)*/
+void printtotais(Emp e, int f,int imes){
+	printf("Modo N:\n");
+	printf("\tTotal de vendas:%f\n",e->filial[f]->mes[imes]->totalvendas[0]);
+	printf("\tTotal faturado:%f\n",e->filial[f]->mes[imes]->totalfat[0]);
+	printf("Modo P:\n");
+	printf("\tTotal de vendas:%f\n",e->filial[f]->mes[imes]->totalvendas[1]);
+	printf("\tTotal faturado:%f\n",e->filial[f]->mes[imes]->totalfat[0] );
+}
+
+/*Retorna a quantidade total de produtos comprados pelo cliente*/
+int findcliente(AVLcod cod, char* cliente){
+	return(findclienteaux(cod,cliente));
+	}
 

@@ -129,6 +129,7 @@ Boolean existeAVLcod (AVLcod a, Vendatmp v){
         return false;
 }
 
+
 void freeTreecod (AVLcod a){
         if (a){
                 freeTreecod (a->esq);
@@ -145,4 +146,15 @@ char** auxiliarImprimecod (char** lista, AVLcod t, int *i) {
 		lista = auxiliarImprimecod(lista, t->dir, i);
 	}
 	return lista;
+}
+
+int findclienteaux(AVLcod cod, char* cliente){
+	int r=0;
+	if(strcmp(cliente,cod->codigoV->cliente) == 0){
+		r+=cod->codigoV->quantidade;
+	}
+	if(cod->esq) r+=findclienteaux(cod->esq, cliente);
+	if(cod->dir) r+=findclienteaux(cod->dir, cliente);
+	return r;
+
 }

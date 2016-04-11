@@ -4,6 +4,7 @@
 #include "CatProd.h"
 #include "myavl.h"
 #include "CatClient.h"
+#include "faturacao.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -62,28 +63,6 @@ void showmenu(){
 	printf("Q. Quit\n");
 }
 
-CatClients levendaf(CatClients cps){
-	FILE *f = fopen("Dados/Vendasfinal.txt","r");
-	char *token;
-	char str[50];
-	Cliente p = inserec("");
-	if(f==NULL) return 0;
-	while(1){
-		if(fgets(str,50,f)!=NULL){
-			strtok(str," ");
-			strtok(NULL," ");
-			strtok(NULL," ");
-			strtok(NULL," ");
-			token=strtok(NULL," ");
-			p = alterac(token,p);
-			if(!existeCliente(cps,p))
-				cps = insereCliente(cps,p);
-			}
-		else break;
-	}
-	fclose(f);
-	return cps;
-}
 
 void interpretador () {
 	CatProds cps = NULL;
@@ -119,9 +98,7 @@ void interpretador () {
 				 showmenu();
 				 break;
 		case '3':
-				clientes=initCatClients();
-				clientes=levendaf(clientes);
-				printf("%d\n",totalClientes(clientes));
+				
 				break;
 		case '4': 
 				break;

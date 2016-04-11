@@ -84,26 +84,26 @@ AVL insereAVL (AVL a, char* codigo){
 }
 
 Boolean existeAVL (AVL a, char* codigo){
-        AVL aux = a;
-        int i;
-        while (aux){
-                i = strcmp (codigo, aux->codigo);
-                if (i == 0)
-                        return true;
-                if (i > 0)
-                        aux = aux->dir;
-                else
-                        aux = aux->esq;
-        }
-        return false;
+	AVL aux = a;
+	int i;
+	while (aux){
+		i = strcmp (codigo, aux->codigo);
+		if (i == 0)
+			return true;
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+	return false;
 }
 
 void freeTree (AVL a){
-        if (a){
-                freeTree (a->esq);
-                freeTree (a->dir);
-                free (a);
-        }
+	if (a){
+		freeTree (a->esq);
+		freeTree (a->dir);
+		free (a);
+	}
 }
 
 char** auxiliarImprime(char** lista, AVL t, int *i) {
@@ -114,4 +114,13 @@ char** auxiliarImprime(char** lista, AVL t, int *i) {
 		lista = auxiliarImprime(lista, t->dir, i);
 	}
 	return lista;
+}
+
+void printbool(Boolean a){
+	if (a){
+		printf("true\n");
+	}
+	else{
+		printf("false\n");
+	}
 }

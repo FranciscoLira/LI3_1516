@@ -11,13 +11,11 @@ typedef struct fatmes *Fatmes;
 
 typedef struct fatall *Fatall;
 
-
 typedef struct empresa *Emp;
 
-Fatmes initFatmes();
-Fatall initFatall();
 Emp initEmpresa (int quant);
 void insereVenda(Emp e, Vendatmp v);
 Boolean existeVenda(Emp e, Vendatmp v);
+int findcliente(AVLcod cod, char* cliente);
 
 #endif
