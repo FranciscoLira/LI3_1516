@@ -42,7 +42,7 @@ CatClients initCatClients() {
 
 CatClients insereCliente(CatClients ccl, Cliente c){
 	int i = (c->nomeclient[0] - 65);
-	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient);
+	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient, NULL);
 	ccl->cP[i]->tamanho++;
 	return ccl;
 }

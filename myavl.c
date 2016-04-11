@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "myavl.h"
+#include "faturacao.h"
 
 /* Todo o código aqui apresentado foi desenvolvido por Fábio Baião */
 
-typedef struct avl {
+struct avl {
 	int altura;
-	char *codigo;
+	char* codigo;
+	Fat extra;
 	struct avl* esq;
 	struct avl* dir;
-}Nodo;
+};
 
 int max (int a, int b){
 	return (a > b ? a : b);
@@ -45,7 +47,7 @@ AVL rotacaoDir (AVL a){
 }
 
 AVL insereDir (AVL a, char* codigo){
-	a->dir = insereAVL (a->dir, codigo);
+	a->dir = insereAVL (a->dir, codigo,NULL);
 	if (diferenca (a->dir, a->esq) == 2){
 		AVL aux = a->dir;
 		if (diferenca (aux->dir, aux->esq) > 0)
@@ -58,7 +60,7 @@ AVL insereDir (AVL a, char* codigo){
 }
 
 AVL insereEsq (AVL a, char* codigo){
-	a->esq = insereAVL (a->esq, codigo);
+	a->esq = insereAVL (a->esq, codigo,NULL);
 	if (diferenca (a->esq, a->dir) == 2){
 		AVL aux = a->esq;
 		if (diferenca (aux->esq, aux->dir) > 0)
@@ -70,7 +72,7 @@ AVL insereEsq (AVL a, char* codigo){
 	return a;
 }
 
-AVL insereAVL (AVL a, char* codigo){
+AVL insereAVL (AVL a, char* codigo, Fat v){
 	if (!a){
 		a = malloc (sizeof (struct avl));
 		a->codigo = strdup (codigo);

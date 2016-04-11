@@ -45,7 +45,7 @@ CatProds initCatProds() {
 
 CatProds insereProduto(CatProds cps, Produto p){
 	int i = (p->nomeprod[0] - 65);
-	cps->cP[i]->root = insereAVL(cps->cP[i]->root,p->nomeprod);
+	cps->cP[i]->root = insereAVL(cps->cP[i]->root,p->nomeprod,NULL);
 	cps->cP[i]->tamanho++;
 	return cps;
 }

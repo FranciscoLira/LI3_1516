@@ -2,45 +2,36 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "myavlcod.h"
+#include "myavl.h"
+#include "boolean.h"
 
-/* Struct que armazena temporariamente os dados que vêm das vendas, uma linha de cada vez */
-
-/*É necessário estarem aqui?(myavlcod.c)*/
-struct vendatmp {
-	char produto[10]; 
+struct vendatmp{
+	char produto[10];
 	double preco;
 	int quantidade;
-	int promo; /*1 se P*/
+	int promo;
 	char cliente[10];
-	int mes; 
-	int filial; 
+	int mes;
+	int filial;
 };
 
-struct venda {
-	/* char produto[10]; */
-	double preco;
+struct fat{
+	double faturacao;
 	int quantidade;
-	/* int promo; */
-	char cliente[10];
-	/* int mes; */
-	/* int filial; */
 };
 
 struct fatmes{
-	AVLcod codigos[2];
-	float totalvendas[2];
-	float totalfat[2];
+	AVL codigos[2];
+	int totalvendas[2];
+	double totalfat[2];
 };
 
 struct fatall{
 	Fatmes mes[12];
 };
 
-/*quantas filiais há e um endereço para cada uma*/
 struct empresa{
-	Fatall* filial;
-	int quant;
+	Fatall filial[3];
 };
 
 Fatmes initFatmes(){
@@ -63,45 +54,30 @@ Fatall initFatall(){
 	return r;
 }
 
-Emp initEmpresa (int quant){
-	int i=quant;
+Emp initEmpresa(int q){
+	int i;
 	Emp r = (Emp)malloc(sizeof(struct empresa));
-	r->quant=quant;
-	for(i=0; i<quant; i++){
-		r->filial[i] = (Fatall)malloc(quant*sizeof(struct fatall));
-		r->filial[i]=initFatall();
+	for(i=0; i<q; i++){
+		r->filial[i] = initFatall();
 	}
 	return r;
 }
 
+Fat convvendafat(Vendatmp a){
+	Fat r = (Fat)malloc(sizeof(struct fat));
+	r->quantidade=a->quantidade;
+	r->faturacao=(a->quantidade)*(a->preco);
+}
+
+
 void insereVenda(Emp e, Vendatmp v){
-	insereAVLcod(e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo],v);
-	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalfat[v->promo]+=v->preco;
-	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalvendas[v->promo]+=v->quantidade;
+	Fat r = convvendafat(v);
+	insereAVL(e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo],NULL,r);
+	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalfat[v->promo]+=r->faturacao;
+	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalvendas[v->promo]+=r->quantidade;
 }
 
 Boolean existeVenda(Emp e, Vendatmp v){
-	AVLcod tmp = e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo];
-	return (existeAVLcod(tmp,v));
+	AVL tmp = e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo];
+	return (existeAVL(tmp,v));
 }
-
-/*Dado um mês e um código de produto, ambos válidos, determinar e apresentar
-o número total de vendas e o total facturado com esse produto em tal mês,
-distinguindo os totais em modo N e os totais em modo P. O utilizador deverá
-decidir se pretende o resultado global ou os valores totais filial a filial. */
-
-/*Recebe qual a filial(f) e qual o mes(imes)*/
-void printtotais(Emp e, int f,int imes){
-	printf("Modo N:\n");
-	printf("\tTotal de vendas:%f\n",e->filial[f]->mes[imes]->totalvendas[0]);
-	printf("\tTotal faturado:%f\n",e->filial[f]->mes[imes]->totalfat[0]);
-	printf("Modo P:\n");
-	printf("\tTotal de vendas:%f\n",e->filial[f]->mes[imes]->totalvendas[1]);
-	printf("\tTotal faturado:%f\n",e->filial[f]->mes[imes]->totalfat[0] );
-}
-
-/*Retorna a quantidade total de produtos comprados pelo cliente*/
-int findcliente(AVLcod cod, char* cliente){
-	return(findclienteaux(cod,cliente));
-	}
-
