@@ -49,38 +49,38 @@ CatClients lerclient(CatClients cps){
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m, i; 
+	int up, down, j, m, i, n;
 	ConjProds l = getList(cps,letra);
-	int n = getSize(l);
 	char** lista = getLista(l);
+	n = getSize(l);
     printf("Numero total de elementos:%d\n", getSize(l));
-	down = 0; up = 60;
-	i = getPagina(l);
+	down = 0; up = 90;
 	while (a != 'Q') {
-		  printf("Página %d\n\n", i);
+		  printf("                        Página %d\n\n", getPagina(l));
 		  j = down; m = up;
-	      while (down < up) printf("%s    %s    %s    %s\n", lista[down++], lista[down++], lista[down++], lista[down++]);
+	      while (down < up) {printf("%s    %s    %s    %s    %s    %s\n", lista[down], lista[down+1], lista[down+2], lista[down+3], lista[down+4], lista[down+5]); down+= 6;}
 	      printf("\n\n");
 	      printf("O que pretende fazer a seguir: \n\n");
-	      if (j == 0) printf("(Q) SAIR                    (S) PÁGINA SEGUINTE\n");
-              else if (j != 0 && m != n)  printf("(Q) SAIR     (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n");
+	      if (j == 0) printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n");
+              else if (j != 0 && m != n)  printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n");
                    else printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n");
 	      if(scanf("%s", &a) != 0) {;}
+	      printf("\n");
           if (a == 'S') {
           	 if (m == n) printf("Esta operação não é permitida! Encontra-se na ultima página.");
              else {
-             	  if (up + 60 > n ) up = n; 
-              	  else up = up + 60;
-              	  i++;
+             	  if (up + 90 > n ) up = n; 
+              	  else up = up + 90;
+              	  alteraPaginamais(l);
               	  }
            }
               else if (a == 'A') {
               	   if (j == 0) printf("Esta operação não é permitida! Encontra-se na primeira página.");
               	   else {        
               	   	    up = j; 
-              	        if (j-60 <= 0 ) down = 0; 
-              	        else down = j - 60; 
-              	        i--;
+              	        if (j-90 <= 0 ) down = 0; 
+              	        else down = j - 90; 
+              	        alteraPaginamenos(l);
               	        }
               	}
     }
