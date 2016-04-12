@@ -87,6 +87,7 @@ AVL insereAVL (AVL a, char* codigo, Fat v){
 	return insereEsq (a, codigo);
 }
 
+/*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL (AVL a, char* codigo){
 	AVL aux = a;
 	int i;
@@ -115,6 +116,7 @@ Fat getfatfromavl(AVL c, char* produto){
 	return	false;
 }
 
+/*faz fre de uma avl e de todos os seus nodos*/
 void freeTree (AVL a){
 	if (a){
 		freeTree (a->esq);
@@ -133,6 +135,7 @@ ConjProds auxiliarImprime(ConjProds l, AVL t) {
 	return l->lista;
 }
 
+/*faz print do valor de um boolean, mais para debug*/
 void printbool(Boolean a){
 	if (a){
 		printf("true\n");

@@ -34,6 +34,7 @@ struct empresa{
 	Fatall filial[3];
 };
 
+/*inicia um*/
 Fatmes initFatmes(){
 	int i;
 	Fatmes r = (Fatmes)malloc(sizeof(struct fatmes));
@@ -63,12 +64,15 @@ Emp initEmpresa(int q){
 	return r;
 }
 
+/*Retorna a faturação de uma certa venda*/
 Fat convvendafat(Vendatmp a){
 	Fat r = (Fat)malloc(sizeof(struct fat));
 	r->quantidade=a->quantidade;
 	r->faturacao=(a->quantidade)*(a->preco);
 	return r;
 }
+
+
 
 void insereVenda(Emp e, Vendatmp v){
 	Fat r = convvendafat(v);
