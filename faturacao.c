@@ -92,3 +92,13 @@ Fat produtofat(Emp e, int f, int imes, int p, char* produto){
 	Fat r = getfatfromavl(tmp, produto); /*Dá um warning aqui, será de usar uma função que não é deste modulo?*/
 	return r;
 }
+
+Fat somaFat(Fat* lista, int q){
+	int i;
+	Fat r = lista[0];
+	for(i=0; i<q; i++){
+		r->quantidade += lista[i]->faturacao;
+		r->faturacao += lista[i]->faturacao;
+	}
+	return r;
+}

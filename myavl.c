@@ -104,7 +104,7 @@ Boolean existeAVL (AVL a, char* codigo){
 }
 
 /*retorna a faturação de um produto, recebendo a avl e o produto a procurar*/
-Fat getfatfromavl(AVL c, char* produto){
+Fat getfatfromavl(AVL a, char* codigo){
 	AVL aux = a;
 	int i;
 	while(aux){
