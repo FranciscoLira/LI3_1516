@@ -79,6 +79,7 @@ AVL insereAVL (AVL a, char* codigo, Fat v){
 		a->codigo = strdup (codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
+		a->extra = v;
 		return a;
 	}
 	if (strcmp (codigo, a->codigo) > 0)

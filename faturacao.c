@@ -67,17 +67,18 @@ Fat convvendafat(Vendatmp a){
 	Fat r = (Fat)malloc(sizeof(struct fat));
 	r->quantidade=a->quantidade;
 	r->faturacao=(a->quantidade)*(a->preco);
+	return r;
 }
 
 
 void insereVenda(Emp e, Vendatmp v){
 	Fat r = convvendafat(v);
-	insereAVL(e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo],NULL,r);
+	insereAVL(e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo],v->produto,r);
 	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalfat[v->promo]+=r->faturacao;
 	e->filial[(v->filial)-1]->mes[(v->mes)-1]->totalvendas[v->promo]+=r->quantidade;
 }
 
 Boolean existeVenda(Emp e, Vendatmp v){
 	AVL tmp = e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo];
-	return (existeAVL(tmp,v));
+	return (existeAVL(tmp,v->produto));
 }
