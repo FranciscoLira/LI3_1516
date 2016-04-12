@@ -15,6 +15,7 @@ AVL insereDir (AVL a, char* codigo);
 AVL insereEsq (AVL a, char* codigo);
 AVL insereAVL (AVL a, char* codigo, Fat v);
 Boolean existeAVL (AVL a, char* codigo);
+Fat getfatfromavl(AVL a, char* codigo);
 void freeTree(AVL a);
 char** auxiliarImprime(char** lista, AVL t, int *i);
 void printbool(Boolean a);

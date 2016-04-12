@@ -113,11 +113,12 @@ int alteraPaginamenos(ConjProds l) {
 
 ConjProds getList (CatProds cps, char letra) { 
 	int i = 0;
+	int k;
 	ConjProds l = malloc(sizeof(Lst));
     l->size = totalProdutosLetra(cps, letra);
     l->pagina = 1; 
     l->lista = malloc(sizeof(char*)*(l->size));
-	int k = letra - 'A';
+	k = letra - 'A';
 	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(i));
 	return l;
 }

@@ -76,7 +76,7 @@ AVL insereEsq (AVL a, char* codigo){
 AVL insereAVL (AVL a, char* codigo, Fat v){
 	if (!a){
 		a = malloc (sizeof (struct avl));
-		a->codigo = strdup (codigo);
+		strcpy(a->codigo,codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
 		a->extra = v;

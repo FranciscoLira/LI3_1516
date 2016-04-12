@@ -89,7 +89,7 @@ Boolean existeVenda(Emp e, Vendatmp v){
 /*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto){
 	AVL tmp = e->filial[f]->mes[imes]->codigos[p];
-	Fat r = getfatfromavl(tmp, produto); /*Dá um warning aqui, será de usar uma função que não é deste modulo?*/
+	Fat r = getfatfromavl(tmp, produto); 
 	return r;
 }
 

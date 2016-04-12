@@ -49,7 +49,7 @@ CatClients lerclient(CatClients cps){
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m, i, n;
+	int up, down, j, m, n;
 	ConjProds l = getList(cps,letra);
 	char** lista = getLista(l);
 	n = getSize(l);
