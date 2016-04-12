@@ -70,7 +70,6 @@ Fat convvendafat(Vendatmp a){
 	return r;
 }
 
-
 void insereVenda(Emp e, Vendatmp v){
 	Fat r = convvendafat(v);
 	insereAVL(e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo],v->produto,r);
@@ -81,4 +80,11 @@ void insereVenda(Emp e, Vendatmp v){
 Boolean existeVenda(Emp e, Vendatmp v){
 	AVL tmp = e->filial[(v->filial)-1]->mes[(v->mes)-1]->codigos[v->promo];
 	return (existeAVL(tmp,v->produto));
+}
+
+/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não*/
+Fat produtofat(Emp e, int f, int imes, int p, char* produto){
+	AVL tmp = e->filial[f]->mes[imes]->codigos[p];
+	Fat r = getfatfromavl(tmp, produto); /*Dá um warning aqui, será de usar uma função que não é deste modulo?*/
+	return r;
 }

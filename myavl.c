@@ -102,6 +102,19 @@ Boolean existeAVL (AVL a, char* codigo){
 	return false;
 }
 
+/*retorna a faturação de um produto, recebendo a avl e o produto a procurar*/
+Fat getfatfromavl(AVL c, char* produto){
+	AVL aux = a;
+	int i;
+	while(aux){
+		i = strcmp(codigo, aux->codigo);
+		if(i==0) return aux->extra;
+		if(i>0) aux = aux->dir;
+		else aux = aux->esq; 
+	}
+	return	false;
+}
+
 void freeTree (AVL a){
 	if (a){
 		freeTree (a->esq);
