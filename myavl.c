@@ -3,7 +3,7 @@
 #include <string.h>
 #include "myavl.h"
 #include "faturacao.h"
-#include "CatProd.h"
+#include "CatProd.h" 
 
 /* Todo o código aqui apresentado foi desenvolvido por Fábio Baião */
 
@@ -109,14 +109,14 @@ void freeTree (AVL a){
 	}
 }
 
-ConjProds auxiliarImprime(ConjProds l, AVL t) {
+char** auxiliarImprime(char** lista, AVL t, int *i) {
 	if (t!=NULL) {
-		l->lista = auxiliarImprime(l->lista, t->esq);
-		l->lista[l->size] =malloc(sizeof(char)*10);
-		strcpy(l->lista[(l->size)++], t->codigo);
-		l->lista = auxiliarImprime(l->lista, t->dir);
+		lista = auxiliarImprime(lista, t->esq, i);
+		lista[*i] = malloc(sizeof(char)*10);
+		strcpy(lista[(*i)++], t->codigo);
+		lista = auxiliarImprime(lista, t->dir, i);
 	}
-	return l->lista;
+	return lista;
 }
 
 void printbool(Boolean a){

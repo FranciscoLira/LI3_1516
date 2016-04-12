@@ -47,18 +47,19 @@ CatClients lerclient(CatClients cps){
 	return cps;
 }
 
-void imprimeLista(CatProds l, char letra) {
+void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m;
-	int n = totalProdutosLetra(cps,letra);
-	ConjProds l = initconjProds(n);
-	l = getList(l, cps, letra);
-    printf("Numero total de elementos:%d\n", n);
-	down = 0; up = 15*4;
+	int up, down, j, m, i; 
+	ConjProds l = getList(cps,letra);
+	int n = getSize(l);
+	char** lista = getLista(l);
+    printf("Numero total de elementos:%d\n", getSize(l));
+	down = 0; up = 60;
+	i = getPagina(l);
 	while (a != 'Q') {
-		  printf("Página %d\n\n", l->pagina);
+		  printf("Página %d\n\n", i);
 		  j = down; m = up;
-	      while (down < up) printf("%s    %s    %s    %s\n", l->lista[down++]);
+	      while (down < up) printf("%s    %s    %s    %s\n", lista[down++], lista[down++], lista[down++], lista[down++]);
 	      printf("\n\n");
 	      printf("O que pretende fazer a seguir: \n\n");
 	      if (j == 0) printf("(Q) SAIR                    (S) PÁGINA SEGUINTE\n");
@@ -68,18 +69,18 @@ void imprimeLista(CatProds l, char letra) {
           if (a == 'S') {
           	 if (m == n) printf("Esta operação não é permitida! Encontra-se na ultima página.");
              else {
-             	  if (up + t > n ) up = n; 
-              	  else up = up + constante;
-              	  l->pagina++;
+             	  if (up + 60 > n ) up = n; 
+              	  else up = up + 60;
+              	  i++;
               	  }
            }
               else if (a == 'A') {
-              	   if (j == 0) printf("Esta operação não é permitida! Encontra-se na primeira página.")
+              	   if (j == 0) printf("Esta operação não é permitida! Encontra-se na primeira página.");
               	   else {        
               	   	    up = j; 
-              	        if (j-constante <= 0 ) down = 0; 
-              	        else down = j - constante; 
-              	        l->pagina--;
+              	        if (j-60 <= 0 ) down = 0; 
+              	        else down = j - 60; 
+              	        i--;
               	        }
               	}
     }
@@ -105,7 +106,7 @@ void showmenu(){
 void interpretador () {
 	CatProds cps = NULL;
 	CatClients ccl = NULL;
-	CatClients clientes =NULL;
+	/*CatClients clientes =NULL;*/
 	char letra;
 	int verifica = 0;
 	char cmd[BufferM];

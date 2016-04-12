@@ -4,11 +4,12 @@
 #include "myavl.h"
 #include "CatProd.h"
 
-struct conjProd {
+typedef struct conjProd {
 	char** lista;
 	int size;
+	int index;
 	int pagina;
-};
+}Lst;
 
 typedef struct avlp {
 	int tamanho;
@@ -90,17 +91,32 @@ void printarray(char ** l, int n){
 	/*Por isto pag a pag and done */
 }
 
-ConjProds initconjProds(int n) {
-	ConjProds l = malloc(sizeof(struct conjProd));
-	l->lista=malloc(sizeof(char*)*n);
-	l->size = 0;
-	l->pagina = 1;
-	return l;
+int getPagina(ConjProds l) {
+	return l->pagina;
 }
 
- ConjProds getList (ConjProds l, CatProds cps, char letra) {
+int getSize(ConjProds l) {
+	return l->size;
+}
+
+char** getLista(ConjProds l) {
+	return l->lista;
+}
+
+void setLista (ConjProds l, ConjProds a) {
+	l->lista = a->lista;
+}
+
+
+ConjProds getList (CatProds cps, char letra) { 
+	ConjProds l = malloc(sizeof(Lst));
+    l->size = totalProdutosLetra(cps, letra);
+    printf("%d\n", l->size );
+    l->pagina = 1; 
+    l->index = 0;
+    l->lista = malloc(sizeof(char*)*(l->size));
 	int k = letra - 65;
-	l = auxiliarImprime(l->lista,cps->cP[k]->root);
+	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(l->index));
 	return l;
 }
 
