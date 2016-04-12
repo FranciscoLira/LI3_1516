@@ -7,7 +7,6 @@
 typedef struct conjProd {
 	char** lista;
 	int size;
-	int index;
 	int pagina;
 }Lst;
 
@@ -103,20 +102,23 @@ char** getLista(ConjProds l) {
 	return l->lista;
 }
 
-void setLista (ConjProds l, ConjProds a) {
-	l->lista = a->lista;
+int alteraPaginamais(ConjProds l) {
+	return (l->pagina)++;
+}
+
+int alteraPaginamenos(ConjProds l) {
+	return (l->pagina)--;
 }
 
 
 ConjProds getList (CatProds cps, char letra) { 
+	int i = 0;
 	ConjProds l = malloc(sizeof(Lst));
     l->size = totalProdutosLetra(cps, letra);
-    printf("%d\n", l->size );
     l->pagina = 1; 
-    l->index = 0;
     l->lista = malloc(sizeof(char*)*(l->size));
-	int k = letra - 65;
-	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(l->index));
+	int k = letra - 'A';
+	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(i));
 	return l;
 }
 

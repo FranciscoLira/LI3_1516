@@ -37,7 +37,9 @@ int getSize(ConjProds l);
 
 char** getLista(ConjProds l);
 
-void setLista(ConjProds l, ConjProds a);
+int alteraPaginamais(ConjProds l);
+
+int alteraPaginamenos(ConjProds l);
 
 ConjProds getList (CatProds cps, char letra);
 
