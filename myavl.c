@@ -76,6 +76,7 @@ AVL insereEsq (AVL a, char* codigo){
 AVL insereAVL (AVL a, char* codigo, Fat v){
 	if (!a){
 		a = malloc (sizeof (struct avl));
+		a->codigo = (char*)malloc(sizeof(char)*10);/*Está a fazer de 10,mas pode ser menos*/
 		strcpy(a->codigo,codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
@@ -110,6 +111,7 @@ Fat getfatfromavl(AVL a, char* codigo){
 	while(aux){
 		i = strcmp(codigo, aux->codigo);
 		if(i==0) return aux->extra;
+		a->codigo = (char*)malloc(sizeof(char)*10);/*Está a fazer de 10,mas pode ser menos*/
 		if(i>0) aux = aux->dir;
 		else aux = aux->esq; 
 	}
