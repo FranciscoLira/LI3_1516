@@ -102,3 +102,15 @@ Fat somaFat(Fat* lista, int q){
 	}
 	return r;
 }
+
+/*Recebe um mês(imes), um código de produto(codigo) e um int (juntos) que é se queres juntos (1) ou por filial(0) retorna o total em modo n e p, */
+Fat* fatglobal(Emp e, int imes, char* codigo, int juntos){
+	Fat* f = (Fat*)malloc(sizeof(struct fat)*6);/*6 porque é um para cada filial e para o modo n e p*/
+	f[0] = produtofat(e, 0, imes, 0, codigo); /*faturação normal da filial 1*/
+	f[1] = produtofat(e, 0, imes, 1, codigo); /*faturação promocao da filial 1*/
+	f[2] = produtofat(e, 1, imes, 0, codigo); /*faturação normal da filial 2*/
+	f[3] = produtofat(e, 1, imes, 1, codigo); /*faturação promocao da filial 2*/
+	f[4] = produtofat(e, 2, imes, 0, codigo); /*faturação normal da filial 3*/
+	f[5] = produtofat(e, 2, imes, 1, codigo); /*faturação promocao da filial 3*/
+	return f;
+}

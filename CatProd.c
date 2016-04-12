@@ -4,24 +4,24 @@
 #include "myavl.h"
 #include "CatProd.h"
 
-typedef struct conjProd {
+struct conjProd {
 	char** lista;
 	int size;
 	int pagina;
-}Lst;
+};
 
 typedef struct avlp {
 	int tamanho;
 	AVL root;
-} *Trees;
+}*Trees;
 
-typedef struct prod {
+struct prod {
 	char nomeprod[10];
-}Prod;
+};
 
-typedef struct prods {
+struct prods {
 	Trees cP[26];
-}Cat;
+};
 
 Produto inserep(char *x){
 	Produto p=malloc(sizeof(struct prod));
@@ -114,7 +114,7 @@ int alteraPaginamenos(ConjProds l) {
 ConjProds getList (CatProds cps, char letra) { 
 	int i = 0;
 	int k;
-	ConjProds l = malloc(sizeof(Lst));
+	ConjProds l = malloc(sizeof(struct conjProd));
     l->size = totalProdutosLetra(cps, letra);
     l->pagina = 1; 
     l->lista = malloc(sizeof(char*)*(l->size));
