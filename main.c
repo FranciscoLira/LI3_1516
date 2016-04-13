@@ -49,44 +49,92 @@ CatClients lerclient(CatClients cps){
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m, n;
+	int up, down, j, m, n, pag, dif;
+	float np;
 	ConjProds l = getList(cps,letra);
 	char** lista = getLista(l);
 	n = getSize(l);
-    printf("Numero total de elementos:%d\n", getSize(l));
+	np = n/90;
+	if (n%90) np++;
+	printf("Numero total de elementos:%d\n", getSize(l));
 	down = 0; up = 90;
 	while (a != 'Q') {
-		  printf("                        Página %d\n\n", getPagina(l));
-		  j = down; m = up;
-	      while (down < up) {printf("%s    %s    %s    %s    %s    %s\n", lista[down], lista[down+1], lista[down+2], lista[down+3], lista[down+4], lista[down+5]); down+= 6;}
-	      printf("\n\n");
-	      printf("O que pretende fazer a seguir: \n\n");
-	      if (j == 0) printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n");
-              else if (j != 0 && m != n)  printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n");
-                   else printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n");
-	      if(scanf("%s", &a) != 0) {;}
-	      printf("\n");
-          if (a == 'S') {
-          	 if (m == n) printf("Esta operação não é permitida! Encontra-se na ultima página.");
-             else {
-             	  if (up + 90 > n ) up = n; 
-              	  else up = up + 90;
-              	  alteraPaginamais(l);
-              	  }
-           }
-              else if (a == 'A') {
-              	   if (j == 0) printf("Esta operação não é permitida! Encontra-se na primeira página.");
-              	   else {        
-              	   	    up = j; 
-              	        if (j-90 <= 0 ) down = 0; 
-              	        else down = j - 90; 
-              	        alteraPaginamenos(l);
-              	        }
-              	}
-    }
+		if (system("@cls||clear")==0) {;}
+		printf("Numero total de elementos:%d\n", getSize(l));
+		printf("O numero de paginas: %.0f\n\n", np );
+		printf("                        Página %d\n\n", getPagina(l));
+		j = down; m = up;
+		while ((down+6) < up){
+			printf("%s    %s    %s    %s    %s    %s\n", lista[down], lista[down+1], lista[down+2], lista[down+3], lista[down+4], lista[down+5]);
+			down+= 6;
+		}
+		printf("\n\n");
+		printf("O que pretende fazer a seguir: \n\n");
+		if (j == 0) {
+			printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+		}
+		else{
+			if (j != 0 && m != n){
+				printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+			}
+			else{
+				printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
+			}
+		}
+		if(scanf("%s", &a) != 0) {;}
+		printf("\n");
+		if (a == 'S') {
+			if (up + 90 > n ) {
+				up = n;
+			}
+			else {
+				up = up + 90;
+			}
+			alteraPaginamais(l);
+		}
+		else{
+			if (a == 'A') {
+				up = j; 
+				if (j-90 <= 0 ) down = 0; 
+				else down = j - 90; 
+				alteraPaginamenos(l);
+			}
+			else{
+				if (a == 'P') {
+					printf("Qual é a página que deseja consultar:  \n");
+					if (scanf("%d", &pag)==0) {;}
+					if (pag > getPagina(l)) {
+						if (pag*90 > n) {
+							down = (pag-1)*90;
+							up = n;
+							while((pag-getPagina(l) != 0)){
+							alteraPaginamais(l);
+						}
+
+						}
+					else {
+						up = pag*90;
+						down = up - 90;
+						while((pag-getPagina(l) != 0)){
+							alteraPaginamais(l);
+						}
+					}
+				}
+				else {
+					dif = getPagina(l) - pag;
+					if (up - (dif*90) < 0) {down = 0; up = 90;}
+					else {up = up - (dif*90); down = up - 90;}
+					while((getPagina(l)-pag != 0)) alteraPaginamenos(l);
+				}
+			}
+		}
+	}
+}
 }
 
+
 void showmenu(){
+	if (system("@cls||clear")==0) {;}
 	printf("1. Ler todos os ficheiros\n");
 	printf("2. Lista de produtos começados por alguma letra(maiúscula)\n");
 	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
