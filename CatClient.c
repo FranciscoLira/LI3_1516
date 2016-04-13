@@ -9,13 +9,13 @@ typedef struct avlc {
 	AVL root;
 } *Trees;
 
-typedef struct client {
+struct client {
 	char nomeclient[10];
-}Cli;
+};
 
-typedef struct clients {
+struct clients {
 	Trees cP[26];
-}Cat;
+};
 
 Cliente inserec(char *x){
 	Cliente c = malloc(sizeof(struct client));

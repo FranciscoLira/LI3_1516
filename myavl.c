@@ -5,8 +5,6 @@
 #include "faturacao.h"
 #include "CatProd.h" 
 
-/* Todo o código aqui apresentado foi desenvolvido por Fábio Baião */
-
 struct avl {
 	int altura;
 	char* codigo;
