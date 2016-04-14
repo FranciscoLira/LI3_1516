@@ -92,13 +92,20 @@ AVL insereAVL (AVL a, char* codigo, union FatVFil v) {
 		strcpy(a->codigo, codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
-		a->extra = v;
+		if(v.fa==NULL){
+			a->extra = v;
+		}
+		else{
+			a->extra.fa = (Fat)malloc(sizeof(union FatVFil));
+		}
 		return a;
 	}
 	if (strcmp (codigo, a->codigo) > 0)
 		return insereDir (a, codigo);
 	return insereEsq (a, codigo);
 }
+
+
 
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL (AVL a, char* codigo) {

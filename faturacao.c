@@ -31,9 +31,17 @@ struct fatall {
 	} mes[13];
 };
 
-union FatVFil{
+union FatVFil {
 	Fat fa;
 	Fil fi;
+};
+
+struct avl {
+	int altura;
+	char* codigo;
+	union FatVFil extra;
+	struct avl* esq;
+	struct avl* dir;
 };
 
 
@@ -94,16 +102,42 @@ Emp initEmpresa () {
 
 /*Retorna a faturação de uma certa venda*/
 Fat convvendafat(Vendatmp a) {
-	Fat r = (Fat)malloc(sizeof(/*struct fat*/16));
+	Fat r = (Fat)malloc((/*struct fat*/16));
 	r->quantidade = a->quantidade;
 	r->faturacao = (a->quantidade) * (a->preco);
 	return r;
 }
 
+void addfatNodo(AVL a, Fat f) {
+	if (a->extra.fa == NULL) {
+		a->extra.fa = (Fat)malloc(16);
+		a->extra.fa->quantidade = 0;
+		a->extra.fa->faturacao = 0;
+	}
+	a->extra.fa->faturacao += f->faturacao;
+	a->extra.fa->quantidade += f->quantidade;
+}
+
+void inserefattot(AVL a, Fat f, char* codigo) {
+	AVL aux = a;
+	int i;
+	while (aux) {
+		i = strcmp (codigo, aux->codigo);
+		if (i == 0)
+			addfatNodo(aux, f);
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+}
+
+
 void insereVenda(Emp e, Vendatmp v) {
 	union FatVFil r;
 	r.fa = convvendafat(v);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
+	inserefattot(e->filial[(v->filial) - 1]->mes[(v->mes)].l, r.fa, v->produto);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r.fa->faturacao;
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r.fa->quantidade;
 }
@@ -134,7 +168,7 @@ Fat somaFat(Fat* lista, int q) {
   Retorna esses dados num array para ter todos os dados que podem ser necessários */
 Fat* fatglobal(Emp e, int imes, char* codigo, int juntos) {
 	int i;
-	Fat* f = (Fat*)malloc(sizeof(/*struct fat*/16) * 6); /*6 porque é um para cada filial e para o modo n e p*/
+	Fat* f = (Fat*)malloc((/*struct fat*/16) * 6); /*6 porque é um para cada filial e para o modo n e p*/
 	for (i = 0; i < 6; i++) {
 		f[i] = produtofat(e, (i / 2), imes, (i % 2), codigo);
 	}
