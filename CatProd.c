@@ -47,7 +47,10 @@ CatProds initCatProds() {
 
 CatProds insereProduto(CatProds cps, Produto p){
 	int i = (p->nomeprod[0] - 65);
-	cps->cP[i]->root = insereAVL(cps->cP[i]->root,p->nomeprod,NULL);
+	/*Para dar a volta ao union, para que a função insereAVL receba o NULL, temos de o inicializar*/
+	union FatVFil x;
+	x.fi = NULL;
+	cps->cP[i]->root = insereAVL(cps->cP[i]->root,p->nomeprod,x);
 	cps->cP[i]->tamanho++;
 	return cps;
 }
