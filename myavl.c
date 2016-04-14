@@ -8,7 +8,7 @@
 struct avl {
 	int altura;
 	char* codigo;
-	union Merda extra;
+	union FatVFil extra;
 	struct avl* esq;
 	struct avl* dir;
 };
@@ -46,7 +46,7 @@ AVL rotacaoDir (AVL a) {
 }
 
 AVL insereDir (AVL a, char* codigo) {
-	union Merda x;
+	union FatVFil x;
 	x.fi = NULL;
 	a->dir = insereAVL (a->dir, codigo, x);
 	if (diferenca (a->dir, a->esq) == 2) {
@@ -61,7 +61,7 @@ AVL insereDir (AVL a, char* codigo) {
 }
 
 AVL insereEsq (AVL a, char* codigo) {
-	union Merda x;
+	union FatVFil x;
 	x.fi = NULL;
 	a->esq = insereAVL (a->esq, codigo, x);
 	if (diferenca (a->esq, a->dir) == 2) {
@@ -75,7 +75,7 @@ AVL insereEsq (AVL a, char* codigo) {
 	return a;
 }
 
-AVL insereAVL (AVL a, char* codigo, union Merda v) {
+AVL insereAVL (AVL a, char* codigo, union FatVFil v) {
 	if (!a) {
 		a = malloc (sizeof (struct avl));
 		a->codigo = (char*)malloc(sizeof(char) * 10); /*Está a fazer de 10,mas pode ser menos*/

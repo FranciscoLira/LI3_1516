@@ -8,7 +8,7 @@ typedef struct avl *AVL;
 
 typedef struct fil *Fil;
 
-union Merda{
+union FatVFil{
 	Fat fa;
 	Fil fi;
 };
@@ -20,7 +20,7 @@ AVL rotacaoEsq (AVL a);
 AVL rotacaoDir (AVL a);
 AVL insereDir (AVL a, char* codigo);
 AVL insereEsq (AVL a, char* codigo);
-AVL insereAVL (AVL a, char* codigo, union Merda v);
+AVL insereAVL (AVL a, char* codigo, union FatVFil v);
 Boolean existeAVL (AVL a, char* codigo);
 Fat getfatfromavl(AVL a, char* codigo);
 void freeTree(AVL a);

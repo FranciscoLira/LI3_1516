@@ -77,7 +77,7 @@ Fat convvendafat(Vendatmp a) {
 }
 
 void insereVenda(Emp e, Vendatmp v) {
-	union Merda r;
+	union FatVFil r;
 	r.fa = convvendafat(v);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r.fa->faturacao;

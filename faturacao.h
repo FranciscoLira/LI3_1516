@@ -7,12 +7,12 @@
 
 typedef struct vendatmp *Vendatmp;
 
-typedef struct fat *Fat;
+typedef struct fatmes *Fatmes;
 
 typedef struct fat {
 	double faturacao;
 	int quantidade;
-}*Fatmes;
+}*Fat;
 
 typedef struct fatall *Fatall;
 
