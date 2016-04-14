@@ -27,7 +27,7 @@ struct fatmes {
 struct fatall {
 	union {
 		Fatmes f;
-		AVL l;
+		AVL* l;
 	} mes[13];
 };
 
@@ -82,10 +82,12 @@ Fatall initFatall() {
 /*Insere na posição 0 do array, todos os produtos
 
 */
-Emp insereProdVaziosEmp(Emp e, AVL produtos) {
-	int i;
+Emp insereProdVaziosEmp(Emp e, AVL* produtos) {
+	int i, j;
 	for (i = 0; i < 3; i++) {
-		e->filial[i]->mes[0].l = avlcpyfa(produtos);
+		for (j = 0; j < 26; j++) {
+			e->filial[i]->mes[0].l[j] = avlcpyfa(produtos[j]);
+		}
 	}
 	return e;
 }
@@ -118,9 +120,11 @@ void addfatNodo(AVL a, Fat f) {
 	a->extra.fa->quantidade += f->quantidade;
 }
 
-void inserefattot(AVL a, Fat f, char* codigo) {
-	AVL aux = a;
+void inserefattot(AVL* a, Fat f, char* codigo) {
+	int car = codigo[0] - 'A';
+	AVL aux = a[car];
 	int i;
+
 	while (aux) {
 		i = strcmp (codigo, aux->codigo);
 		if (i == 0)
@@ -188,9 +192,11 @@ Fat* fatglobal(Emp e, int imes, char* codigo, int juntos) {
 
 /*Acho que faz o free de tudo*/
 void freeEmp (Emp e) {
-	int i, j;
+	int i, j, n;
 	for (i = 0; i < 2; i++) {
-		freeTree(e->filial[i]->mes[0].l);
+		for (n = 0; n < 26; n++) {
+			freeTree(e->filial[i]->mes[0].l[n]);
+		}
 		for (j = 1; j < 13; j++) {
 			freeTree(e->filial[i]->mes[j].f->codigos[0]);
 			freeTree(e->filial[i]->mes[j].f->codigos[1]);
