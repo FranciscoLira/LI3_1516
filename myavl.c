@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "myavl.h"
-#include "faturacao.h"
-#include "CatProd.h"
+
+union FatVFil{
+	Fat fa;
+	Fil fi;
+};
 
 struct avl {
 	int altura;
@@ -12,6 +15,13 @@ struct avl {
 	struct avl* esq;
 	struct avl* dir;
 };
+
+struct fat {
+	double quantidade;
+	int faturacao;
+};
+
+
 
 int max (int a, int b) {
 	return (a > b ? a : b);
@@ -106,7 +116,8 @@ Boolean existeAVL (AVL a, char* codigo) {
 	return false;
 }
 
-/*retorna a faturação de um produto, recebendo a avl e o produto a procurar*/
+/*retorna a faturação de um produto, recebendo a avl e o produto a procurar,
+  retorna NULL se não houver esse produto*/
 Fat getfatfromavl(AVL a, char* codigo) {
 	AVL aux = a;
 	int i;
@@ -117,7 +128,7 @@ Fat getfatfromavl(AVL a, char* codigo) {
 		if (i > 0) aux = aux->dir;
 		else aux = aux->esq;
 	}
-	return	false;
+	return NULL;
 }
 
 /*faz fre de uma avl e de todos os seus nodos*/

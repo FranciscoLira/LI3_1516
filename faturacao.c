@@ -1,9 +1,7 @@
-#include "faturacao.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "myavl.h"
-#include "boolean.h"
+#include "faturacao.h"
 
 struct vendatmp {
 	char produto[10];
@@ -13,6 +11,11 @@ struct vendatmp {
 	char cliente[10];
 	int mes;
 	int filial;
+};
+
+struct fat {
+	double quantidade;
+	int faturacao;
 };
 
 struct fatmes {
@@ -28,7 +31,16 @@ struct fatall {
 	} mes[13];
 };
 
-/* Fatall a
+union FatVFil{
+	Fat fa;
+	Fil fi;
+};
+
+
+
+/* Exemplo de utilização por causa do Union, pode dar jeito no relatório
+
+ Fatall a
  a->mes[1].f->...
  a->mes[0].l ...
 */
@@ -37,7 +49,7 @@ struct empresa {
 	Fatall filial[3];
 };
 
-/*inicia um*/
+
 Fatmes initFatmes() {
 	int i;
 	Fatmes r = (Fatmes)malloc(sizeof(struct fatmes));
@@ -59,18 +71,30 @@ Fatall initFatall() {
 	return r;
 }
 
-Emp initEmpresa(int q) {
+/*Insere na posição 0 do array, todos os produtos
+
+*/
+Emp insereProdVaziosEmp(Emp e, AVL produtos) {
+	int i;
+	for (i = 0; i < 3; i++) {
+		e->filial[i]->mes[0].l = avlcpyfa(produtos);
+	}
+	return e;
+}
+
+Emp initEmpresa () {
 	int i;
 	Emp r = (Emp)malloc(sizeof(struct empresa));
-	for (i = 0; i < q; i++) {
+	for (i = 0; i < 3; i++) {
 		r->filial[i] = initFatall();
 	}
 	return r;
+	/*insereProdVaziosEmp (r, produtos); tem de ser feito, mas na main pois precisa de receber a AVL Prod*/
 }
 
 /*Retorna a faturação de uma certa venda*/
 Fat convvendafat(Vendatmp a) {
-	Fat r = (Fat)malloc(sizeof(struct fat));
+	Fat r = (Fat)malloc(sizeof(/*struct fat*/16));
 	r->quantidade = a->quantidade;
 	r->faturacao = (a->quantidade) * (a->preco);
 	return r;
@@ -106,10 +130,11 @@ Fat somaFat(Fat* lista, int q) {
 	return r;
 }
 
-/*Recebe um mês(imes), um código de produto(codigo) e um int (juntos) que é se queres juntos (1) ou por filial(0) retorna o total em modo n e p, */
+/*Recebe um mês(imes), um código de produto(codigo) e um int (juntos) que é se queres juntos (1) ou por filial(0) retorna o total em modo n e p,
+  Retorna esses dados num array para ter todos os dados que podem ser necessários */
 Fat* fatglobal(Emp e, int imes, char* codigo, int juntos) {
 	int i;
-	Fat* f = (Fat*)malloc(sizeof(struct fat) * 6); /*6 porque é um para cada filial e para o modo n e p*/
+	Fat* f = (Fat*)malloc(sizeof(/*struct fat*/16) * 6); /*6 porque é um para cada filial e para o modo n e p*/
 	for (i = 0; i < 6; i++) {
 		f[i] = produtofat(e, (i / 2), imes, (i % 2), codigo);
 	}
@@ -126,11 +151,18 @@ Fat* fatglobal(Emp e, int imes, char* codigo, int juntos) {
 	return f;
 }
 
-/*insere na posição 0 do array, todos os produtos*/
-Emp insereProdEmp(Emp e, AVL produtos) {
-	int i;
-	for (i = 0; i < 3; i++) {
-		e->filial[i]->mes[0].l = avlcpyfa(produtos);
+
+/*Acho que faz o free de tudo*/
+void freeEmp (Emp e) {
+	int i, j;
+	for (i = 0; i < 2; i++) {
+		freeTree(e->filial[i]->mes[0].l);
+		for (j = 1; j < 13; j++) {
+			freeTree(e->filial[i]->mes[j].f->codigos[0]);
+			freeTree(e->filial[i]->mes[j].f->codigos[1]);
+			free(e->filial[i]->mes[j].f);
+		}
+		free(e->filial[i]);
 	}
-	return e;
+	free(e);
 }

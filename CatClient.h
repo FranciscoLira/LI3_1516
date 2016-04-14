@@ -1,6 +1,6 @@
-#ifndef CatClients_H_  
+#ifndef CatClients_H_
 #define CatClients_H_
-#include "myavl.h"
+#include "CatProd.h"
 
 typedef struct clients* CatClients;
 typedef struct client* Cliente;
@@ -9,7 +9,7 @@ typedef struct client* Cliente;
 Cliente inserec(char *x);
 
 /*Altera valor do Cliente */
-Cliente alterac(char *x,Cliente c);
+Cliente alterac(char *x, Cliente c);
 
 /* Inicializa Catálogo de Clientes */
 CatClients initCatClients();

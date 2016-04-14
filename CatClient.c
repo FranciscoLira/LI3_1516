@@ -1,8 +1,7 @@
-#include "CatClient.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "myavl.h"
+#include "CatClient.h"
 
 typedef struct avlc {
 	int tamanho;
@@ -15,6 +14,11 @@ struct client {
 
 struct clients {
 	Trees cP[26];
+};
+
+union FatVFil{
+	Fat fa;
+	Fil fi;
 };
 
 Cliente inserec(char *x) {
@@ -44,7 +48,7 @@ CatClients insereCliente(CatClients ccl, Cliente c) {
 	int i = (c->nomeclient[0] - 65);
 	/*Para dar a volta ao union, para que a função insereAVL receba o NULL, temos de o inicializar*/
 	union FatVFil x;
-	x.fi = NULL;
+	x.fa = NULL;
 	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient, x );
 	ccl->cP[i]->tamanho++;
 	return ccl;

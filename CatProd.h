@@ -1,7 +1,6 @@
-#ifndef CatProds_H_  
+#ifndef CatProds_H_
 #define CatProds_H_
 #include "myavl.h"
-
 
 typedef struct prods* CatProds;
 typedef struct prod* Produto;
@@ -11,7 +10,7 @@ typedef struct conjProd* ConjProds;
 Produto inserep(char *x);
 
 /*Altera valor do produto */
-Produto alterap(char *x,Produto p);
+Produto alterap(char *x, Produto p);
 
 /* Inicializa Catálogo de Produtos */
 CatProds initCatProds();
