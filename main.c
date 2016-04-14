@@ -47,26 +47,46 @@ CatClients lerclient(CatClients cps){
 	return cps;
 }
 
+int auxImprimeDown(int down, int up, int pag, int np) {
+	if (pag == 1) down = 0;
+	else if (pag == np) down = (pag-1)*90;
+	else down = up-90;
+	return down;
+}
+
+int auxImprimeUp(int up, int pag, int np, int n) {
+    if (pag == 1) up = 90;
+    else if (pag == np) up = n;
+    else up = pag*90;
+    return up;
+ }
+
+
+
 void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m, n, pag, dif;
+	int up, down, j, m, n, pag, t;
 	float np;
 	ConjProds l = getList(cps,letra);
 	char** lista = getLista(l);
 	n = getSize(l);
 	np = n/90;
 	if (n%90) np++;
-	printf("Numero total de elementos:%d\n", getSize(l));
 	down = 0; up = 90;
-	while (a != 'Q') {
+	while (a != 'Q' || a != 'q') {
 		if (system("@cls||clear")==0) {;}
-		printf("Numero total de elementos:%d\n", getSize(l));
+		j = down; m = up;
+		if (j == 0 && (a == 'A' || a == 'a')) printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
+		if (m == n && (a == 'S' || a == 's')) printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
+		if (pag < 1 || pag > np) printf("\nA opção escolhida não é válida!\n\n");
+		printf("Numero total de elementos:%d\n", n);
 		printf("O numero de paginas: %.0f\n\n", np );
 		printf("                        Página %d\n\n", getPagina(l));
-		j = down; m = up;
-		while ((down+6) < up){
-			printf("%s    %s    %s    %s    %s    %s\n", lista[down], lista[down+1], lista[down+2], lista[down+3], lista[down+4], lista[down+5]);
-			down+= 6;
+		while (down < up) {
+			for (t = 0; t < 6 && lista[down]; t++) {
+				printf("%s    ", lista[down++]);
+			}
+			printf("\n");
 		}
 		printf("\n\n");
 		printf("O que pretende fazer a seguir: \n\n");
@@ -83,54 +103,25 @@ void imprimeLista(CatProds cps, char letra) {
 		}
 		if(scanf("%s", &a) != 0) {;}
 		printf("\n");
-		if (a == 'S') {
-			if (up + 90 > n ) {
-				up = n;
-			}
-			else {
-				up = up + 90;
-			}
-			alteraPaginamais(l);
+		if (a == 'S' || a == 's') {
+			if (m != n) alteraPaginamais(l);
 		}
-		else{
-			if (a == 'A') {
-				up = j; 
-				if (j-90 <= 0 ) down = 0; 
-				else down = j - 90; 
-				alteraPaginamenos(l);
-			}
-			else{
-				if (a == 'P') {
-					printf("Qual é a página que deseja consultar:  \n");
-					if (scanf("%d", &pag)==0) {;}
-					if (pag > getPagina(l)) {
-						if (pag*90 > n) {
-							down = (pag-1)*90;
-							up = n;
-							while((pag-getPagina(l) != 0)){
-							alteraPaginamais(l);
-						}
-
-						}
-					else {
-						up = pag*90;
-						down = up - 90;
-						while((pag-getPagina(l) != 0)){
-							alteraPaginamais(l);
-						}
-					}
-				}
-				else {
-					dif = getPagina(l) - pag;
-					if (up - (dif*90) < 0) {down = 0; up = 90;}
-					else {up = up - (dif*90); down = up - 90;}
-					while((getPagina(l)-pag != 0)) alteraPaginamenos(l);
-				}
-			}
+		else if (a == 'A' || a == 'a') {
+			if (j != 0) alteraPaginamenos(l);
 		}
+		else if (a == 'P' || a == 'p') {
+			printf("Qual é a página que deseja consultar:  \n");
+			if (scanf("%d", &pag)==0) {;}
+            if (pag >= 1 && pag <= np) {
+				if (pag > getPagina(l)) while((pag-getPagina(l) != 0)) alteraPaginamais(l);
+				else while((getPagina(l)-pag != 0)) alteraPaginamenos(l);
+				}
+		}
+	    up = auxImprimeUp(up, getPagina(l), np, n);
+        down = auxImprimeDown(down, up, getPagina(l), np);
 	}
 }
-}
+
 
 
 void showmenu(){
