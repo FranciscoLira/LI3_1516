@@ -47,7 +47,13 @@ Emp initEmpresa ();
 Emp insereVenda (Emp e, Vendatmp v);
 
 Boolean existeVenda (Emp e, Vendatmp v);
+Fat faturacaototal(Emp e, char* codigo, int imes);
+Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j);
 
-Fat* fatglobal(Emp e, int imes, char* codigo, int juntos);
+
+Fat produtofat(Emp e, int f, int imes, int p, char* produto);	
+
+Fat somaFat(Fat* lista, int q);
+
 
 #endif

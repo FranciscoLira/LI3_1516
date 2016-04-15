@@ -11,11 +11,11 @@ struct vendatmp {
 	char cliente[10];
 	int mes;
 	int filial;
-}Vtmp;
+} Vtmp;
 
 struct fat {
-	double quantidade;
-	int faturacao;
+	int quantidade;
+	double faturacao;
 };
 
 struct fatmes {
@@ -106,11 +106,11 @@ void setFilial(Vendatmp v, int filial) {
 }
 
 void setProduto(Vendatmp v, char* produto) {
-	strcpy(v->produto,produto);
+	strcpy(v->produto, produto);
 }
 
 void setCliente(Vendatmp v, char* cliente) {
-	strcpy(v->cliente,cliente);
+	strcpy(v->cliente, cliente);
 }
 
 
@@ -128,7 +128,10 @@ Fatmes initFatmes() {
 Fatall initFatall() {
 	int i;
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
-	r->mes[0].l = (AVL*)malloc(sizeof(AVL)*26);
+	r->mes[0].l = (AVL*)malloc(sizeof(AVL) * 26);
+	/*for(i=0; i<26; i++){
+		r->mes[0].l[i] = NULL;
+	}*/
 	for (i = 1; i < 13; i++) {
 		r->mes[i].f = initFatmes();
 	}
@@ -160,7 +163,7 @@ Emp initEmpresa () {
 
 /*Retorna a faturação de uma certa venda*/
 Fat convvendafat(Vendatmp a) {
-	Fat r = (Fat)malloc((/*struct fat*/16));
+	Fat r = (Fat)malloc(sizeof(struct fat));
 	r->quantidade = a->quantidade;
 	r->faturacao = (a->quantidade) * (a->preco);
 	return r;
@@ -197,7 +200,7 @@ Emp insereVenda(Emp e, Vendatmp v) {
 	union FatVFil r;
 	r.fa = convvendafat(v);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
-	inserefattot(e->filial[(v->filial) - 1]->mes[(v->mes)].l, r.fa, v->produto);
+	inserefattot(e->filial[(v->filial) - 1]->mes[0].l, r.fa, v->produto);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r.fa->faturacao;
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r.fa->quantidade;
 	return e;
@@ -208,7 +211,31 @@ Boolean existeVenda(Emp e, Vendatmp v) {
 	return (existeAVL(tmp, v->produto));
 }
 
-/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não*/
+Fat faturacaototal(Emp e, char* codigo, int imes) {
+	int i, j;
+	Fat tmp;
+	Fat r = (Fat)malloc(sizeof(struct fat));
+	r -> quantidade = 0;
+	r -> faturacao = 0;
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 2; j++) {
+			tmp = produtofat(e, 0, imes, 0, codigo);
+			r -> quantidade += tmp ->quantidade;
+			r->faturacao += tmp -> faturacao;
+		}
+	}
+	return r;
+}
+
+Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j) {
+	Fat r = (Fat)malloc(sizeof(struct fat));
+	Fat tmp = produtofat(e, i, imes, j, codigo);
+	r->faturacao = tmp -> faturacao;
+	r->quantidade = tmp -> quantidade;
+	return r;
+}
+
+/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não promoçao*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
 	AVL tmp = e->filial[f]->mes[imes].f->codigos[p];
 	Fat r = getfatfromavl(tmp, produto);
@@ -223,27 +250,6 @@ Fat somaFat(Fat* lista, int q) {
 		r->faturacao += lista[i]->faturacao;
 	}
 	return r;
-}
-
-/*Recebe um mês(imes), um código de produto(codigo) e um int (juntos) que é se queres juntos (1) ou por filial(0) retorna o total em modo n e p,
-  Retorna esses dados num array para ter todos os dados que podem ser necessários */
-Fat* fatglobal(Emp e, int imes, char* codigo, int juntos) {
-	int i;
-	Fat* f = (Fat*)malloc((/*struct fat*/16) * 6); /*6 porque é um para cada filial e para o modo n e p*/
-	for (i = 0; i < 6; i++) {
-		f[i] = produtofat(e, (i / 2), imes, (i % 2), codigo);
-	}
-	/*
-	Two or more, use a for
-
-	f[0] = produtofat(e, 0, imes, 0, codigo);
-	f[1] = produtofat(e, 0, imes, 1, codigo);
-	f[2] = produtofat(e, 1, imes, 0, codigo);
-	f[3] = produtofat(e, 1, imes, 1, codigo);
-	f[4] = produtofat(e, 2, imes, 0, codigo);
-	f[5] = produtofat(e, 2, imes, 1, codigo);
-	*/
-	return f;
 }
 
 

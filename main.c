@@ -19,11 +19,15 @@ struct vendatmp {
 	char cliente[10];
 	int mes;
 	int filial;
-}Vtmp;
+} Vtmp;
+
+struct empresa {
+	Fatall filial[3];
+};
 
 struct fat {
-	double quantidade;
-	int faturacao;
+	int quantidade;
+	double faturacao;
 };
 
 
@@ -35,23 +39,23 @@ int verificaVenda (char promo) {
 
 /*Verifica se a filial se encontra entre os valores 1 e 3*/
 int verificaFilial (int filial) {
-	if (filial >= 1 && filial <=3) return 1;
+	if (filial >= 1 && filial <= 3) return 1;
 	else return 0;
 }
 
 /*Verifica se a mês se encontra entre os valores 1 e 12*/
 int verificaMes (int mes) {
-	if (mes >=1 && mes <= 12) return 1;
+	if (mes >= 1 && mes <= 12) return 1;
 	else return 0;
 }
 
-/*Verifica se as quantidades são positivas (e menores que 200)*/ 
+/*Verifica se as quantidades são positivas (e menores que 200)*/
 int verificaQuantidade (int quantidade) {
 	if (quantidade >= 1 && quantidade <= 200) return 1;
 	else return 0;
 }
 
-/*Verifica se o preço dos produtos é positivo, menor que 999 ou igual a 0.0*/ 
+/*Verifica se o preço dos produtos é positivo, menor que 999 ou igual a 0.0*/
 int verificaPreco (double preco) {
 	if (preco >= 0.0 && preco <= 999.99) return 1;
 	else return 0;
@@ -72,26 +76,25 @@ Boolean verificaCat(CatClients ccs, char* c) {
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 	int cont = 0;
-	if ((verificaFilial(getFilial(v))) && (verificaMes(getMes(v))) && (verificaQuantidade(getQuantidade(v))) && 
-		(verificaPreco(getPreco(v))) && (verificaVenda(getPromo(v)))) if ((verificaPro(cps, getProduto(v))) && (verificaCat(ccs, getCliente(v)))) cont = 1;
+	if ((verificaFilial(getFilial(v))) && (verificaMes(getMes(v))) && (verificaQuantidade(getQuantidade(v))) &&
+	        (verificaPreco(getPreco(v))) && (verificaVenda(getPromo(v)))) if ((verificaPro(cps, getProduto(v))) && (verificaCat(ccs, getCliente(v)))) cont = 1;
 	return cont;
 }
 
 
 Emp leituravendas(CatClients ccs , CatProds cps) {
-	Vendatmp v; 
+	Vendatmp v;
 	Emp e = initEmpresa();
-	FILE *p; 
+	FILE *p;
 	char *aux;
 	double preco;
-	int i, cont,mes,filial,quant;
+	int i, cont, mes, filial, quant;
 	char buffer[BufferM];
-	/*QUALQUERCOISAQUI*/
-	v = malloc(sizeof(struct vendatmp));
+	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
 	cont = 0;
-	for(i = 0; fgets(buffer,BufferM,p); i++){
+	for (i = 0; fgets(buffer, BufferM, p); i++) {
 		aux = strtok(buffer, " ");
 		setProduto(v, aux);
 		aux = strtok(NULL, " ");
@@ -99,22 +102,27 @@ Emp leituravendas(CatClients ccs , CatProds cps) {
 		aux = strtok(NULL, " ");
 		quant = atoi(aux);
 		aux = strtok(NULL, " ");
-		setPromo(v,aux[0]);
+		if (aux[0] == 'N') {
+			setPromo(v, 0);
+		}
+		else {
+			setPromo(v, 1);
+		}
 		aux = strtok(NULL, " ");
 		setCliente(v, aux);
 		aux = strtok(NULL, " ");
-		mes=atoi(aux);
+		mes = atoi(aux);
 		aux = strtok(NULL, "\n\r");
-		filial=atoi(aux);
-		setPreco(v,preco);
-		setQuantidade(v,quant);
-		setMes(v,mes);
-		setFilial(v,filial);
-	    cont = verifica(v,cps,ccs);
-	    if (cont == 1){
+		filial = atoi(aux);
+		setPreco(v, preco);
+		setQuantidade(v, quant);
+		setMes(v, mes);
+		setFilial(v, filial);
+		cont = verifica(v, cps, ccs);
+		if (cont == 1) {
 			e = insereVenda(e, v);
 		}
-    } 
+	}
 	return e;
 }
 
@@ -251,6 +259,7 @@ void showmenu() {
 
 
 void interpretador () {
+	int i, j;
 	CatProds cps = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -261,7 +270,7 @@ void interpretador () {
 	int juntos;
 	char cmd[BufferM];
 	char buffer[BufferM];
-	Fat* fatglob;
+	Fat tmp;
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
@@ -276,7 +285,7 @@ void interpretador () {
 			cps = initCatProds();
 			cps = lerprod(cps);
 			printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
-			e = leituravendas(ccl,cps);
+			e = leituravendas(ccl, cps);
 			verifica++;
 			showmenu();
 			break;
@@ -298,37 +307,46 @@ void interpretador () {
 				printf("Qual o mês que quer saber a faturação?\n");
 				if (scanf("%d", &imes) == -1);
 				printf("Quer o resultado global ou filial a filial?\n");
-				printf("0. Filial a Filial\n 1.Total");
+				printf("0. Filial a Filial\n 1.Total\n");
 				if (scanf("%d", &juntos) == -1);
-				fatglob = fatglobal(e, imes, buffer, juntos);
 				if (juntos) {
-					printf("Modo N:\n\tFaturação total:%d;\n\t Número total de vendas:%f;", fatglob[0]->faturacao + fatglob[2]->faturacao + fatglob[4]->faturacao, fatglob[0]->quantidade + fatglob[2]->quantidade + fatglob[4]->quantidade);
-
+					tmp = faturacaototal(e, buffer, imes);
 				}
-			}
+				else {
+					for (i = 0; i < 3; i++) {
+						for (j = 0; j < 1; j++) {
+							tmp = faturacaoparcial(e, buffer, imes, i, j);
+							if (j) {
+								printf("Promo:\n");
+							}
+							printf("Filial nº %d \n\tFaturação: %f\n1tQuantidade%d", i, tmp->faturacao, tmp->quantidade);
+						}
+					}
+				}
 
-			break;
-		case '4':
-			break;
-		case '5':
-			break;
-		case '6':
-			break;
-		case '8':
-			break;
-		case '9':
-			break;
-		case 'A':
-			break;
-		case 'B':
-			break;
-		case 'C':
-			break;
+				break;
+			case '4':
+				break;
+			case '5':
+				break;
+			case '6':
+				break;
+			case '8':
+				break;
+			case '9':
+				break;
+			case 'A':
+				break;
+			case 'B':
+				break;
+			case 'C':
+				break;
+			}
+			if (fgets(cmd, BufferM, stdin) != NULL);
 		}
-		if (fgets(cmd, BufferM, stdin) != NULL);
+		removeCatClient(ccl);
+		removeCatProd(cps);
 	}
-	removeCatClient(ccl);
-	removeCatProd(cps);
 }
 
 int main() {
