@@ -96,7 +96,7 @@ AVL insereAVL (AVL a, char* codigo, union FatVFil v) {
 			a->extra = v;
 		}
 		else{
-			a->extra.fa = (Fat)malloc(sizeof(union FatVFil));
+			a->extra.fa = (Fat)malloc(sizeof(union FatVFil));/*Este fa serve para os dois?(caso o v seja um fi)*/
 		}
 		return a;
 	}
