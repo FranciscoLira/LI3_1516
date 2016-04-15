@@ -100,9 +100,10 @@ AVL insereAVL (AVL a, char* codigo, union FatVFil v) {
 		}
 		return a;
 	}
-	if (strcmp (codigo, a->codigo) > 0)
-		return insereDir (a, codigo);
-	return insereEsq (a, codigo);
+	if ((strcmp (codigo, a->codigo)) > 0){
+		return (insereDir (a, codigo));
+	}
+	return (insereEsq (a, codigo));
 }
 
 

@@ -39,6 +39,7 @@ void setProduto(Vendatmp v, char* produto);
 
 void setCliente(Vendatmp v, char* cliente);
 
+Emp insereProdVaziosEmp(Emp e, AVL* produtos);
 
 /*Faz a inicialização de toda a memória necessária e os devidos campos*/
 Emp initEmpresa ();

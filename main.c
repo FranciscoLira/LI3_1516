@@ -11,10 +11,21 @@
 #define NR_CLIENTES 20000
 #define BufferM 128
 
+struct vendatmp {
+	char produto[10];
+	double preco;
+	int quantidade;
+	int promo;
+	char cliente[10];
+	int mes;
+	int filial;
+}Vtmp;
+
 struct fat {
 	double quantidade;
 	int faturacao;
 };
+
 
 /*Verifica se a venda é N ou P*/
 int verificaVenda (char promo) {
@@ -69,15 +80,15 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 
 Emp leituravendas(CatClients ccs , CatProds cps) {
 	Vendatmp v; 
-	Emp e;
+	Emp e = initEmpresa();
 	FILE *p; 
 	char *aux;
 	double preco;
 	int i, cont,mes,filial,quant;
 	char buffer[BufferM];
-	v = malloc(sizeof(Vendatmp));
-	p = fopen("Dados/Vendasfinal.txt", "r");
-	e = initEmpresa();
+	/*QUALQUERCOISAQUI*/
+	v = malloc(sizeof(struct vendatmp));
+	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
 	cont = 0;
 	for(i = 0; fgets(buffer,BufferM,p); i++){
@@ -94,9 +105,15 @@ Emp leituravendas(CatClients ccs , CatProds cps) {
 		aux = strtok(NULL, " ");
 		mes=atoi(aux);
 		aux = strtok(NULL, "\n\r");
-		filial=atoi(aux); setPreco(v,preco); setQuantidade(v,quant); setMes(v,mes); setFilial(v,filial);
+		filial=atoi(aux);
+		setPreco(v,preco);
+		setQuantidade(v,quant);
+		setMes(v,mes);
+		setFilial(v,filial);
 	    cont = verifica(v,cps,ccs);
-	    if (cont == 1) e = insereVenda(e, v);
+	    if (cont == 1){
+			e = insereVenda(e, v);
+		}
     } 
 	return e;
 }
@@ -259,6 +276,7 @@ void interpretador () {
 			cps = initCatProds();
 			cps = lerprod(cps);
 			printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
+			e = leituravendas(ccl,cps);
 			verifica++;
 			showmenu();
 			break;

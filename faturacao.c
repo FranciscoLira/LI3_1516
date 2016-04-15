@@ -128,7 +128,7 @@ Fatmes initFatmes() {
 Fatall initFatall() {
 	int i;
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
-	r->mes[0].l = NULL;
+	r->mes[0].l = (AVL*)malloc(sizeof(AVL)*26);
 	for (i = 1; i < 13; i++) {
 		r->mes[i].f = initFatmes();
 	}

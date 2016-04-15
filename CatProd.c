@@ -14,6 +14,19 @@ typedef struct avlp {
 	AVL root;
 }*Trees;
 
+union FatVFil {
+	Fat fa;
+	Fil fi;
+};
+
+struct avl {
+	int altura;
+	char* codigo;
+	union FatVFil extra;
+	struct avl* esq;
+	struct avl* dir;
+};
+
 struct prod {
 	char nomeprod[10];
 };
@@ -22,17 +35,17 @@ struct prods {
 	Trees cP[26];
 };
 
-union FatVFil{
-	Fat fa;
-	Fil fi;
-};
-
 AVL getAvlP (CatProds cps, int i) {
 	return (cps->cP[i]->root);
 }
 
 AVL* getTree(CatProds cps) {
-	return (cps->cP);
+	int i;
+	AVL* r = (AVL*)malloc(sizeof(struct avl) * 26);
+	for (i = 0; i < 26; i++) {
+		r[i] = avlcpyfa(cps->cP[i]->root);
+	}
+	return r;
 }
 
 Produto inserep(char *x) {

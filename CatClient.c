@@ -6,7 +6,7 @@
 typedef struct avlc {
 	int tamanho;
 	AVL root;
-} *Trees;
+}*Trees;
 
 struct client {
 	char nomeclient[10];
