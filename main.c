@@ -181,7 +181,8 @@ int auxImprimeUp(int up, int pag, int np, int n) {
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
-	int up, down, j, m, n, pag, t;
+	int up, down, j, m, pag, t;
+	int n;
 	float np;
 	ConjProds l = getList(cps, letra);
 	char** lista = getLista(l);
@@ -194,13 +195,20 @@ void imprimeLista(CatProds cps, char letra) {
 		j = down; m = up;
 		if (j == 0 && (a == 'A' || a == 'a')) printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
 		if (m == n && (a == 'S' || a == 's')) printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
-		if (pag < 1 || pag > np) printf("\nA opção escolhida não é válida!\n\n");
+		if ((a == 'P' || a == 'p') && (pag < 1 || pag > np)) printf("\nA opção escolhida não é válida!\n\n");
 		printf("Numero total de elementos:%d\n", n);
 		printf("O numero de paginas: %.0f\n\n", np );
 		printf("                        Página %d\n\n", getPagina(l));
-		while (down < up) { /*CUNHA, EU ACHO QUE É AQUI, SE PUSERES up-1 Deixa de dar erro, mas testa*/
-			for (t = 0; t < 6 && lista[down]; t++) {
-				printf("%s    ", lista[down++]);
+		while (down < up) {
+			for (t = 0; t < 6; t++) {
+				if (down%2 == 0) {
+					if (lista[down]) printf("%s    ", lista[down++]); 
+					else break;
+				}
+				else {
+					if (lista[down+2]) printf("%s    ", lista[down++]); 
+					else break;
+				}
 			}
 			printf("\n");
 		}
