@@ -5,6 +5,8 @@
 typedef struct clients* CatClients;
 typedef struct client* Cliente;
 
+AVL getAvlC (CatClients ccs, int i);
+
 /*Insere string em Cliente */
 Cliente inserec(char *x);
 

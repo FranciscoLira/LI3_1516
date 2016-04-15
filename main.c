@@ -4,6 +4,7 @@
 #include "myavl.h"
 #include "CatProd.h"
 #include "CatClient.h"
+#include "boolean.h"
 #include "faturacao.h"
 
 #define NR_PRODUTOS 200000
@@ -14,6 +15,91 @@ struct fat {
 	double quantidade;
 	int faturacao;
 };
+
+/*Verifica se a venda é N ou P*/
+int verificaVenda (char promo) {
+	if (promo == 'N' || promo == 'P') return 1;
+	else return 0;
+}
+
+/*Verifica se a filial se encontra entre os valores 1 e 3*/
+int verificaFilial (int filial) {
+	if (filial >= 1 && filial <=3) return 1;
+	else return 0;
+}
+
+/*Verifica se a mês se encontra entre os valores 1 e 12*/
+int verificaMes (int mes) {
+	if (mes >=1 && mes <= 12) return 1;
+	else return 0;
+}
+
+/*Verifica se as quantidades são positivas (e menores que 200)*/ 
+int verificaQuantidade (int quantidade) {
+	if (quantidade >= 1 && quantidade <= 200) return 1;
+	else return 0;
+}
+
+/*Verifica se o preço dos produtos é positivo, menor que 999 ou igual a 0.0*/ 
+int verificaPreco (double preco) {
+	if (preco >= 0.0 && preco <= 999.99) return 1;
+	else return 0;
+}
+
+Boolean verificaPro(CatProds cps, char* c) {
+	int i;
+	i = (c[0]) - 'A';
+	return (existeAVL(getAvlP(cps, i), c));
+}
+
+Boolean verificaCat(CatClients ccs, char* c) {
+	int i;
+	i = (c[0]) - 'A';
+	return (existeAVL(getAvlC(ccs, i), c));
+}
+
+/*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
+int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
+	int cont = 0;
+	if ((verificaFilial(getFilial(v))) && (verificaMes(getMes(v))) && (verificaQuantidade(getQuantidade(v))) && 
+		(verificaPreco(getPreco(v))) && (verificaVenda(getPromo(v)))) if ((verificaPro(cps, getProduto(v))) && (verificaCat(ccs, getCliente(v)))) cont = 1;
+	return cont;
+}
+
+
+Emp leituravendas(CatClients ccs , CatProds cps) {
+	Vendatmp v; 
+	Emp e;
+	FILE *p; 
+	char *aux;
+	double preco;
+	int i, cont,mes,filial,quant;
+	char buffer[BufferM];
+	v = malloc(sizeof(Vendatmp));
+	p = fopen("Dados/Vendasfinal.txt", "r");
+	e = initEmpresa();
+	e = insereProdVaziosEmp(e, getTree(cps));
+	cont = 0;
+	for(i = 0; fgets(buffer,BufferM,p); i++){
+		aux = strtok(buffer, " ");
+		setProduto(v, aux);
+		aux = strtok(NULL, " ");
+		preco = atof(aux);
+		aux = strtok(NULL, " ");
+		quant = atoi(aux);
+		aux = strtok(NULL, " ");
+		setPromo(v,aux[0]);
+		aux = strtok(NULL, " ");
+		setCliente(v, aux);
+		aux = strtok(NULL, " ");
+		mes=atoi(aux);
+		aux = strtok(NULL, "\n\r");
+		filial=atoi(aux); setPreco(v,preco); setQuantidade(v,quant); setMes(v,mes); setFilial(v,filial);
+	    cont = verifica(v,cps,ccs);
+	    if (cont == 1) e = insereVenda(e, v);
+    } 
+	return e;
+}
 
 /*Lê o ficheiro Produtos.txt*/
 CatProds lerprod(CatProds cps) {

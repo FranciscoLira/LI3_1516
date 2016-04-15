@@ -21,6 +21,10 @@ union FatVFil{
 	Fil fi;
 };
 
+AVL getAvlC (CatClients ccs, int i) {
+	return (ccs->cP[i]->root);
+}
+
 Cliente inserec(char *x) {
 	Cliente c = malloc(sizeof(struct client));
 	strcpy(c->nomeclient, x);

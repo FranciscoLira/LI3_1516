@@ -11,7 +11,7 @@ struct vendatmp {
 	char cliente[10];
 	int mes;
 	int filial;
-};
+}Vtmp;
 
 struct fat {
 	double quantidade;
@@ -56,6 +56,62 @@ struct avl {
 struct empresa {
 	Fatall filial[3];
 };
+
+double getPreco(Vendatmp v) {
+	return v->preco;
+}
+
+int getQuantidade(Vendatmp v) {
+	return v->quantidade;
+}
+
+int getPromo(Vendatmp v) {
+	return v->promo;
+}
+
+int getMes(Vendatmp v) {
+	return v->mes;
+}
+
+int getFilial(Vendatmp v) {
+	return v->filial;
+}
+
+char* getProduto(Vendatmp v) {
+	return v->produto;
+}
+
+char* getCliente(Vendatmp v) {
+	return v->cliente;
+}
+
+void setPreco(Vendatmp v, double preco) {
+	v->preco = preco;
+}
+
+void setQuantidade(Vendatmp v, int quantidade) {
+	v->quantidade = quantidade;
+}
+
+void setPromo(Vendatmp v, int promo) {
+	v->promo = promo;
+}
+
+void setMes(Vendatmp v, int mes) {
+	v->mes = mes;
+}
+
+void setFilial(Vendatmp v, int filial) {
+	v->filial = filial;
+}
+
+void setProduto(Vendatmp v, char* produto) {
+	strcpy(v->produto,produto);
+}
+
+void setCliente(Vendatmp v, char* cliente) {
+	strcpy(v->cliente,cliente);
+}
 
 
 Fatmes initFatmes() {
@@ -137,13 +193,14 @@ void inserefattot(AVL* a, Fat f, char* codigo) {
 }
 
 
-void insereVenda(Emp e, Vendatmp v) {
+Emp insereVenda(Emp e, Vendatmp v) {
 	union FatVFil r;
 	r.fa = convvendafat(v);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
 	inserefattot(e->filial[(v->filial) - 1]->mes[(v->mes)].l, r.fa, v->produto);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r.fa->faturacao;
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r.fa->quantidade;
+	return e;
 }
 
 Boolean existeVenda(Emp e, Vendatmp v) {

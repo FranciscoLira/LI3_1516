@@ -27,6 +27,13 @@ union FatVFil{
 	Fil fi;
 };
 
+AVL getAvlP (CatProds cps, int i) {
+	return (cps->cP[i]->root);
+}
+
+AVL* getTree(CatProds cps) {
+	return (cps->cP);
+}
 
 Produto inserep(char *x) {
 	Produto p = malloc(sizeof(struct prod));
