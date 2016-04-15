@@ -28,5 +28,6 @@ int totalClientes(CatClients ccl);
 /* Dá quantos clientes existem com uma dada letra */
 int totalClientesLetra(CatClients ccl, char letra);
 void removeCatClient(CatClients ccl);
+char* getStringc(Cliente c);
 
 #endif

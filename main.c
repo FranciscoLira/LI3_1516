@@ -6,6 +6,7 @@
 #include "CatClient.h"
 #include "boolean.h"
 #include "faturacao.h"
+#include "Filial.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -76,20 +77,23 @@ Boolean verificaCat(CatClients ccs, char* c) {
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 	int cont = 0;
-	if ((verificaFilial(getFilial(v))) && (verificaMes(getMes(v))) && (verificaQuantidade(getQuantidade(v))) &&
-	        (verificaPreco(getPreco(v))) && (verificaVenda(getPromo(v)))) if ((verificaPro(cps, getProduto(v))) && (verificaCat(ccs, getCliente(v)))) cont = 1;
+			if ((verificaPro(cps, getProduto(v))) &&
+	        	(verificaCat(ccs, getCliente(v)))) cont = 1;
 	return cont;
 }
 
 
-Emp leituravendas(CatClients ccs , CatProds cps) {
+Filial leituravendas(CatClients ccs , CatProds cps, Emp e) {
 	Vendatmp v;
-	Emp e = initEmpresa();
+	Cliente c = inserec("");
+	Produto pr = inserep("");
+	Filial f = initFilial();
 	FILE *p;
 	char *aux;
 	double preco;
 	int i, cont, mes, filial, quant;
 	char buffer[BufferM];
+		e = initEmpresa();
 	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
@@ -97,6 +101,7 @@ Emp leituravendas(CatClients ccs , CatProds cps) {
 	for (i = 0; fgets(buffer, BufferM, p); i++) {
 		aux = strtok(buffer, " ");
 		setProduto(v, aux);
+		alterap(aux,pr);
 		aux = strtok(NULL, " ");
 		preco = atof(aux);
 		aux = strtok(NULL, " ");
@@ -110,6 +115,7 @@ Emp leituravendas(CatClients ccs , CatProds cps) {
 		}
 		aux = strtok(NULL, " ");
 		setCliente(v, aux);
+		alterac(aux,c);
 		aux = strtok(NULL, " ");
 		mes = atoi(aux);
 		aux = strtok(NULL, "\n\r");
@@ -121,9 +127,11 @@ Emp leituravendas(CatClients ccs , CatProds cps) {
 		cont = verifica(v, cps, ccs);
 		if (cont == 1) {
 			e = insereVenda(e, v);
+			f = insereFilial(f, c, pr);
+			if(!f)printf("FEIO\n");
 		}
 	}
-	return e;
+	return f;
 }
 
 /*Lê o ficheiro Produtos.txt*/
@@ -184,8 +192,14 @@ void imprimeLista(CatProds cps, char letra) {
 	int up, down, j, m, pag, t;
 	int n;
 	float np;
-	ConjProds l = getList(cps, letra);
-	char** lista = getLista(l);
+	ConjProds l;
+	char** lista;
+	if((letra - 65)<0 || (letra -65)>25){
+		printf("Letra maiúscula!\n");
+		return;
+	}
+	l = getList(cps, letra);
+	lista = getLista(l);
 	n = getSize(l);
 	np = n / 90;
 	if (n % 90) np++;
@@ -271,6 +285,9 @@ void interpretador () {
 	CatProds cps = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
+	Filial f =NULL;
+	char fff[10]="W1208";
+	Cliente cl = inserec(fff);
 	/*CatClients clientes =NULL;*/
 	char letra;
 	int verifica = 0;
@@ -293,7 +310,7 @@ void interpretador () {
 			cps = initCatProds();
 			cps = lerprod(cps);
 			printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
-			e = leituravendas(ccl, cps);
+			f = leituravendas(ccl, cps, e);
 			verifica++;
 			showmenu();
 			break;
@@ -333,9 +350,9 @@ void interpretador () {
 				}
 			}
 			break;
-		case '4':printfat(faturacaototal(e,"KR1583",0));
+		case '4': printfat(faturacaototal(e,"KR1583",0));
 			break;
-		case '5':
+		case '5': printf("%d\n",numprodutos(f, cl));
 			break;
 		case '6':
 			break;

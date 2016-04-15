@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "faturacao.h"
+#include "Filial.h"
 
 struct vendatmp {
 	char produto[10];

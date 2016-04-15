@@ -2,6 +2,7 @@
 #define CatProds_H_
 #include "myavl.h"
 
+
 typedef struct prods* CatProds;
 typedef struct prod* Produto;
 typedef struct conjProd* ConjProds;
@@ -46,5 +47,6 @@ int alteraPaginamais(ConjProds l);
 int alteraPaginamenos(ConjProds l);
 
 ConjProds getList (CatProds cps, char letra);
+char* getStringp(Produto p);
 
 #endif

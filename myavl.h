@@ -26,5 +26,7 @@ void freeTree(AVL a);
 char** auxiliarImprime(char** lista, AVL t, int *i);
 void printbool(Boolean a);
 AVL avlcpyfa(AVL a);
+void freeExtra(AVL a);
+union FatVFil getextra(AVL a, char *c);
 
 #endif

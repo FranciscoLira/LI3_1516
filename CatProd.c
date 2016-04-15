@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "Filial.h"
 #include "CatProd.h"
 
 struct conjProd {
@@ -98,6 +99,7 @@ int totalProdutos(CatProds cps) {
 
 int totalProdutosLetra(CatProds cps, char letra) {
 	int i = letra - 65;
+	if(i<0 || i>25) return 0;
 	return (cps->cP[i]->tamanho);
 }
 
@@ -127,7 +129,9 @@ int getSize(ConjProds l) {
 }
 
 char** getLista(ConjProds l) {
+	if(l)
 	return l->lista;
+	else return NULL;
 }
 
 int alteraPaginamais(ConjProds l) {
@@ -147,9 +151,14 @@ ConjProds getList (CatProds cps, char letra) {
 	l->pagina = 1;
 	l->lista = malloc(sizeof(char*) * (l->size));
 	k = letra - 'A';
+	if(k<0 || k>25) return NULL;
 	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(i));
 	return l;
 }
+
+char* getStringp(Produto p){
+	return p->nomeprod;
+}	
 
 
 

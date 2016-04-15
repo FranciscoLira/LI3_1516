@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "CatClient.h"
+#include "Filial.h"
+
 
 typedef struct avlc {
 	int tamanho;
@@ -88,4 +90,8 @@ void removeCatClient(CatClients ccl) {
 		free(ccl->cP[i]);
 	}
 	free(ccl);
+}
+
+char* getStringc(Cliente c){
+	return c->nomeclient;
 }
