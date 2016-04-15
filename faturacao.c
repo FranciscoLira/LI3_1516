@@ -211,21 +211,17 @@ Boolean existeVenda(Emp e, Vendatmp v) {
 	return (existeAVL(tmp, v->produto));
 }
 
-Fat faturacaototal(Emp e, char* codigo, int imes) {
-	int i, j;
-	Fat tmp;
-	Fat r = (Fat)malloc(sizeof(struct fat));
-	r -> quantidade = 0;
-	r -> faturacao = 0;
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			tmp = produtofat(e, 0, imes, 0, codigo);
-			r -> quantidade += tmp ->quantidade;
-			r->faturacao += tmp -> faturacao;
-		}
+void printfat(Fat a) {
+	if (a == NULL) {
+		printf("deumerda!\n");
 	}
-	return r;
+	else {
+		printf("%d\n", a->quantidade);
+		printf("%f\n", a->faturacao);
+	}
 }
+
+
 
 Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j) {
 	Fat r = (Fat)malloc(sizeof(struct fat));
@@ -239,6 +235,24 @@ Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j) {
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
 	AVL tmp = e->filial[f]->mes[imes].f->codigos[p];
 	Fat r = getfatfromavl(tmp, produto);
+	return r;
+}
+
+Fat faturacaototal(Emp e, char* codigo, int imes) {
+	int i, j;
+	Fat tmp;
+	Fat r = (Fat)malloc(sizeof(struct fat));
+	r -> quantidade = 0;
+	r -> faturacao = 0;
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 2; j++) {
+			tmp = produtofat(e, 0, imes, 0, codigo);
+			if (tmp) {
+				r -> quantidade += tmp ->quantidade;
+				r->faturacao += tmp -> faturacao;
+			}
+		}
+	}
 	return r;
 }
 

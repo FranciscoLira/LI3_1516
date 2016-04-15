@@ -198,7 +198,7 @@ void imprimeLista(CatProds cps, char letra) {
 		printf("Numero total de elementos:%d\n", n);
 		printf("O numero de paginas: %.0f\n\n", np );
 		printf("                        Página %d\n\n", getPagina(l));
-		while (down < up) {
+		while (down < up) { /*CUNHA, EU ACHO QUE É AQUI, SE PUSERES up-1 Deixa de dar erro, mas testa*/
 			for (t = 0; t < 6 && lista[down]; t++) {
 				printf("%s    ", lista[down++]);
 			}
@@ -323,31 +323,31 @@ void interpretador () {
 						}
 					}
 				}
-
-				break;
-			case '4':
-				break;
-			case '5':
-				break;
-			case '6':
-				break;
-			case '8':
-				break;
-			case '9':
-				break;
-			case 'A':
-				break;
-			case 'B':
-				break;
-			case 'C':
-				break;
 			}
-			if (fgets(cmd, BufferM, stdin) != NULL);
+			break;
+		case '4':printfat(faturacaototal(e,"KR1583",0));
+			break;
+		case '5':
+			break;
+		case '6':
+			break;
+		case '8':
+			break;
+		case '9':
+			break;
+		case 'A':
+			break;
+		case 'B':
+			break;
+		case 'C':
+			break;
 		}
-		removeCatClient(ccl);
-		removeCatProd(cps);
+		if (fgets(cmd, BufferM, stdin) != NULL);
 	}
+	removeCatClient(ccl);
+	removeCatProd(cps);
 }
+
 
 int main() {
 	interpretador();

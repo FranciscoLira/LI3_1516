@@ -47,6 +47,9 @@ Emp initEmpresa ();
 Emp insereVenda (Emp e, Vendatmp v);
 
 Boolean existeVenda (Emp e, Vendatmp v);
+
+
+void printfat(Fat a);
 Fat faturacaototal(Emp e, char* codigo, int imes);
 Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j);
 
