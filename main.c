@@ -31,7 +31,6 @@ struct fat {
 	double faturacao;
 };
 
-
 /*Verifica se a venda é N ou P*/
 int verificaVenda (char promo) {
 	if (promo == 'N' || promo == 'P') return 1;
@@ -83,17 +82,19 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 }
 
 
-Filial leituravendas(CatClients ccs , CatProds cps, Emp e) {
+Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	Vendatmp v;
+	Emp e = initEmpresa();
 	Cliente c = inserec("");
 	Produto pr = inserep("");
-	Filial f = initFilial();
 	FILE *p;
 	char *aux;
 	double preco;
-	int i, cont, mes, filial, quant;
+	int i, cont, mes, filial, quant,z;
 	char buffer[BufferM];
-		e = initEmpresa();
+	for(z=0;z<3;z++){
+		f[z]=initFilial();
+	}
 	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
@@ -126,12 +127,12 @@ Filial leituravendas(CatClients ccs , CatProds cps, Emp e) {
 		setFilial(v, filial);
 		cont = verifica(v, cps, ccs);
 		if (cont == 1) {
+			filial--;
 			e = insereVenda(e, v);
-			f = insereFilial(f, c, pr);
-			if(!f)printf("FEIO\n");
+			f[filial] = insereFilial(f[filial], c, pr, getMes(v),getQuantidade(v));
 		}
 	}
-	return f;
+	return e;
 }
 
 /*Lê o ficheiro Produtos.txt*/
@@ -205,11 +206,15 @@ void imprimeLista(CatProds cps, char letra) {
 	if (n % 90) np++;
 	down = 0; up = 90;
 	while (a != 'Q' && a != 'q') {
-		if (system("@cls||clear") == 0) {;}
+		if(system("clear")==-1)
+			if(system("cls"));
 		j = down; m = up;
-		if (j == 0 && (a == 'A' || a == 'a')) printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
-		if (m == n && (a == 'S' || a == 's')) printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
-		if ((a == 'P' || a == 'p') && (pag < 1 || pag > np)) printf("\nA opção escolhida não é válida!\n\n");
+		if (j == 0 && (a == 'A' || a == 'a')) 
+			printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
+		if (m == n && (a == 'S' || a == 's')) 
+			printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
+		if ((a == 'P' || a == 'p') && (pag < 1 || pag > np)) 
+			printf("\nA opção escolhida não é válida!\n\n");
 		printf("Numero total de elementos:%d\n", n);
 		printf("O numero de paginas: %.0f\n\n", np );
 		printf("                        Página %d\n\n", getPagina(l));
@@ -251,8 +256,12 @@ void imprimeLista(CatProds cps, char letra) {
 			printf("Qual é a página que deseja consultar:  \n");
 			if (scanf("%d", &pag) == 0) {;}
 			if (pag >= 1 && pag <= np) {
-				if (pag > getPagina(l)) while ((pag - getPagina(l) != 0)) alteraPaginamais(l);
-				else while ((getPagina(l) - pag != 0)) alteraPaginamenos(l);
+				if (pag > getPagina(l)) 
+					while ((pag - getPagina(l) != 0)) 
+						alteraPaginamais(l);
+				else 
+					while ((getPagina(l) - pag != 0)) 
+						alteraPaginamenos(l);
 			}
 		}
 		up = auxImprimeUp(up, getPagina(l), np, n);
@@ -260,10 +269,19 @@ void imprimeLista(CatProds cps, char letra) {
 	}
 }
 
-
+int tamanho(char * str){
+	int i,r;
+	i=r=0;
+	while(str[i]!='\0'){
+		r++;
+		i++;
+	}
+	return r;
+}
 
 void showmenu() {
-	if (system("@cls||clear") == 0) {;}
+	if(system("clear")==-1)
+		if(system("cls"));
 	printf("1. Ler todos os ficheiros\n");
 	printf("2. Lista de produtos começados por alguma letra(maiúscula)\n");
 	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
@@ -279,16 +297,36 @@ void showmenu() {
 	printf("Q. Quit\n");
 }
 
+void querie5(Filial *f,Cliente c){
+	int mes,filial;
+	char cl[6];
+	cl[0]='x';
+	if(tamanho(getStringc(c))<5)
+		printf("O cliente não é válido\n");
+	else{
+	printf("MES   FILIAL1   FILIAL2   FILIAL3\n");
+	for(mes=1;mes<13;mes++){
+		printf("%d        ",mes);
+		for(filial=0;filial<3;filial++)
+			printf("%d      ",numprodutos(f[filial], c,mes));
+		printf("\n");
+	}	
+	}
+	printf("Para voltar ao menu: Q\n");
+	while(fgets(cl,5,stdin)){
+		if(cl[0]=='Q' || cl[0]=='q')
+			break;
+	}
+}
 
 void interpretador () {
 	int i, j;
 	CatProds cps = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
-	Filial f =NULL;
-	char fff[10]="W1208";
-	Cliente cl = inserec(fff);
-	/*CatClients clientes =NULL;*/
+	Filial f[3];
+	char client[10];
+	Cliente cl = inserec("");
 	char letra;
 	int verifica = 0;
 	int imes;
@@ -310,7 +348,7 @@ void interpretador () {
 			cps = initCatProds();
 			cps = lerprod(cps);
 			printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
-			f = leituravendas(ccl, cps, e);
+			e = leituravendas(ccl, cps, f);
 			verifica++;
 			showmenu();
 			break;
@@ -352,8 +390,17 @@ void interpretador () {
 			break;
 		case '4': printfat(faturacaototal(e,"KR1583",0));
 			break;
-		case '5': printf("%d\n",numprodutos(f, cl));
-			break;
+		case '5':if(verifica==0){
+					printf("Execute a leitura primeiro!!\n");
+					showmenu();
+					break;
+				}
+				 printf("Qual é o cliente?\n"); 
+				 if(fgets(client,6,stdin)==NULL)break;
+				 cl=alterac(client,cl);
+				 querie5(f,cl);
+				 showmenu();
+				 break;
 		case '6':
 			break;
 		case '8':
@@ -372,7 +419,6 @@ void interpretador () {
 	removeCatClient(ccl);
 	removeCatProd(cps);
 }
-
 
 int main() {
 	interpretador();

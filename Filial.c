@@ -23,7 +23,7 @@ Boolean existeCl(Filial f, char *c){
 	return (existeAVLfil(f->clientes[indice], c));
 }
 
-Filial insereFilial(Filial f, Cliente c, Produto p){
+Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant){
 	int indice;
 	AVLfil aux;
 	char *stringp =(char *)malloc(sizeof(char)*10); 
@@ -33,11 +33,11 @@ Filial insereFilial(Filial f, Cliente c, Produto p){
 	indice = stringc[0] - 65;
 	aux = f->clientes[indice];
 	if(!existeCl(f, stringc)){
-		aux = insereAVLfil(aux,stringc,stringp);
+		aux = insereAVLfil(aux,stringc,stringp,mes,quant);
 		f->clientes[indice] = aux;
 	}
 	else{
-		insereprod(aux, stringc, stringp);
+		insereprod(aux, stringc, stringp,mes,quant);
 	}
 
 	return f;
@@ -52,11 +52,11 @@ void removeFilial(Filial f){
 	free(f);
 } 
 
-int numprodutos(Filial f, Cliente c){
-	int num;
+int numprodutos(Filial f, Cliente c, int mes){
+	int num, m = mes - 1;
 	char *str = getStringc(c);
 	int indice = str[0] - 'A';
-	num = getnum(f->clientes[indice],str);
+	num = getnum(f->clientes[indice],str,m);
 	return num;
 }
 

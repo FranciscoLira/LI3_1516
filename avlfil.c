@@ -4,11 +4,16 @@
 #include "avlfil.h"
 #include "Filial.h"
 
+struct meses{
+	AVLfil mes;
+	int nump;
+};
+
 struct avlfil {
 	int altura;
 	char* codigo;
-	AVLfil produtos;
-	int nump;
+	struct meses produtos[12];
+	int numpt;
 	struct avlfil* esq;
 	struct avlfil* dir;
 };
@@ -45,8 +50,8 @@ AVLfil rotacaoDirfil (AVLfil a) {
 	return aux;
 }
 
-AVLfil insereDirfil (AVLfil a, char* codigo, char* produto) {
-	a->dir = insereAVLfil (a->dir, codigo, produto);
+AVLfil insereDirfil (AVLfil a, char* codigo, char* produto, int mes, int quant) {
+	a->dir = insereAVLfil (a->dir, codigo, produto,mes, quant);
 	if (diferencafil (a->dir, a->esq) == 2) {
 		AVLfil aux = a->dir;
 		if (diferencafil (aux->dir, aux->esq) > 0)
@@ -58,8 +63,8 @@ AVLfil insereDirfil (AVLfil a, char* codigo, char* produto) {
 	return a;
 }
 
-AVLfil insereEsqfil (AVLfil a, char* codigo, char *produto) {
-	a->esq = insereAVLfil (a->esq, codigo, produto);
+AVLfil insereEsqfil (AVLfil a, char* codigo, char *produto, int mes, int quant) {
+	a->esq = insereAVLfil (a->esq, codigo, produto,mes,quant);
 	if (diferencafil (a->esq, a->dir) == 2) {
 		AVLfil aux = a->esq;
 		if (diferencafil (aux->esq, aux->dir) > 0)
@@ -71,18 +76,23 @@ AVLfil insereEsqfil (AVLfil a, char* codigo, char *produto) {
 	return a;
 }
 
-void insereprod(AVLfil a,char* cliente, char* produto){
+void insereprod(AVLfil a,char* cliente, char* produto, int mes, int quant){
 	AVLfil aux=a;
-	int i;
+	int i, m = mes-1;
 	while(aux){
 		i=strcmp(cliente, aux -> codigo);
 		if(i==0){
-			if(!existeAVLfil(aux->produtos, produto)){
-				insereAVLfil(aux->produtos, produto, "");
-				aux->nump+=1; 
+			if(!existeAVLfil(aux->produtos[m].mes, produto)){
+				aux->produtos[m].mes=insereAVLfil(aux->produtos[m].mes, produto, "",mes,quant);
+				aux->numpt += quant;
+				aux->produtos[m].nump += quant; 
 				return;
 			}
-			else return;
+			else{
+				aux->numpt +=quant;
+				aux->produtos[m].nump+=quant;
+				return;
+			}
 		}
 		else{
 			 if(i<0) aux = aux -> esq;
@@ -91,24 +101,29 @@ void insereprod(AVLfil a,char* cliente, char* produto){
 	}
 }
 
-AVLfil insereAVLfil (AVLfil a, char* codigo, char *produto) {
+AVLfil insereAVLfil (AVLfil a, char* codigo, char *produto, int mes, int quant) {
+	int m = mes-1, i;
 	if (!a) {
 		a = malloc (sizeof (struct avlfil));
 		a->codigo = (char*)malloc(sizeof(char) * 10); /*Está a fazer de 10,mas pode ser menos*/
 		strcpy(a->codigo, codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
-		if(strcmp("",produto)==0) a->produtos=NULL;
+		if(strcmp("",produto)==0);
 		else{
-			a->produtos = NULL;
-			a->produtos = insereAVLfil(a->produtos, produto, "");
-			a->nump = 1;
+			for(i=0;i<12;i++){
+				a->produtos[i].mes = NULL;
+				a->produtos[i].nump = 0;
+			}
+			a->produtos[m].mes = insereAVLfil(a->produtos[m].mes, produto, "",mes,quant);
+			a->numpt += quant;
+			a->produtos[m].nump += quant;
 		}
 		return a;
 	}
 	if (strcmp (codigo, a->codigo) > 0)
-		return insereDirfil (a, codigo,produto);
-	return insereEsqfil (a, codigo,produto);
+		return insereDirfil (a, codigo,produto,mes,quant);
+	return insereEsqfil (a, codigo,produto,mes,quant);
 }
 
 
@@ -138,13 +153,17 @@ void freeTreefil (AVLfil a) {
 	}
 }
 
- int getnum(AVLfil a,char * c){
+ int getnum(AVLfil a,char * c, int mes){
  	int i;
  	AVLfil aux = a;
  		while (aux) {
 		i = strcmp (c, aux->codigo);
-		if (i == 0)
-			return aux->nump;
+		if (i == 0){
+			if(mes>11)
+				return aux->numpt;
+			else
+				return aux->produtos[mes].nump;
+		}
 		if (i > 0)
 			aux = aux->dir;
 		else

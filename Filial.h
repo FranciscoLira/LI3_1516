@@ -8,9 +8,9 @@ typedef struct filial *Filial;
 /* Inicializa Filial */
 Filial initFilial();
 /* Insere um produto e cliente na Filial */
-Filial insereFilial(Filial f, Cliente c, Produto p);
+Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant);
 /* Libertar memória da filial */
 void removeFilial(Filial f);
-int numprodutos(Filial f, Cliente c);
+int numprodutos(Filial f, Cliente c, int mes);
 
 #endif
