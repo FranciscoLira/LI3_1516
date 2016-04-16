@@ -12,5 +12,6 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant);
 /* Libertar memória da filial */
 void removeFilial(Filial f);
 int numprodutos(Filial f, Cliente c, int mes);
+CatProds makeCat(Filial *f, CatProds p);
 
 #endif

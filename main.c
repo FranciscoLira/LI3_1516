@@ -195,6 +195,7 @@ void imprimeLista(CatProds cps, char letra) {
 	float np;
 	ConjProds l;
 	char** lista;
+	if(letra!= '/')
 	if((letra - 65)<0 || (letra -65)>25){
 		printf("Letra maiúscula!\n");
 		return;
@@ -308,7 +309,7 @@ void querie5(Filial *f,Cliente c){
 	for(mes=1;mes<13;mes++){
 		printf("%d        ",mes);
 		for(filial=0;filial<3;filial++)
-			printf("%d      ",numprodutos(f[filial], c,mes));
+			printf("%d       ",numprodutos(f[filial], c,mes));
 		printf("\n");
 	}	
 	}
@@ -321,18 +322,14 @@ void querie5(Filial *f,Cliente c){
 
 void interpretador () {
 	int i, j;
-	CatProds cps = NULL;
+	CatProds cps = NULL, cp7=NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
 	Filial f[3];
 	char client[10];
 	Cliente cl = inserec("");
-	char letra;
-	int verifica = 0;
-	int imes;
-	int juntos;
-	char cmd[BufferM];
-	char buffer[BufferM];
+	char letra, cmd[BufferM], buffer[BufferM];
+	int verifica = 0,imes, juntos;
 	Fat tmp;
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
@@ -341,40 +338,40 @@ void interpretador () {
 		case '1': if (verifica != 0) {
 				removeCatClient(ccl);
 				removeCatProd(cps);
-			}
-			ccl = initCatClients();
-			ccl = lerclient(ccl);
-			printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
-			cps = initCatProds();
-			cps = lerprod(cps);
-			printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
-			e = leituravendas(ccl, cps, f);
-			verifica++;
-			showmenu();
-			break;
-		case '2': if (cps == NULL)
+				}
+				ccl = initCatClients();
+				ccl = lerclient(ccl);
+				printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
+				cps = initCatProds();
+				cps = lerprod(cps);
+				printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
+				e = leituravendas(ccl, cps, f);
+				verifica++;
+				showmenu();
+				break;
+		case '2':if (cps == NULL)
 				printf("Precisa de selecionar a leitura primeiro!\n");
-			else {
+				else {
 				printf("Qual será a Letra?\n");
 				if (scanf("%c", &letra) == -1);
 				imprimeLista(cps, letra);
-			}
-			showmenu();
-			break;
+				}
+				showmenu();
+				break;
 		case '3': if (e == NULL) {
 				printf("Precisa de selecionar a leitura primeiro\n");
-			}
-			else {
-				printf("Qual o código que quer saber a faturação?\n");
-				if (scanf("%s", buffer) == -1);
-				printf("Qual o mês que quer saber a faturação?\n");
-				if (scanf("%d", &imes) == -1);
-				printf("Quer o resultado global ou filial a filial?\n");
-				printf("0. Filial a Filial\n 1.Total\n");
-				if (scanf("%d", &juntos) == -1);
-				if (juntos) {
-					tmp = faturacaototal(e, buffer, imes);
 				}
+				else {
+					printf("Qual o código que quer saber a faturação?\n");
+					if (scanf("%s", buffer) == -1);
+					printf("Qual o mês que quer saber a faturação?\n");
+					if (scanf("%d", &imes) == -1);
+					printf("Quer o resultado global ou filial a filial?\n");
+					printf("0. Filial a Filial\n 1.Total\n");
+					if (scanf("%d", &juntos) == -1);
+					if (juntos) {
+						tmp = faturacaototal(e, buffer, imes);
+					}
 				else {
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < 1; j++) {
@@ -386,33 +383,42 @@ void interpretador () {
 						}
 					}
 				}
-			}
-			break;
-		case '4': printfat(faturacaototal(e,"KR1583",0));
-			break;
+				}
+				break;
+		case '4':printfat(faturacaototal(e,"KR1583",0));
+				break;
 		case '5':if(verifica==0){
-					printf("Execute a leitura primeiro!!\n");
+					printf("Execute a leitura primeiro!\n");
 					showmenu();
 					break;
 				}
-				 printf("Qual é o cliente?\n"); 
-				 if(fgets(client,6,stdin)==NULL)break;
-				 cl=alterac(client,cl);
-				 querie5(f,cl);
-				 showmenu();
-				 break;
+				printf("Qual é o cliente?\n"); 
+				if(fgets(client,6,stdin)==NULL)break;
+				cl=alterac(client,cl);
+				querie5(f,cl);
+				showmenu();
+				break;
 		case '6':
-			break;
+				break;
+		case '7':if(verifica==0)
+					printf("Execute a leitura primeiro!\n");
+				else{
+					cp7 = initCatProds();
+					cp7 = makeCat(f,cp7);
+					imprimeLista(cp7,'/');
+				}
+				showmenu();
+				break;
 		case '8':
-			break;
+				break;
 		case '9':
-			break;
+				break;
 		case 'A':
-			break;
+				break;
 		case 'B':
-			break;
+				break;
 		case 'C':
-			break;
+				break;
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}

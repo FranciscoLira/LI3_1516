@@ -144,16 +144,27 @@ int alteraPaginamenos(ConjProds l) {
 
 
 ConjProds getList (CatProds cps, char letra) {
-	int i = 0;
-	int k;
+	int i=0, j=0;
+	int k=0;
 	ConjProds l = malloc(sizeof(struct conjProd));
-	l->size = totalProdutosLetra(cps, letra);
+	if(letra=='/')
+		l->size=totalProdutos(cps);
+	else 
+		l->size = totalProdutosLetra(cps, letra);
 	l->pagina = 1;
 	l->lista = malloc(sizeof(char*) * (l->size));
-	k = letra - 'A';
-	if(k<0 || k>25) return NULL;
-	l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(i));
-	return l;
+	printf("%d\n",l->size );
+	if(letra=='/'){
+		for(j=0;j<26;j++)
+			l->lista = auxiliarImprime(l->lista, cps->cP[j]->root, &(i));
+		return l;
+	}
+	else {
+		k = letra - 'A';
+		if(k<0 || k>25) return NULL;
+		l->lista = auxiliarImprime(l->lista, cps->cP[k]->root, &(i));
+		return l;
+	}
 }
 
 char* getStringp(Produto p){

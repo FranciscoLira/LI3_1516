@@ -3,6 +3,7 @@
 #include <string.h>
 #include "avlfil.h"
 #include "Filial.h"
+#include "CatProd.h"
 
 struct meses{
 	AVLfil mes;
@@ -172,10 +173,15 @@ void freeTreefil (AVLfil a) {
 	return 0;
  }
 
- void inorder(AVLfil a){
- 	if(a){
- 		inorder(a->esq);
- 		printf("%s\n",a->codigo);
- 		inorder(a->dir);
+CatProds funcaocat(CatProds cps, AVLfil x){
+	Produto p= inserep("");
+	AVLfil a = x;
+	if(a){
+ 		funcaocat(cps,a->esq);
+ 		p=alterap(a->codigo,p);
+ 		if(!existeProduto(cps, p))
+ 			cps=insereProduto(cps,p);
+ 		funcaocat(cps,a->dir);
  	}
- }
+ 	return cps;
+}

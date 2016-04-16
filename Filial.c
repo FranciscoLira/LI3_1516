@@ -60,4 +60,14 @@ int numprodutos(Filial f, Cliente c, int mes){
 	return num;
 }
 
+/*Função para querie7... Falar com o professor sobre o facto de utilizar Catprods*/
+CatProds makeCat(Filial *f, CatProds p){
+	int i, cl;
+	for (i=0;i<3;i++){
+		for(cl=0;cl<26;cl++)
+			p=funcaocat(p,f[i]->clientes[cl]);
+	}
+	return p;
+}
+
 /* (fazer)Função útil para a querie8 */
