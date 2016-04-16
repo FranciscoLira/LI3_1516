@@ -206,6 +206,7 @@ void imprimeLista(CatProds cps, char letra) {
 	np = n / 90;
 	if (n % 90) np++;
 	down = 0; up = 90;
+	lista[n] = NULL;
 	while (a != 'Q' && a != 'q') {
 		if(system("clear")==-1)
 			if(system("cls"));
@@ -221,14 +222,7 @@ void imprimeLista(CatProds cps, char letra) {
 		printf("                        Página %d\n\n", getPagina(l));
 		while (down < up) {
 			for (t = 0; t < 6; t++) {
-				if (down%2 == 0) {
 					if (lista[down]) printf("%s    ", lista[down++]); 
-					else break;
-				}
-				else {
-					if (lista[down+2]) printf("%s    ", lista[down++]); 
-					else break;
-				}
 			}
 			printf("\n");
 		}
