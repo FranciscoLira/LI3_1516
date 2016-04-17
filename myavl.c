@@ -22,8 +22,6 @@ struct fat {
 	double faturacao;
 };
 
-
-
 int max (int a, int b) {
 	return (a > b ? a : b);
 }
@@ -105,9 +103,6 @@ AVL insereAVL (AVL a, char* codigo, union FatVFil v) {
 		return insereDir (a, codigo);
 	return insereEsq (a, codigo);
 }
-
-
-
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL (AVL a, char* codigo) {
 	AVL aux = a;
@@ -123,7 +118,6 @@ Boolean existeAVL (AVL a, char* codigo) {
 	}
 	return false;
 }
-
 /*retorna a faturação de um produto, recebendo a avl e o produto a procurar,
   retorna NULL se não houver esse produto*/
 Fat getfatfromavl(AVL a, char* codigo) {
@@ -138,7 +132,6 @@ Fat getfatfromavl(AVL a, char* codigo) {
 	}
 	return NULL;
 }
-
 /*faz fre de uma avl e de todos os seus nodos*/
 void freeTree (AVL a) {
 	if (a) {
@@ -158,7 +151,6 @@ char** auxiliarImprime(char** lista, AVL t, int *i) {
 	}
 	return lista;
 }
-
 /*faz print do valor de um boolean, mais para debug*/
 void printbool(Boolean a) {
 	if (a) {
@@ -168,7 +160,6 @@ void printbool(Boolean a) {
 		printf("false\n");
 	}
 }
-
 /*AQUI é necessário ter dois avlcpy para campos diferentes??*/
 AVL avlcpyfa(AVL a) {
 	AVL r;
@@ -192,7 +183,6 @@ AVL avlcpyfa(AVL a) {
 	}
 	return r;
 }
-
 /*
 AVL avlcpyfi(AVL a) {
 	AVL r;

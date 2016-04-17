@@ -121,7 +121,7 @@ AVLfil insereAVLfil (AVLfil a, char* codigo, char *produto, int mes, int quant, 
 	int m = mes-1, i;
 	if (!a) {
 		a = malloc (sizeof (struct avlfil));
-		a->codigo = (char*)malloc(sizeof(char) * 10); /*Está a fazer de 10,mas pode ser menos*/
+		a->codigo = (char*)malloc(sizeof(char) * 10); 
 		strcpy(a->codigo, codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
@@ -165,7 +165,7 @@ Boolean existeAVLfil (AVLfil a, char* codigo) {
 	return false;
 }
 
-/*faz fre de uma avl e de todos os seus nodos*/
+/*faz free de uma avl e de todos os seus nodos*/
 void freeTreefil (AVLfil a, int x) {
 	int i;
 	if (a) {
@@ -203,7 +203,8 @@ void freeTreefil (AVLfil a, int x) {
 		}
 	return 0;
  }
-
+/* Esta função devolve um Catalogo de produtos com os clientes que fizeram compras
+nas 3 filiais para ser imprimido na main (querie 7)*/
 CatProds funcaocat(CatProds cps, AVLfil x1, AVLfil x2,AVLfil x3){
 	Produto p= inserep("");
 	AVLfil a = x1;
