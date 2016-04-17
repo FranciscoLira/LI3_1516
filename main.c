@@ -129,7 +129,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 		if (cont == 1) {
 			filial--;
 			e = insereVenda(e, v);
-			f[filial] = insereFilial(f[filial], c, pr, getMes(v),getQuantidade(v));
+			f[filial] = insereFilial(f[filial], c, pr, getMes(v),getQuantidade(v),getPromo(v));
 		}
 	}
 	return e;
@@ -316,14 +316,36 @@ void querie5(Filial *f,Cliente c){
 	}	
 }
 
+void querie8(Produto pr, Filial f){
+	ConjComprados c1,c2;
+	char** n; int tamn,tamp,i;
+	char** p;
+	c1 = comprou(pr,f,0);
+	c2 = comprou(pr,f,1);
+	n = getListConj(c1);
+	p = getListConj(c2);
+	tamn = getTamConj(c1);
+	tamp = getTamConj(c2);
+	printf("Tipo N: (nº %d)\n",tamn);
+	printf("Clientes: ");
+	for(i=0;i<tamn;i++)
+		printf("%s ",n[i]);
+	printf("\nTipo P: (nº %d)\n",tamp);
+	for(i=0;i<tamp;i++)
+		printf("%s ",p[i]);
+	printf("\n");
+	freeConj(c1); freeConj(c2);
+}
+
 void interpretador () {
-	int i, j;
+	int i, j,fil;
 	CatProds cps = NULL, cp7=NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
 	Filial f[3];
-	char client[10];
+	char client[10],pro[10];
 	Cliente cl = inserec("");
+	Produto prod = inserep("");
 	char letra, cmd[BufferM], buffer[BufferM];
 	int verifica = 0,imes, juntos;
 	Fat tmp;
@@ -410,7 +432,21 @@ void interpretador () {
 				}
 				showmenu();
 				break;
-		case '8':
+		case '8':if(verifica==0)
+					printf("Execute a leitura primeiro!\n");
+				else{
+					printf("Qual é o produto?\n");
+					if(fgets(pro,7,stdin)==NULL)break;
+					if(tamanho(pro)==6)
+						prod=alterap(pro,prod);
+					printf("Qual é a filial?\n");
+					if(scanf(" %d", &fil));
+					fil--;
+					if(fil>-1 && fil<3)
+						querie8(prod,f[fil]);
+					voltamenu();
+					showmenu();
+				}
 				break;
 		case '9':
 				break;

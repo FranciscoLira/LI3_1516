@@ -5,6 +5,11 @@
 #include "boolean.h"
 #include "avlfil.h"
 
+struct comprou{
+	char **lista;
+	int tam;
+};
+
 struct filial{
 	AVLfil clientes[26];
 };
@@ -22,8 +27,8 @@ Boolean existeCl(Filial f, char *c){
 	int indice = c[0] -65;
 	return (existeAVLfil(f->clientes[indice], c));
 }
-
-Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant){
+/*Este int m é o P ou N, em que N=0, P=1*/
+Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m){
 	int indice;
 	AVLfil aux;
 	char *stringp =(char *)malloc(sizeof(char)*10); 
@@ -33,11 +38,11 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant){
 	indice = stringc[0] - 65;
 	aux = f->clientes[indice];
 	if(!existeCl(f, stringc)){
-		aux = insereAVLfil(aux,stringc,stringp,mes,quant);
+		aux = insereAVLfil(aux,stringc,stringp,mes,quant,m);
 		f->clientes[indice] = aux;
 	}
 	else{
-		insereprod(aux, stringc, stringp,mes,quant);
+		insereprod(aux, stringc, stringp,mes,quant,m);
 	}
 
 	return f;
@@ -67,4 +72,28 @@ CatProds makeCat(Filial *f, CatProds p){
 	return p;
 }
 
-/* (fazer)Função útil para a querie8 */
+/* Função útil para a querie8 */
+ConjComprados comprou(Produto p, Filial f, int tipo){
+	int i=0,tam=0,j; 
+	char *str=getStringp(p);
+	ConjComprados s=malloc(sizeof(struct comprou));
+	char **l =malloc(sizeof(char *)*60); /*Sera alocaçao dinamica, mas pra ja esta assim DEAL WITH IT*/
+	for(j=0;j<26;j++)
+		l=quemComprou(l,str,f->clientes[j],&i,tipo,&tam);
+	s->lista=l;
+	s->tam=tam;
+	return s;
+}
+
+void freeConj(ConjComprados c){
+	free(c->lista);
+	free(c);
+}
+
+char** getListConj(ConjComprados c){
+	return c->lista;
+}
+
+int getTamConj(ConjComprados c){
+	return c->tam;
+}
