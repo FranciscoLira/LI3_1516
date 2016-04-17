@@ -46,7 +46,7 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m){
 	else{
 		insereprod(aux, stringc, stringp,mes,quant,m);
 	}
-
+	free(stringp); free(stringc);
 	return f;
 }
 /*Remove toda a estrutura da memória*/
