@@ -46,8 +46,7 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant){
 void removeFilial(Filial f){
 	int i;
 	for (i=0;i<26;i++){
-		/*FALTA FAZER FREE DAS ARVORES DE PRODUTOS NAO ESQUECER*/
-		freeTreefil(f->clientes[i]);
+		freeTreefil(f->clientes[i],0);
 	}
 	free(f);
 } 
@@ -62,11 +61,9 @@ int numprodutos(Filial f, Cliente c, int mes){
 
 /*Função para querie7... Falar com o professor sobre o facto de utilizar Catprods*/
 CatProds makeCat(Filial *f, CatProds p){
-	int i, cl;
-	for (i=0;i<3;i++){
-		for(cl=0;cl<26;cl++)
-			p=funcaocat(p,f[i]->clientes[cl]);
-	}
+	int cl;
+	for(cl=0;cl<26;cl++)
+		p=funcaocat(p,f[0]->clientes[cl],f[1]->clientes[cl],f[2]->clientes[cl]);
 	return p;
 }
 

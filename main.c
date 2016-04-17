@@ -291,11 +291,17 @@ void showmenu() {
 	printf("C. Nº de clientes que não realizaram compras e nº produtos que ninguém comprou\n");
 	printf("Q. Quit\n");
 }
+void voltamenu(){
+	char cl[6];
+	cl[0]='x';
+	printf("Para voltar ao menu: Q\n");
+	while(fgets(cl,5,stdin))
+		if(cl[0]=='Q' || cl[0]=='q')
+			break;
+}
 
 void querie5(Filial *f,Cliente c){
 	int mes,filial;
-	char cl[6];
-	cl[0]='x';
 	if(tamanho(getStringc(c))<5)
 		printf("O cliente não é válido\n");
 	else{
@@ -305,13 +311,9 @@ void querie5(Filial *f,Cliente c){
 		for(filial=0;filial<3;filial++)
 			printf("%d       ",numprodutos(f[filial], c,mes));
 		printf("\n");
+	}
+	voltamenu();
 	}	
-	}
-	printf("Para voltar ao menu: Q\n");
-	while(fgets(cl,5,stdin)){
-		if(cl[0]=='Q' || cl[0]=='q')
-			break;
-	}
 }
 
 void interpretador () {
@@ -329,18 +331,23 @@ void interpretador () {
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
 		switch (cmd[0]) {
-		case '1': if (verifica != 0) {
-				removeCatClient(ccl);
-				removeCatProd(cps);
+		case '1':if (verifica != 0) {
+					removeCatClient(ccl);
+					removeCatProd(cps);
+					removeFilial(f[0]);
+					removeFilial(f[1]);
+					removeFilial(f[2]);
 				}
 				ccl = initCatClients();
 				ccl = lerclient(ccl);
 				printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
 				cps = initCatProds();
 				cps = lerprod(cps);
-				printf("\nLido Produtos.txt. Nº: %d\n\n", totalProdutos(cps));
+				printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 				e = leituravendas(ccl, cps, f);
+				printf("\nLido Vendas.txt\n\n");
 				verifica++;
+				voltamenu();
 				showmenu();
 				break;
 		case '2':if (cps == NULL)
@@ -416,8 +423,13 @@ void interpretador () {
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}
-	removeCatClient(ccl);
-	removeCatProd(cps);
+	if(verifica!=0){
+		removeCatClient(ccl);
+		removeCatProd(cps);
+		removeFilial(f[0]);
+		removeFilial(f[1]);
+		removeFilial(f[2]);
+	}
 }
 
 int main() {

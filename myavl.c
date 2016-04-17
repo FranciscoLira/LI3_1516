@@ -144,6 +144,7 @@ void freeTree (AVL a) {
 	if (a) {
 		freeTree (a->esq);
 		freeTree (a->dir);
+		free(a->codigo);
 		free (a);
 	}
 }
