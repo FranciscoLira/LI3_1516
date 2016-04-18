@@ -24,5 +24,6 @@ char** getListConj(ConjComprados c);
 int getTamConj(ConjComprados c);
 /* Liberta memoria ocupada por um ConjClientes */
 void freeConj(ConjComprados c);
+AVLfil funcao9(Filial *f, int mes, Cliente c);
 
 #endif

@@ -234,3 +234,56 @@ char** quemComprou(char** lista, char *prod, AVLfil t, int *i, int z, int *tam) 
 	return lista;
 }
 
+void altera(AVLfil res, char * prod, int quant){
+	AVLfil aux = res;
+	int i;
+	while (aux) {
+		i = strcmp (prod, aux->codigo);
+		if (i == 0)
+			aux->numpt+=quant;
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+}
+
+AVLfil auxp(AVLfil res, AVLfil prod,int mes,int tipo,char *cliente){
+	int i;
+	AVLfil a=prod;
+	while (a) {
+		i = strcmp (cliente, a->codigo);
+		if (i == 0)
+			break;
+		if (i > 0)
+			a = a->dir;
+		else
+			a = a->esq;
+	}
+	a=a->produtos[mes]->mes[tipo];
+	res=auxiliarInsere(res,a);
+	return res;
+}
+
+void inorder(AVLfil a){
+	if(a){
+		inorder(a->esq);
+		printf("%s\n",a->codigo );
+		inorder(a->dir);
+	}
+}
+
+AVLfil auxiliarInsere(AVLfil res, AVLfil prod){
+	AVLfil a = prod;
+	if(a){
+		res = auxiliarInsere(res, a->esq);
+		if(!existeAVLfil(res,a->codigo))
+			res = insereAVLfil(res,a->codigo,"",0,a->numpt,0);
+		else{
+			altera(res,a->codigo,a->numpt);
+		}
+		res = auxiliarInsere(res, a->dir);
+	}
+	return res;
+}
+

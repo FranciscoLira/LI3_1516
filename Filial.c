@@ -96,3 +96,18 @@ char** getListConj(ConjComprados c){
 int getTamConj(ConjComprados c){
 	return c->tam;
 }
+
+AVLfil funcao9(Filial *f, int mes, Cliente c){
+	char* str=malloc(10);
+	int i, j, k;
+	AVLfil res = NULL;
+	strcpy(str,getStringc(c));
+	k=str[0]-65;
+	for(i=0;i<3; i++)
+		for(j=0;j<2;j++)
+			res = auxp(res, f[i]->clientes[k], mes-1,j,str);
+	inorder(res);
+	free(str);
+	return res;
+}
+

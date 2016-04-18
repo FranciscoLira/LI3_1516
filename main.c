@@ -445,7 +445,8 @@ void interpretador () {
 					showmenu();
 				}
 				break;
-		case '9':
+		case '9':cl=alterac("J2581",cl); 
+				funcao9(f,11,cl);
 			break;
 		case 'A':
 			break;
