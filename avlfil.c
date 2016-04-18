@@ -287,3 +287,20 @@ AVLfil auxiliarInsere(AVLfil res, AVLfil prod){
 	return res;
 }
 
+int numAVL(AVLfil res){
+	AVLfil aux = res;
+	if (aux == NULL) return 0;
+	else return 1+(numAVL(aux->esq))+(numAVL(aux->dir));
+}
+
+void inseredaAvl(AVLfil res, int* quantidades, char** codigos, int *i) {
+	AVLfil aux = res;
+	if (aux) {
+		inseredaAvl(aux->esq, quantidades, codigos, i);
+		codigos[*i] = malloc(sizeof(char)*10);
+		strcpy(codigos[*i],res->codigo);
+		quantidades[*i] = res->numpt;
+		(*i)++;
+		inseredaAvl(aux->dir, quantidades, codigos, i);
+	}
+}

@@ -24,6 +24,10 @@ char** getListConj(ConjComprados c);
 int getTamConj(ConjComprados c);
 /* Liberta memoria ocupada por um ConjClientes */
 void freeConj(ConjComprados c);
+void quickSort(int* quant, char** cod, int l, int r);
+int partition(int* quant, char** cod, int l, int r);
+void init (int n, char** codigos, int* quant);
+void ordenaDecre (AVLfil res, char** codigos, int* quantidades, int n);
 AVLfil funcao9(Filial *f, int mes, Cliente c);
 
 #endif

@@ -97,6 +97,46 @@ int getTamConj(ConjComprados c){
 	return c->tam;
 }
 
+void quickSort(int* quant, char** cod, int l, int r) {
+   int j;
+   if( l < r ) {
+       j = partition(quant, cod, l, r);
+       quickSort(quant, cod, l, j-1);
+       quickSort(quant, cod, j+1, r);
+   }
+}
+
+
+int partition(int* quant, char** cod, int l, int r) {
+   int pivot, i, j, t;
+   char* t2 = malloc(10);
+   pivot = quant[l];
+   i = l; j = r+1;
+	while(1) {
+   	do ++i; while( quant[i] >= pivot && i <= r );
+   	do --j; while( quant[j] < pivot );
+   	if( i >= j ) break;
+   	t = quant[i]; quant[i] = quant[j]; quant[j] = t;
+   	strcpy(t2,cod[i]); strcpy(cod[i],cod[j]); strcpy(cod[j],t2);
+   }
+   t = quant[l]; quant[l] = quant[j]; quant[j] = t;
+   strcpy(t2,cod[l]); strcpy(cod[l],cod[j]); strcpy(cod[j],t2);
+   free(t2);
+   return j;
+}
+
+void init (int n, char** codigos, int* quant) {
+     codigos = (char**)malloc(sizeof(char*)*n);
+	 quant = (int*)malloc(sizeof(int)*n);
+}
+
+void ordenaDecre (AVLfil res, char** codigos, int* quantidades, int n) {
+	 int i;
+	 i = 0;
+	 inseredaAvl(res, quantidades, codigos, &i);
+	 quickSort(quantidades, codigos, 0, n-1);
+}
+
 AVLfil funcao9(Filial *f, int mes, Cliente c){
 	char* str=malloc(10);
 	int i, j, k;
@@ -105,9 +145,8 @@ AVLfil funcao9(Filial *f, int mes, Cliente c){
 	k=str[0]-65;
 	for(i=0;i<3; i++)
 		for(j=0;j<2;j++)
-			res = auxp(res, f[i]->clientes[k], mes-1,j,str);
-	inorder(res);
-	free(str);
+			res = auxp(res, f[i]->clientes[k], mes,j,str);
+    free(str);
 	return res;
 }
 

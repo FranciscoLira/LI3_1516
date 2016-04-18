@@ -334,8 +334,25 @@ void querie8(Produto pr, Filial f){
 	freeConj(c1); freeConj(c2);
 }
 
+void querie9(Filial *f, Cliente c, int mes) {
+	 int n, i;
+     char** codigos;
+     int* quantidades;
+     AVLfil res = NULL;
+     res = funcao9(f, mes, c);
+     n = numAVL(res);
+     codigos = (char**)malloc(sizeof(char*)*n);
+	 quantidades = (int*)malloc(sizeof(int)*n);
+	 ordenaDecre(res, codigos, quantidades, n);
+	 printf("Produtos:\n");
+	 for(i = 0; i < n; i++) {
+	 	printf("%s\n", codigos[i]);
+	 }
+	 printf("\n");
+}
+
 void interpretador () {
-	int i, j,fil;
+	int i,fil, mes, j;
 	CatProds cps = NULL, cp7=NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -445,8 +462,21 @@ void interpretador () {
 					showmenu();
 				}
 				break;
-		case '9':cl=alterac("J2581",cl); 
-				funcao9(f,11,cl);
+		case '9':if(verifica==0)
+					printf("Execute a leitura primeiro!\n");
+				else{
+					printf("Qual é o Cliente?\n");
+					if(fgets(client,6,stdin)==NULL)break;
+					if(tamanho(client)==5)
+						cl=alterac(client,cl);
+					printf("Qual é o mes?\n");
+					if(scanf("%d", &mes));
+					mes--;
+					if(mes>-1 && mes<12)
+					   querie9(f, cl, mes);
+					voltamenu();
+					showmenu();
+				}
 			break;
 		case 'A':
 			break;
