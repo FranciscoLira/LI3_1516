@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "faturacao.h"
-#include "Filial.h"
 
 struct vendatmp {
 	char produto[10];
@@ -12,40 +11,33 @@ struct vendatmp {
 	char cliente[10];
 	int mes;
 	int filial;
-} Vtmp;
+};
 
 struct fat {
 	int quantidade;
 	double faturacao;
 };
 
-struct fatmes {
-	AVL codigos[2];
-	int totalvendas[2];
-	double totalfat[2];
-};
-
-struct fatall {
-	union {
-		Fatmes f;
-		AVL* l;
-	} mes[13];
-};
-
-union FatVFil {
-	Fat fa;
-	Fil fi;
-};
-
 struct avl {
 	int altura;
 	char* codigo;
-	union FatVFil extra;
+	Fat extra;
 	struct avl* esq;
 	struct avl* dir;
 };
 
+typedef struct fatmes {
+	AVL codigos[2];
+	int totalvendas[2];
+	double totalfat[2];
+}*Fatmes;
 
+typedef struct fatall {
+	union {
+		Fatmes f;
+		AVL* l;
+	} mes[13];
+}*Fatall;
 
 /* Exemplo de utilização por causa do Union, pode dar jeito no relatório
 
@@ -57,6 +49,14 @@ struct avl {
 struct empresa {
 	Fatall filial[3];
 };
+
+double getfatfat(Fat a) {
+	return (a->faturacao);
+}
+
+int getfatquant(Fat a) {
+	return a->quantidade;
+}
 
 double getPreco(Vendatmp v) {
 	return v->preco;
@@ -118,6 +118,7 @@ void setCliente(Vendatmp v, char* cliente) {
 Fatmes initFatmes() {
 	int i;
 	Fatmes r = (Fatmes)malloc(sizeof(struct fatmes));
+
 	for (i = 0; i < 2; i++) {
 		r->codigos[i] = NULL;
 		r->totalvendas[i] = 0;
@@ -129,10 +130,10 @@ Fatmes initFatmes() {
 Fatall initFatall() {
 	int i;
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
-	r->mes[0].l = (AVL*)malloc(sizeof(AVL) * 26);
-	/*for(i=0; i<26; i++){
-		r->mes[0].l[i] = NULL;
-	}*/
+	r->mes[0].l = (AVL*)malloc(sizeof(AVL)*26);
+	for (i = 0; i < 26; i++) {
+		r->mes[0].l[i] = newAVL();
+	}
 	for (i = 1; i < 13; i++) {
 		r->mes[i].f = initFatmes();
 	}
@@ -146,7 +147,7 @@ Emp insereProdVaziosEmp(Emp e, AVL* produtos) {
 	int i, j;
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 26; j++) {
-			e->filial[i]->mes[0].l[j] = avlcpyfa(produtos[j]);
+			e->filial[i]->mes[0].l[j] = avlcpy(produtos[j]);
 		}
 	}
 	return e;
@@ -162,29 +163,39 @@ Emp initEmpresa () {
 	/*insereProdVaziosEmp (r, produtos); tem de ser feito, mas na main pois precisa de receber a AVL Prod*/
 }
 
-/*Retorna a faturação de uma certa venda*/
-Fat convvendafat(Vendatmp a) {
+/*Recebe quais os campos a aplicar no fat e aloca memória para ele*/
+Fat alocafat(double faturacao, int quantidade) {
 	Fat r = (Fat)malloc(sizeof(struct fat));
-	r->quantidade = a->quantidade;
-	r->faturacao = (a->quantidade) * (a->preco);
+	r->faturacao = faturacao;
+	r->quantidade = quantidade;
 	return r;
 }
 
-void addfatNodo(AVL a, Fat f) {
-	if (a->extra.fa == NULL) {
-		a->extra.fa = (Fat)malloc(16);
-		a->extra.fa->quantidade = 0;
-		a->extra.fa->faturacao = 0;
-	}
-	a->extra.fa->faturacao += f->faturacao;
-	a->extra.fa->quantidade += f->quantidade;
+/*Retorna a faturação de uma certa venda.
+  Aloca a memória necessária para ela, se for para fazer copia tem de fazer free depois.*/
+Fat convvendafat(Vendatmp tmp) {
+	double a = (tmp->quantidade) * (tmp->preco);
+	int b = tmp->quantidade;
+	Fat r = alocafat(a, b);
+	return r;
 }
 
+/*Adiciona uma faturação a um nodo da AVL
+Aloca memória se for necessário e coloca-a a zero nesse caso,
+Apenas soma à anterior se já havia faturação para esse produto*/
+void addfatNodo(AVL a, Fat f) {
+	if (a->extra == NULL) {
+		a->extra = alocafat(0, 0);
+	}
+	a->extra->faturacao += f->faturacao;
+	a->extra->quantidade += f->quantidade;
+}
+
+/*Insere a faturação de um produto(codigo) na lista de 26 AVL*/
 void inserefattot(AVL* a, Fat f, char* codigo) {
 	int car = codigo[0] - 'A';
 	AVL aux = a[car];
 	int i;
-
 	while (aux) {
 		i = strcmp (codigo, aux->codigo);
 		if (i == 0)
@@ -196,22 +207,19 @@ void inserefattot(AVL* a, Fat f, char* codigo) {
 	}
 }
 
-
+/*Insere uma venda na empresa no devido sitio, isto é no mês e na total*/
 Emp insereVenda(Emp e, Vendatmp v) {
-	union FatVFil r;
-	r.fa = convvendafat(v);
+	Fat r;
+	r = convvendafat(v);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
-	inserefattot(e->filial[(v->filial) - 1]->mes[0].l, r.fa, v->produto);
-	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r.fa->faturacao;
-	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r.fa->quantidade;
+	inserefattot(e->filial[(v->filial) - 1]->mes[0].l, r, v->produto);
+	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r->faturacao;
+	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r->quantidade;
 	return e;
 }
 
-Boolean existeVenda(Emp e, Vendatmp v) {
-	AVL tmp = e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo];
-	return (existeAVL(tmp, v->produto));
-}
 
+/*Para debug*/
 void printfat(Fat a) {
 	if (a == NULL) {
 		printf("deumerda!\n");
@@ -222,32 +230,40 @@ void printfat(Fat a) {
 	}
 }
 
-
-
-Fat faturacaoparcial(Emp e, char* codigo, int imes, int i, int j) {
-	Fat r = (Fat)malloc(sizeof(struct fat));
-	Fat tmp = produtofat(e, i, imes, j, codigo);
-	r->faturacao = tmp -> faturacao;
-	r->quantidade = tmp -> quantidade;
-	return r;
+/*Retorna a faturação de um produto, recebendo a avl e o produto a procurar,
+  Retorna NULL se não houver esse produto*/
+Fat getfatfromavl(AVL a, char* codigo) {
+	AVL aux = a;
+	int i;
+	while (aux) {
+		i = strcmp(codigo, getcodigo(aux));
+		if (i == 0) return aux->extra;
+		if (i > 0) aux = getdir(aux);
+		else aux = getesq(aux);
+	}
+	return NULL;
 }
 
-/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não promoçao*/
+
+/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não promoçao
+Aloca memória por isso deve ser feito o free*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
-	AVL tmp = e->filial[f]->mes[imes].f->codigos[p];
-	Fat r = getfatfromavl(tmp, produto);
+	Fat r;
+	AVL atmp = e->filial[f]->mes[imes].f->codigos[p];
+	Fat ftmp = getfatfromavl(atmp, produto);
+	r = alocafat(ftmp->faturacao, ftmp->quantidade);
 	return r;
 }
 
+/*Retorna a faturação total de um produto(codigo) num dado mes(imes)
+Aloca memória e deve ser feito o free da mesma*/
 Fat faturacaototal(Emp e, char* codigo, int imes) {
-	int i, j;
+	int f, p;
 	Fat tmp;
-	Fat r = (Fat)malloc(sizeof(struct fat));
-	r -> quantidade = 0;
-	r -> faturacao = 0;
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 2; j++) {
-			tmp = produtofat(e, 0, imes, 0, codigo);
+	Fat r = alocafat(0, 0);
+	for (f = 0; f < 3; f++) {
+		for (p = 0; p < 2; p++) {
+			tmp = produtofat(e, f, imes, p, codigo);
 			if (tmp) {
 				r -> quantidade += tmp ->quantidade;
 				r->faturacao += tmp -> faturacao;
@@ -257,21 +273,11 @@ Fat faturacaototal(Emp e, char* codigo, int imes) {
 	return r;
 }
 
-Fat somaFat(Fat* lista, int q) {
-	int i;
-	Fat r = lista[0];
-	for (i = 0; i < q; i++) {
-		r->quantidade += lista[i]->faturacao;
-		r->faturacao += lista[i]->faturacao;
-	}
-	return r;
-}
 
-
-/*Acho que faz o free de tudo*/
+/*Faz o free de toda a memória que for alocada para guardar a informação da filial*/
 void freeEmp (Emp e) {
 	int i, j, n;
-	for (i = 0; i < 2; i++) {
+	for (i = 0; i < 3; i++) {
 		for (n = 0; n < 26; n++) {
 			freeTree(e->filial[i]->mes[0].l[n]);
 		}

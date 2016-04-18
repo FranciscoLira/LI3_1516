@@ -1,8 +1,9 @@
 #ifndef CatClients_H_
 #define CatClients_H_
-#include "CatProd.h"
+#include "myavl.h"
 
 typedef struct clients* CatClients;
+
 typedef struct client* Cliente;
 
 AVL getAvlC (CatClients ccs, int i);

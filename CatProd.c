@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "myavl.h"
 #include "Filial.h"
 #include "CatProd.h"
 
@@ -14,19 +15,6 @@ typedef struct avlp {
 	int tamanho;
 	AVL root;
 }*Trees;
-
-union FatVFil {
-	Fat fa;
-	Fil fi;
-};
-
-struct avl {
-	int altura;
-	char* codigo;
-	union FatVFil extra;
-	struct avl* esq;
-	struct avl* dir;
-};
 
 struct prod {
 	char nomeprod[10];
@@ -42,9 +30,9 @@ AVL getAvlP (CatProds cps, int i) {
 
 AVL* getTree(CatProds cps) {
 	int i;
-	AVL* r = (AVL*)malloc(sizeof(struct avl) * 26);
+	AVL* r = (AVL*)malloc(sizeof(AVL)*26);
 	for (i = 0; i < 26; i++) {
-		r[i] = avlcpyfa(cps->cP[i]->root);
+		r[i] = avlcpy(cps->cP[i]->root);
 	}
 	return r;
 }
@@ -73,10 +61,7 @@ CatProds initCatProds() {
 
 CatProds insereProduto(CatProds cps, Produto p) {
 	int i = (p->nomeprod[0] - 65);
-	/*Para dar a volta ao union, para que a função insereAVL receba o NULL, temos de o inicializar*/
-	union FatVFil x;
-	x.fi = NULL;
-	cps->cP[i]->root = insereAVL(cps->cP[i]->root, p->nomeprod, x);
+	cps->cP[i]->root = insereAVL(cps->cP[i]->root, p->nomeprod, NULL);
 	cps->cP[i]->tamanho++;
 	return cps;
 }

@@ -18,11 +18,6 @@ struct clients {
 	Trees cP[26];
 };
 
-union FatVFil{
-	Fat fa;
-	Fil fi;
-};
-
 AVL getAvlC (CatClients ccs, int i) {
 	return (ccs->cP[i]->root);
 }
@@ -52,10 +47,7 @@ CatClients initCatClients() {
 
 CatClients insereCliente(CatClients ccl, Cliente c) {
 	int i = (c->nomeclient[0] - 65);
-	/*Para dar a volta ao union, para que a função insereAVL receba o NULL, temos de o inicializar*/
-	union FatVFil x;
-	x.fa = NULL;
-	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient, x );
+	ccl->cP[i]->root = insereAVL(ccl->cP[i]->root, c->nomeclient, NULL);
 	ccl->cP[i]->tamanho++;
 	return ccl;
 }
@@ -63,8 +55,9 @@ CatClients insereCliente(CatClients ccl, Cliente c) {
 Boolean existeCliente(CatClients ccl, Cliente c) {
 	int i = (c->nomeclient[0] - 65);
 	if (i < 0 || i > 25) return false;
-	if (existeAVL(ccl->cP[i]->root, c->nomeclient))
+	if (existeAVL(ccl->cP[i]->root, c->nomeclient)){
 		return true;
+	}
 	else return false;
 }
 

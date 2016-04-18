@@ -2,31 +2,31 @@
 #define AVL_H_
 #include "boolean.h"
 
-typedef struct avl *AVL;
 
 typedef struct fat *Fat;
+typedef struct avl *AVL;
 
-typedef struct fil *Fil;
-
-union FatVFil;
-
-int max (int a, int b);
-int altura (AVL a);
-int diferenca (AVL a, AVL b);
-AVL rotacaoEsq (AVL a);
-AVL rotacaoDir (AVL a);
-AVL insereDir (AVL a, char* codigo);
-AVL insereEsq (AVL a, char* codigo);
-AVL insereAVL (AVL a, char* codigo, union FatVFil v);
-Boolean existeAVL (AVL a, char* codigo);
-/*Não conhece o type fat??
-  Se a função for para faturação*/
-Fat getfatfromavl(AVL a, char* codigo);
+int max(int a, int b);
+int altura(AVL a);
+int diferenca(AVL a, AVL b);
+char* getcodigo(AVL a);
+void setcodigo(AVL a, char* codigo);
+AVL getesq(AVL a);
+AVL getdir(AVL a);
+double getavlfat(AVL a);
+int getavlquant(AVL a);
+void setcodigo(AVL a, char* codigo);
+void setextra(AVL a, double fat, int quant);
+AVL newAVL();
+AVL rotacaoEsq(AVL a);
+AVL rotacaoDir(AVL a);
+AVL insereDir(AVL a, char* codigo);
+AVL insereEsq(AVL a, char* codigo);
+AVL insereAVL(AVL a, char* codigo, Fat v);
+Boolean existeAVL(AVL a, char* codigo);
 void freeTree(AVL a);
 char** auxiliarImprime(char** lista, AVL t, int *i);
 void printbool(Boolean a);
-AVL avlcpyfa(AVL a);
-void freeExtra(AVL a);
-union FatVFil getextra(AVL a, char *c);
+AVL avlcpy(AVL a);
 
 #endif

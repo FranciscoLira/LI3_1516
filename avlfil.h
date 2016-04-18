@@ -1,6 +1,7 @@
 #ifndef AVLFIL_H_
 #define AVLFIL_H_
 #include "boolean.h"
+#include "faturacao.h"
 #include "CatProd.h"
 
 typedef struct avlfil* AVLfil;

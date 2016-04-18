@@ -1,7 +1,9 @@
 #ifndef FILIAL_H_
 #define FILIAL_H_
-#include "CatProd.h"
+#include "myavl.h"
+#include "avlfil.h"
 #include "CatClient.h"
+#include "CatProd.h"
 
 typedef struct filial *Filial;
 
