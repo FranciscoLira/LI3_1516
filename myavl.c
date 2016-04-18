@@ -17,7 +17,12 @@ struct avl {
 	struct avl* dir;
 };
 
-int max(int a, int b) {
+struct fat {
+	int quantidade;
+	double faturacao;
+};
+
+int max (int a, int b) {
 	return (a > b ? a : b);
 }
 
@@ -145,8 +150,11 @@ AVL insereAVL(AVL a, char* codigo, Fat v) {
 		return insereDir (a, codigo);
 	return insereEsq (a, codigo);
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL(AVL a, char* codigo) {
 	AVL aux = a;
@@ -162,8 +170,25 @@ Boolean existeAVL(AVL a, char* codigo) {
 	}
 	return false;
 }
+<<<<<<< HEAD
 
 
+=======
+/*retorna a faturação de um produto, recebendo a avl e o produto a procurar,
+  retorna NULL se não houver esse produto*/
+Fat getfatfromavl(AVL a, char* codigo) {
+	AVL aux = a;
+	int i;
+	while (aux) {
+		i = strcmp(codigo, aux->codigo);
+		if (i == 0) return aux->extra.fa;
+		a->codigo = (char*)malloc(sizeof(char) * 10); /*Está a fazer de 10,mas pode ser menos*/
+		if (i > 0) aux = aux->dir;
+		else aux = aux->esq;
+	}
+	return NULL;
+}
+>>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 /*faz fre de uma avl e de todos os seus nodos*/
 void freeTree(AVL a) {
 	if (a) {
@@ -183,7 +208,6 @@ char** auxiliarImprime(char** lista, AVL t, int *i) {
 	}
 	return lista;
 }
-
 /*faz print do valor de um boolean, mais para debug*/
 void printbool(Boolean a) {
 	if (a) {
@@ -193,7 +217,6 @@ void printbool(Boolean a) {
 		printf("false\n");
 	}
 }
-
 /*AQUI é necessário ter dois avlcpy para campos diferentes??*/
 AVL avlcpy(AVL a) {
 	AVL r = NULL;
@@ -205,3 +228,29 @@ AVL avlcpy(AVL a) {
 	}
 	return r;
 }
+<<<<<<< HEAD
+=======
+/*
+AVL avlcpyfi(AVL a) {
+	AVL r;
+	if (a) {
+		r = (AVL) malloc(sizeof(struct avl));
+		r->codigo = a->codigo;
+		r->altura = a->altura;
+		if (a->extra.fi) {
+			r->extra.fi = (Fil)malloc(sizeof(struct fil));
+			r->extra.fi->faturacao = a->extra.fi->faturacao;
+			r->extra.fi->quantidade = a->extra.fi->quantidade;
+		}
+		else {
+			r->extra.fi = NULL;
+		}
+		r->esq = avlcpy(a->esq);
+		r->dir = avlcpy(a->dir);
+	}
+	else {
+		r = NULL;
+	}
+}
+*/
+>>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
