@@ -37,46 +37,26 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m){
 	strcpy(stringp, getStringp(p));
 	indice = stringc[0] - 65;
 	aux = f->clientes[indice];
-<<<<<<< HEAD
-	if (!existeCl(f, stringc)) {
-		aux = insereAVLfil(aux, stringc, stringp, mes, quant);
-		f->clientes[indice] = aux;
-	}
-	else {
-		insereprod(aux, stringc, stringp, mes, quant);
-=======
 	if(!existeCl(f, stringc)){
 		aux = insereAVLfil(aux,stringc,stringp,mes,quant,m);
 		f->clientes[indice] = aux;
 	}
 	else{
 		insereprod(aux, stringc, stringp,mes,quant,m);
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 	}
 	free(stringp); free(stringc);
 	return f;
 }
-<<<<<<< HEAD
-
-void removeFilial(Filial f) {
-=======
 /*Remove toda a estrutura da memória*/
 void removeFilial(Filial f){
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 	int i;
 	for (i = 0; i < 26; i++) {
 		freeTreefil(f->clientes[i], 0);
 	}
 	free(f);
-<<<<<<< HEAD
-}
-
-int numprodutos(Filial f, Cliente c, int mes) {
-=======
 } 
 /*Devolve o número de produtos que um cliente comprou num mes*/
 int numprodutos(Filial f, Cliente c, int mes){
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 	int num, m = mes - 1;
 	char *str = getStringc(c);
 	int indice = str[0] - 'A';

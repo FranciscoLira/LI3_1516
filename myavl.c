@@ -4,11 +4,6 @@
 #include "myavl.h"
 #include "faturacao.h"
 
-struct fat {
-	int quantidade;
-	double faturacao;
-};
-
 struct avl {
 	int altura;
 	char* codigo;
@@ -75,7 +70,7 @@ void setextra(AVL a, double fat, int quant) {
 AVL newAVL() {
 	AVL r = (AVL)malloc(sizeof(struct avl));
 	r->altura = 0;
-	r->esq=r->dir=r->extra=r->codigo = NULL;
+	r->esq = r->dir = r->extra = r->codigo = NULL;
 
 	return r;
 }
@@ -109,8 +104,8 @@ AVL rotacaoDir(AVL a) {
 	return aux;
 }
 
-AVL insereDir(AVL a, char* codigo) {
-	a->dir = insereAVL (a->dir, codigo, NULL);
+AVL insereDir(AVL a, char* codigo,Fat v) {
+	a->dir = insereAVL (a->dir, codigo, v);
 	if (diferenca (a->dir, a->esq) == 2) {
 		AVL aux = a->dir;
 		if (diferenca (aux->dir, aux->esq) > 0)
@@ -122,8 +117,8 @@ AVL insereDir(AVL a, char* codigo) {
 	return a;
 }
 
-AVL insereEsq(AVL a, char* codigo) {
-	a->esq = insereAVL (a->esq, codigo, NULL);
+AVL insereEsq(AVL a, char* codigo,Fat v) {
+	a->esq = insereAVL (a->esq, codigo, v);
 	if (diferenca (a->esq, a->dir) == 2) {
 		AVL aux = a->esq;
 		if (diferenca (aux->esq, aux->dir) > 0)
@@ -138,23 +133,25 @@ AVL insereEsq(AVL a, char* codigo) {
 /*Insere na AVL um nodo, se houver faturação para lhe aplicar aplica, senão deixa o endereço do campo extra a NULL
 Se for receber um Fat, então esse fat já deve ter memória alocada*/
 AVL insereAVL(AVL a, char* codigo, Fat v) {
+	int i;
 	if (!a) {
-		a = initAVL(1, codigo, NULL, NULL, NULL);
-		setcodigo(a, a->codigo);
-		if (v) {
-			setextra(a, getfatfat(v), getfatquant(v));
-		}
+		a = initAVL(1, codigo, v, NULL, NULL);
 		return a;
 	}
-	if (strcmp (codigo, a->codigo) > 0)
-		return insereDir (a, codigo);
-	return insereEsq (a, codigo);
+	i = strcmp (codigo, a->codigo);
+	if (i == 0) {
+		addfatnodo(a,v);
+	}
+	else if (i>0) {
+		return insereDir (a, codigo,v);
+	}
+	else {
+		return insereEsq (a, codigo,v);
+	}
+	return a;
 }
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL(AVL a, char* codigo) {
 	AVL aux = a;
@@ -170,25 +167,22 @@ Boolean existeAVL(AVL a, char* codigo) {
 	}
 	return false;
 }
-<<<<<<< HEAD
 
 
-=======
-/*retorna a faturação de um produto, recebendo a avl e o produto a procurar,
-  retorna NULL se não houver esse produto*/
+/*Retorna a faturação de um produto, recebendo a avl e o produto a procurar,
+  Retorna NULL se não houver esse produto*/
 Fat getfatfromavl(AVL a, char* codigo) {
 	AVL aux = a;
 	int i;
 	while (aux) {
-		i = strcmp(codigo, aux->codigo);
-		if (i == 0) return aux->extra.fa;
-		a->codigo = (char*)malloc(sizeof(char) * 10); /*Está a fazer de 10,mas pode ser menos*/
-		if (i > 0) aux = aux->dir;
-		else aux = aux->esq;
+		i = strcmp(codigo, getcodigo(aux));
+		if (i == 0) return aux->extra;
+		if (i > 0) aux = getdir(aux);
+		else aux = getesq(aux);
 	}
 	return NULL;
 }
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c
+
 /*faz fre de uma avl e de todos os seus nodos*/
 void freeTree(AVL a) {
 	if (a) {
@@ -223,34 +217,8 @@ AVL avlcpy(AVL a) {
 	if (a) {
 		r = initAVL(a->altura, a->codigo, NULL, avlcpy(a->esq), avlcpy(a->dir));
 		if (a->extra) {
-		setextra(r, getfatfat(a->extra), getfatquant(a->extra));
+			setextra(r, getfatfat(a->extra), getfatquant(a->extra));
 		}
 	}
 	return r;
 }
-<<<<<<< HEAD
-=======
-/*
-AVL avlcpyfi(AVL a) {
-	AVL r;
-	if (a) {
-		r = (AVL) malloc(sizeof(struct avl));
-		r->codigo = a->codigo;
-		r->altura = a->altura;
-		if (a->extra.fi) {
-			r->extra.fi = (Fil)malloc(sizeof(struct fil));
-			r->extra.fi->faturacao = a->extra.fi->faturacao;
-			r->extra.fi->quantidade = a->extra.fi->quantidade;
-		}
-		else {
-			r->extra.fi = NULL;
-		}
-		r->esq = avlcpy(a->esq);
-		r->dir = avlcpy(a->dir);
-	}
-	else {
-		r = NULL;
-	}
-}
-*/
->>>>>>> 0a290ea9575c717edf4e42db983aa6a3a989784c

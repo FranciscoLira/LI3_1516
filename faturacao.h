@@ -26,6 +26,7 @@ Emp insereProdVaziosEmp(Emp e, AVL* produtos);
 /*Faz a inicialização de toda a memória necessária e os devidos campos*/
 Emp initEmpresa ();
 Fat alocafat(double faturacao, int quantidade);
+void addfatnodo(AVL a, Fat f);
 Emp insereVenda (Emp e, Vendatmp v);
 void printfat(Fat a);
 Fat produtofat(Emp e, int f, int imes, int p, char* produto);

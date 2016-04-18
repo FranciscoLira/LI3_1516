@@ -183,7 +183,7 @@ Fat convvendafat(Vendatmp tmp) {
 /*Adiciona uma faturação a um nodo da AVL
 Aloca memória se for necessário e coloca-a a zero nesse caso,
 Apenas soma à anterior se já havia faturação para esse produto*/
-void addfatNodo(AVL a, Fat f) {
+void addfatnodo(AVL a, Fat f) {
 	if (a->extra == NULL) {
 		a->extra = alocafat(0, 0);
 	}
@@ -199,7 +199,7 @@ void inserefattot(AVL* a, Fat f, char* codigo) {
 	while (aux) {
 		i = strcmp (codigo, aux->codigo);
 		if (i == 0)
-			addfatNodo(aux, f);
+			addfatnodo(aux, f);
 		if (i > 0)
 			aux = aux->dir;
 		else
@@ -230,28 +230,18 @@ void printfat(Fat a) {
 	}
 }
 
-/*Retorna a faturação de um produto, recebendo a avl e o produto a procurar,
-  Retorna NULL se não houver esse produto*/
-Fat getfatfromavl(AVL a, char* codigo) {
-	AVL aux = a;
-	int i;
-	while (aux) {
-		i = strcmp(codigo, getcodigo(aux));
-		if (i == 0) return aux->extra;
-		if (i > 0) aux = getdir(aux);
-		else aux = getesq(aux);
-	}
-	return NULL;
-}
-
-
-/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é promoção ou não promoçao
+/*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é ou não promoção
 Aloca memória por isso deve ser feito o free*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
 	Fat r;
-	AVL atmp = e->filial[f]->mes[imes].f->codigos[p];
+	AVL atmp = e->filial[f-1]->mes[imes].f->codigos[p];
 	Fat ftmp = getfatfromavl(atmp, produto);
-	r = alocafat(ftmp->faturacao, ftmp->quantidade);
+	if(ftmp){
+		r = alocafat(ftmp->faturacao, ftmp->quantidade);
+	}
+	else{
+		r = alocafat(0,0);
+	}
 	return r;
 }
 

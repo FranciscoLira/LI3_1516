@@ -390,14 +390,14 @@ void interpretador () {
 				printf("0. Filial a Filial\n 1.Total\n");
 				if (scanf("%d", &juntos) == -1);
 				if (juntos) {
-					/*	tmp = faturacaototal(e, buffer, imes);*/
+/*						tmp = faturacaototal(e, buffer, imes);*/
 				}
 				else {
 					for (i = 0; i < 3; i++) {
-						for (j = 0; j < 1; j++) {
-							/*tmp = faturacaoparcial(e, buffer, imes, i, j);*/
+						for (j = 0; j < 2; j++) {
+							/*tmp = produtofat(e,i,7,j,"WX1593");*/
 							if (j) {
-								printf("Promo:\n");
+								/*printf("Promo:\n");*/
 							}
 							/*printf("Filial nº %d \n\tFaturação: %f\n1tQuantidade%d", i, tmp->faturacao, tmp->quantidade);*/
 						}
@@ -405,7 +405,7 @@ void interpretador () {
 				}
 			}
 			break;
-		case '4': printfat(faturacaototal(e, "KR1583", 0));
+		case '4': printfat(produtofat(e, 1, 7, 1, "WX1593"));
 			break;
 		case '5': if (verifica == 0) {
 				printf("Execute a leitura primeiro!\n");
