@@ -30,7 +30,8 @@ void addfatnodo(AVL a, Fat f);
 Emp insereVenda (Emp e, Vendatmp v);
 void printfat(Fat a);
 Fat produtofat(Emp e, int f, int imes, int p, char* produto);
-Fat faturacaototal(Emp e, char* codigo, int imes);
+Fat faturacaototal(Emp e, char* codigo, int imes, int p);
 void freeEmp(Emp e);
+int produtoszero(Emp e, int f);
 
 #endif

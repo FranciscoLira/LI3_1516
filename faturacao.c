@@ -130,7 +130,7 @@ Fatmes initFatmes() {
 Fatall initFatall() {
 	int i;
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
-	r->mes[0].l = (AVL*)malloc(sizeof(AVL)*26);
+	r->mes[0].l = (AVL*)malloc(sizeof(AVL) * 26);
 	for (i = 0; i < 26; i++) {
 		r->mes[0].l[i] = newAVL();
 	}
@@ -234,30 +234,28 @@ void printfat(Fat a) {
 Aloca memória por isso deve ser feito o free*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
 	Fat r;
-	AVL atmp = e->filial[f-1]->mes[imes].f->codigos[p];
+	AVL atmp = e->filial[f - 1]->mes[imes].f->codigos[p];
 	Fat ftmp = getfatfromavl(atmp, produto);
-	if(ftmp){
+	if (ftmp) {
 		r = alocafat(ftmp->faturacao, ftmp->quantidade);
 	}
-	else{
-		r = alocafat(0,0);
+	else {
+		r = alocafat(0, 0);
 	}
 	return r;
 }
 
 /*Retorna a faturação total de um produto(codigo) num dado mes(imes)
 Aloca memória e deve ser feito o free da mesma*/
-Fat faturacaototal(Emp e, char* codigo, int imes) {
-	int f, p;
+Fat faturacaototal(Emp e, char* codigo, int imes, int p) {
+	int f;
 	Fat tmp;
 	Fat r = alocafat(0, 0);
-	for (f = 0; f < 3; f++) {
-		for (p = 0; p < 2; p++) {
-			tmp = produtofat(e, f, imes, p, codigo);
-			if (tmp) {
-				r -> quantidade += tmp ->quantidade;
-				r->faturacao += tmp -> faturacao;
-			}
+	for (f = 1; f < 4; f++) {
+		tmp = produtofat(e, f, imes, p, codigo);
+		if (tmp) {
+			r -> quantidade += tmp ->quantidade;
+			r->faturacao += tmp -> faturacao;
 		}
 	}
 	return r;
@@ -279,4 +277,22 @@ void freeEmp (Emp e) {
 		free(e->filial[i]);
 	}
 	free(e);
+}
+
+int quantoszeroAVL(AVL a) {
+	if (a) {
+		if (getavlquant(a)==0) {
+			return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a)) + 1;
+		}
+		return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a));
+	}
+	else return 0;
+}
+
+int produtoszero(Emp e, int f) {
+	int q = 0, car;
+	for (car = 0; car < 26; car++) {
+		q+=quantoszeroAVL(e->filial[f]->mes[0].l[car]);
+	}
+	return q;
 }

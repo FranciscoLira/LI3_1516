@@ -44,11 +44,21 @@ AVL getdir(AVL a) {
 }
 
 double getavlfat(AVL a) {
-	return a->extra->faturacao;
+	if (a->extra) {
+		return a->extra->faturacao;
+	}
+	else {
+		return 0;
+	}
 }
 
 int getavlquant(AVL a) {
-	return a->extra->quantidade;
+	if (a->extra) {
+		return a->extra->quantidade;
+	}
+	else {
+		return 0;
+	}
 }
 
 void setcodigo(AVL a, char* codigo) {
@@ -70,7 +80,9 @@ void setextra(AVL a, double fat, int quant) {
 AVL newAVL() {
 	AVL r = (AVL)malloc(sizeof(struct avl));
 	r->altura = 0;
-	r->esq = r->dir = r->extra = r->codigo = NULL;
+	r->esq = r->dir = NULL;
+	r->extra = NULL;
+	r->codigo = NULL;
 
 	return r;
 }
@@ -104,7 +116,7 @@ AVL rotacaoDir(AVL a) {
 	return aux;
 }
 
-AVL insereDir(AVL a, char* codigo,Fat v) {
+AVL insereDir(AVL a, char* codigo, Fat v) {
 	a->dir = insereAVL (a->dir, codigo, v);
 	if (diferenca (a->dir, a->esq) == 2) {
 		AVL aux = a->dir;
@@ -117,7 +129,7 @@ AVL insereDir(AVL a, char* codigo,Fat v) {
 	return a;
 }
 
-AVL insereEsq(AVL a, char* codigo,Fat v) {
+AVL insereEsq(AVL a, char* codigo, Fat v) {
 	a->esq = insereAVL (a->esq, codigo, v);
 	if (diferenca (a->esq, a->dir) == 2) {
 		AVL aux = a->esq;
@@ -140,13 +152,13 @@ AVL insereAVL(AVL a, char* codigo, Fat v) {
 	}
 	i = strcmp (codigo, a->codigo);
 	if (i == 0) {
-		addfatnodo(a,v);
+		addfatnodo(a, v);
 	}
-	else if (i>0) {
-		return insereDir (a, codigo,v);
+	else if (i > 0) {
+		return insereDir (a, codigo, v);
 	}
 	else {
-		return insereEsq (a, codigo,v);
+		return insereEsq (a, codigo, v);
 	}
 	return a;
 }
