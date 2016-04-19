@@ -281,10 +281,12 @@ void freeEmp (Emp e) {
 
 int quantoszeroAVL(AVL a) {
 	if (a) {
-		if (getavlquant(a)==0) {
-			return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a)) + 1;
+		if (getavlquant(a) == 0) {
+			return (quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a)) + 1);
 		}
-		return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a));
+		else {
+			return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a));
+		}
 	}
 	else return 0;
 }
@@ -292,7 +294,7 @@ int quantoszeroAVL(AVL a) {
 int produtoszero(Emp e, int f) {
 	int q = 0, car;
 	for (car = 0; car < 26; car++) {
-		q+=quantoszeroAVL(e->filial[f]->mes[0].l[car]);
+		q += quantoszeroAVL(e->filial[f - 1]->mes[0].l[car]);
 	}
 	return q;
 }

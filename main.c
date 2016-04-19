@@ -427,12 +427,18 @@ void interpretador () {
 			}
 			break;
 		case '4': if (e == NULL) {
-				printf("Precisade selecionar a leitura primeiro\n");
+				printf("Precisa de selecionar a leitura primeiro\n");
 			}
 			else {
 				printf("Qual a filial que quer saber?\n");
+				printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
 				if (scanf("%d", &i) == -1);
-				printf("%d\n",produtoszero(e,i));
+				if(!i){
+					printf("%d\n",produtoszero(e,1)+produtoszero(e,2)+produtoszero(e,3));
+				}
+				else{
+					printf("%d\n",produtoszero(e,i));
+				}
 			}
 			break;
 		case '5': if (verifica == 0) {
