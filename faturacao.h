@@ -1,6 +1,7 @@
 #ifndef faturacao_H_
 #define faturacao_H_
 #include "myavl.h"
+#include "CatProd.h"
 
 typedef struct vendatmp *Vendatmp;
 
@@ -32,6 +33,8 @@ void printfat(Fat a);
 Fat produtofat(Emp e, int f, int imes, int p, char* produto);
 Fat faturacaototal(Emp e, char* codigo, int imes, int p);
 void freeEmp(Emp e);
-int produtoszero(Emp e, int f);
+CatProds quantostotalzeroAVL(Emp e);
+CatProds produtoszero(Emp e, int f);
+/*AVL* primeiraAVL(Emp e);*/
 
 #endif

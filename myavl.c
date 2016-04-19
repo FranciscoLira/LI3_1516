@@ -163,6 +163,22 @@ AVL insereAVL(AVL a, char* codigo, Fat v) {
 	return a;
 }
 
+/*Se a quantidade deste produto for diferente de 0 retorna 1
+Senão retorna 0*/
+int existequantAVL(AVL a, char* codigo) {
+	AVL aux = a;
+	int i;
+	while (aux) {
+		i = strcmp (codigo, aux->codigo);
+		if (i == 0 && (!a->extra || a->extra->quantidade == 0))
+			return 1;
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+	return 0;
+}
 
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVL(AVL a, char* codigo) {
@@ -234,3 +250,18 @@ AVL avlcpy(AVL a) {
 	}
 	return r;
 }
+/*
+int quantosnodosaux(AVL a) {
+	if (a == NULL) return 0;
+	else return 1 + quantosnodosaux(a->esq) + quantosnodosaux(a->dir);
+
+}
+
+int quantosnodos(AVL* a) {
+	int q = 0,i;
+	for(i=0;i<26;i++){
+		q+=quantosnodosaux(a[i]);
+	}
+	return q;
+}
+*/

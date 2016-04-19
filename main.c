@@ -358,7 +358,6 @@ void interpretador () {
 	Produto prod = inserep("");
 	char letra, cmd[BufferM], buffer[BufferM];
 	int verifica = 0, imes, juntos;
-	/*Fat tmp;*/
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
@@ -411,18 +410,18 @@ void interpretador () {
 						else printf("Modo Promoção:\n");
 						printf("Quantidade:%d\nFaturação:%.2f\n", getfatquant(ftmp), getfatfat(ftmp));
 					}
-					free(ftmp);/*Does this work??*/
+					free(ftmp);
 				}
 				else {
 					for (i = 1; i < 4; i++) {/*filial*/
 						for (p = 0; p < 2; p++) {/*promoção*/
 							ftmp = produtofat(e, i, imes, p, buffer);
-							if (i == 0) printf("Modo Normal:\n");
+							if (p%2 == 0) printf("Modo Normal:\n");
 							else printf("Modo Promoção:\n");
 							printf("Quantidade:%d\nFaturação:%.2f\n", getfatquant(ftmp), getfatfat(ftmp));
 						}
 					}
-					free(ftmp);/*Does this work*/
+					free(ftmp);
 				}
 			}
 			break;
@@ -433,13 +432,14 @@ void interpretador () {
 				printf("Qual a filial que quer saber?\n");
 				printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
 				if (scanf("%d", &i) == -1);
-				if(!i){
-					printf("%d\n",produtoszero(e,1)+produtoszero(e,2)+produtoszero(e,3));
+				if (!i) {
+					imprimeLista(quantostotalzeroAVL(e),'/');
 				}
-				else{
-					printf("%d\n",produtoszero(e,i));
+				else {
+					imprimeLista(produtoszero(e, i),'/');
 				}
 			}
+
 			break;
 		case '5': if (verifica == 0) {
 				printf("Execute a leitura primeiro!\n");

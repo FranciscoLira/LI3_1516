@@ -279,22 +279,62 @@ void freeEmp (Emp e) {
 	free(e);
 }
 
-int quantoszeroAVL(AVL a) {
+int quantoszeroAVL(AVL a, CatProds r) {
+	int q = 0;
+	Produto p;
 	if (a) {
 		if (getavlquant(a) == 0) {
-			return (quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a)) + 1);
+			q++;
+			p = inserep(a->codigo);
+			r = insereProduto(r, p);
 		}
-		else {
-			return quantoszeroAVL(getesq(a)) + quantoszeroAVL(getdir(a));
-		}
-	}
-	else return 0;
-}
-
-int produtoszero(Emp e, int f) {
-	int q = 0, car;
-	for (car = 0; car < 26; car++) {
-		q += quantoszeroAVL(e->filial[f - 1]->mes[0].l[car]);
+		q += quantoszeroAVL(getesq(a), r);
+		q += quantoszeroAVL(getdir(a), r);
 	}
 	return q;
 }
+
+int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
+	int q = 0;
+	Produto p;
+	if (a) {
+		if (getavlquant(a) == 0)
+			if (getavlquant(b) == 0 && getavlquant(c) == 0) {
+				q++;
+				p = inserep(a->codigo);
+				r = insereProduto(r, p);
+			}
+		q += quantosauxAVL(getesq(a), getesq(b), getesq(c), r);
+		q += quantosauxAVL(getdir(a), getdir(b), getdir(c), r);
+	}
+	return q;
+}
+
+
+CatProds quantostotalzeroAVL(Emp e) {
+	int q = 0, car;
+	AVL a, b, c;
+	CatProds r = initCatProds();
+	for (car = 0; car < 26; car++) {
+		a = e->filial[0]->mes[0].l[car];
+		b = e->filial[1]->mes[0].l[car];
+		c = e->filial[2]->mes[0].l[car];
+		q += quantosauxAVL(a, b, c, r);
+	}
+	return r;
+}
+
+/*retorna um conjunto de produtos que pode ser impresso pela main*/
+CatProds produtoszero(Emp e, int f) {
+	int q = 0, car;
+	CatProds r = initCatProds();
+	for (car = 0; car < 26; car++) {
+		q += quantoszeroAVL(e->filial[f - 1]->mes[0].l[car], r);
+	}
+	return r;
+}
+/*foi para debug
+AVL* primeiraAVL(Emp e){
+	return e->filial[2]->mes[0].l;
+}
+*/

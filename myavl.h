@@ -19,11 +19,13 @@ void setcodigo(AVL a, char* codigo);
 void setextra(AVL a, double fat, int quant);
 AVL newAVL();
 AVL insereAVL(AVL a, char* codigo, Fat v);
+int existequantAVL(AVL a, char* codigo);
 Boolean existeAVL(AVL a, char* codigo);
 Fat getfatfromavl(AVL a, char* codigo);
 void freeTree(AVL a);
 char** auxiliarImprime(char** lista, AVL t, int *i);
 void printbool(Boolean a);
 AVL avlcpy(AVL a);
+/*int quantosnodos(AVL* a);*/
 
 #endif
