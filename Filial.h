@@ -14,6 +14,7 @@ Filial initFilial();
 Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m);
 /* Libertar memória da filial */
 void removeFilial(Filial f);
+Filial insereProds(Filial f, Produto p);
 int numprodutos(Filial f, Cliente c, int mes);
 CatProds makeCat(Filial *f, CatProds p);
 ConjComprados comprou(Produto p, Filial f, int tipo);
@@ -29,5 +30,6 @@ int partition(int* quant, char** cod, int l, int r);
 void init (int n, char** codigos, int* quant);
 void ordenaDecre (AVLfil res, char** codigos, int* quantidades, int n);
 AVLfil funcao9(Filial *f, int mes, Cliente c);
+AVLfil funcao10(Filial *f);
 
 #endif

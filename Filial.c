@@ -12,14 +12,23 @@ struct comprou{
 /*Estrutura principal*/
 struct filial{
 	AVLfil clientes[26];
+	AVLfil prods;
 };
 /*Aloca memória necessária para a estrutura principal, a restante é alocada em avlfil.c*/
 Filial initFilial() {
 	int i;
 	Filial f = malloc(sizeof(struct filial));
+	f->prods = NULL;
 	for (i = 0; i < 26; i++) {
 		f->clientes[i] = NULL;
 	}
+	return f;
+}
+Filial insereProds(Filial f, Produto p){
+	char* l = malloc(10);
+	strcpy(l,getStringp(p));
+	f->prods = insereAVLfil(f->prods,l,"",0,0,0);
+	free(l);
 	return f;
 }
 /*Verifica se um cliente ja esta na estrutura*/
@@ -40,9 +49,11 @@ Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m){
 	if(!existeCl(f, stringc)){
 		aux = insereAVLfil(aux,stringc,stringp,mes,quant,m);
 		f->clientes[indice] = aux;
+		altera(f->prods,stringp,quant);
 	}
 	else{
 		insereprod(aux, stringc, stringp,mes,quant,m);
+		altera(f->prods,stringp,quant);
 	}
 	free(stringp); free(stringc);
 	return f;
@@ -147,6 +158,14 @@ AVLfil funcao9(Filial *f, int mes, Cliente c){
 		for(j=0;j<2;j++)
 			res = auxp(res, f[i]->clientes[k], mes,j,str);
     free(str);
+	return res;
+}
+
+AVLfil funcao10(Filial *f){
+	int i;
+	AVLfil res = NULL;
+	for(i=0;i<3;i++)
+		res = auxiliarInsere(res,f[i]->prods);
 	return res;
 }
 

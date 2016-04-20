@@ -82,11 +82,8 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	FILE *p;
 	char *aux;
 	double preco;
-	int i, cont, mes, filial, quant, z;
+	int i, cont, mes, filial, quant;
 	char buffer[BufferM];
-	for (z = 0; z < 3; z++) {
-		f[z] = initFilial();
-	}
 	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
@@ -128,7 +125,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 }
 
 /*Lê o ficheiro Produtos.txt*/
-CatProds lerprod(CatProds cps) {
+CatProds lerprod(CatProds cps, Filial *f) {
 	FILE *f1;
 	char str[10];
 	Produto p = inserep("");
@@ -139,6 +136,9 @@ CatProds lerprod(CatProds cps) {
 			strtok(str, "\n\r");
 			p = alterap(str, p);
 			cps = insereProduto(cps, p);
+			f[0] = insereProds(f[0],p);
+			f[1] = insereProds(f[1],p);
+			f[2] = insereProds(f[2],p);
 		}
 		else break;
 	}
@@ -422,8 +422,24 @@ void querie9(Filial *f, Cliente c, int mes) {
 	printf("\n");
 }
 
+void querie10(Filial *f, int n, int x){
+	char** codigos;
+	int*quantidades;
+	int i;
+	AVLfil res = NULL;
+	codigos = (char**)malloc(sizeof(char*)*n);
+	quantidades = (int*)malloc(sizeof(int)*n);
+	res = funcao10(f);
+	ordenaDecre(res,codigos,quantidades,n);
+		for (i = 0; i < 50; i++) {
+		printf("%s\n", codigos[i]);
+		printf("%d\n", quantidades[i]);
+	}
+}
+
+
 void interpretador () {
-	int fil, mes;
+	int fil, mes,z;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -433,6 +449,9 @@ void interpretador () {
 	Produto prod = inserep("");
 	char letra, cmd[BufferM];
 	int verifica = 0;
+	for (z = 0; z < 3; z++) {
+		f[z] = initFilial();
+	}
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
@@ -448,7 +467,7 @@ void interpretador () {
 			ccl = lerclient(ccl);
 			printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
 			cps = initCatProds();
-			cps = lerprod(cps);
+			cps = lerprod(cps,f);
 			printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 			e = leituravendas(ccl, cps, f);
 			printf("\nLido Vendas.txt\n\n");
@@ -550,12 +569,24 @@ void interpretador () {
 				showmenu();
 			}
 			break;
-		case 'A':
-			break;
+		case 'A':if (verifica == 0) {
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+				}
+				querie10(f,171008,3);
+				break;
 		case 'B':
 			break;
-		case 'C':
-			break;
+		case 'C':if (verifica == 0) {
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+				}
+				printf("O número de produtos que ninguém comprou é: %d\n",
+				totalProdutos(quantostotalzeroAVL(e)));
+				/*
+				printf("O número de clientes registados quenunca realizaram compras é: %d\n",
+				clientesaZ(f));*/
+				break;
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}

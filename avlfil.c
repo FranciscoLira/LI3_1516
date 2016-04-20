@@ -123,6 +123,7 @@ AVLfil insereAVLfil (AVLfil a, char* codigo, char *produto, int mes, int quant, 
 		strcpy(a->codigo, codigo);
 		a->esq = a->dir = NULL;
 		a->altura = 1;
+		a->numpt=0;
 		if(strcmp("",produto)==0)
 			a->numpt += quant;/* Neste caso esta é apenas a quantidade do produto e nao a total */
 		else{
