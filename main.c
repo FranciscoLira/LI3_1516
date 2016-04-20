@@ -440,7 +440,7 @@ void querie10(Filial *f, int n, int x) {
 
 
 void interpretador () {
-	time_t timeinit, timeend;
+	clock_t timeinit, timeend;
 	int fil, mes, z;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
@@ -455,7 +455,7 @@ void interpretador () {
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
 		switch (cmd[0]) {
-		case '1': timeinit = time(NULL);
+		case '1': timeinit = clock();
 			if (verifica != 0) {
 				removeCatClient(ccl);
 				removeCatProd(cps);
@@ -477,8 +477,8 @@ void interpretador () {
 			e = leituravendas(ccl, cps, f);
 			printf("\nLido Vendas.txt\n\n");
 			verifica++;
-			timeend = time(NULL);
-			printf("passaram %f seg\n",difftime(timeend,timeinit));
+			timeend = clock();
+			printf("passaram %.3f seg\n",(double)(timeend - timeinit)/CLOCKS_PER_SEC);
 			voltamenu();
 			showmenu();
 			break;
@@ -552,11 +552,11 @@ void interpretador () {
 				printf("Qual é a filial?\n");
 				if (scanf(" %d", &fil));
 				fil--;
-				timeinit = time(NULL);
+				timeinit = clock();
 				if (fil > -1 && fil < 3)
 					querie8(prod, f[fil]);
-				timeend = time(NULL);
-				printf("passaram %f seg\n",difftime(timeend,timeinit));
+				timeend = clock();
+				printf("passaram %.3f seg\n",(double)(timeend - timeinit)/CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}

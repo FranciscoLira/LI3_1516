@@ -216,6 +216,7 @@ void freeTree(AVL a) {
 	if (a) {
 		freeTree (a->esq);
 		freeTree (a->dir);
+		free(a->extra);
 		free(a->codigo);
 		free(a);
 	}

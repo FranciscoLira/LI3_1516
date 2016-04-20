@@ -285,6 +285,7 @@ void removeEmp (Emp e) {
 			freeTree(e->filial[i]->mes[j].f->codigos[1]);
 			free(e->filial[i]->mes[j].f);
 		}
+		free(e->filial[i]->mes[0].l);
 		free(e->filial[i]);
 	}
 	free(e);
