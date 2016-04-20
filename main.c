@@ -178,7 +178,10 @@ int auxImprimeUp(int up, int pag, int np, int n) {
 	return up;
 }
 
-
+void clear() {
+	if (system("clear") == -1)
+		if (system("cls"));
+}
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
@@ -200,8 +203,7 @@ void imprimeLista(CatProds cps, char letra) {
 	down = 0; up = 90;
 	lista[n] = NULL;
 	while (a != 'Q' && a != 'q') {
-		if (system("clear") == -1)
-			if (system("cls"));
+		clear();
 		j = down; m = up;
 		if (j == 0 && (a == 'A' || a == 'a'))
 			printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
@@ -267,8 +269,7 @@ int tamanho(char * str) {
 }
 
 void showmenu() {
-	if (system("clear") == -1)
-		if (system("cls"));
+	clear();
 	printf("1. Ler todos os ficheiros\n");
 	printf("2. Lista de produtos começados por alguma letra(maiúscula)\n");
 	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
@@ -292,20 +293,95 @@ void voltamenu() {
 			break;
 }
 
+void querie3(Emp e) {
+	int imes, juntos, p, i;
+	Fat ftmp;
+	char buffer[BufferM];
+	clear();
+	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
+	printf("Qual o código que quer saber a faturação?\n");
+	if (scanf("%s", buffer) == -1);
+	printf("Qual o mês que quer saber a faturação?\n");
+	if (scanf("%d", &imes) == -1);
+	printf("Quer o resultado global ou filial a filial?\n");
+	printf("0 - Filial a filial\n1 - Global\n");
+	if (scanf("%d", &juntos) == -1);
+	clear();
+	printf("Produto:\"%s\"\n", buffer);
+	if (juntos) {
+		for (p = 0; p < 2; p++) {
+			ftmp = faturacaototal(e, buffer, imes, p);
+			if (p == 0) printf("Modo Normal:\n");
+			else printf("Modo Promoção:\n");
+			printf("\tQuantidade:\t%d\n\tFaturação:\t%.2f\n\n", getfatquant(ftmp), getfatfat(ftmp));
+		}
+		free(ftmp);
+	}
+	else {
+		for (i = 1; i < 4; i++) {/*filial*/
+			printf("Filial nº%d:\n", i);
+			for (p = 0; p < 2; p++) {/*promoção*/
+				ftmp = produtofat(e, i, imes, p, buffer);
+				if (p % 2 == 0) printf("\tModo Normal:\n");
+				else printf("\tModo Promoção:\n");
+				printf("\t\tQuantidade:\t%d\n\t\tFaturação:\t%.2f\n\n", getfatquant(ftmp), getfatfat(ftmp));
+			}
+		}
+		free(ftmp);
+	}
+}
+
+void querie4(Emp e) {
+	int i;
+	clear();
+	printf("4. Códigos de produtos que ninguém comprou\n");
+	printf("Qual a filial que quer saber?\n");
+	printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
+	if (scanf("%d", &i) == -1);
+	while (i < 0 || i > 3) {
+		printf("Opção inválida.\n");
+		printf("Qual a filial que quer saber?\n");
+		printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
+		if (scanf("%d", &i) == -1);
+	}
+	if (!i) {
+		imprimeLista(quantostotalzeroAVL(e), '/');
+	}
+	else {
+		imprimeLista(produtoszero(e, i), '/');
+	}
+}
+
 void querie5(Filial *f, Cliente c) {
 	int mes, filial;
 	if (tamanho(getStringc(c)) < 5)
 		printf("O cliente não é válido\n");
 	else {
-		printf("MES   FILIAL1   FILIAL2   FILIAL3\n");
+		printf("    MES\tFILIAL1\tFILIAL2\tFILIAL3\n\n");
 		for (mes = 1; mes < 13; mes++) {
-			printf("%d        ", mes);
+			printf("%7d\t", mes);
 			for (filial = 0; filial < 3; filial++)
-				printf("%d       ", numprodutos(f[filial], c, mes));
+				printf("%7d\t", numprodutos(f[filial], c, mes));
 			printf("\n");
 		}
+		printf("\n");
 		voltamenu();
 	}
+}
+
+void querie6(Emp e) {
+	int i, p;
+	Fat tmp;
+	clear();
+	printf("6. Total de vendas e total faturado num intervalo de meses(Ex:3..7)\n");
+	printf("Qual o mes apartir do qual quer saber a faturaçao?\n");
+	if (scanf("%d", &i) == -1);
+	printf("Até que mês?\n");
+	if (scanf("%d", &p) == -1);
+	printf("\n[%d,%d]\n", i, p);
+	tmp = varremeses(e, i, p);
+	printf("Quantidade:\t%d\n", getfatquant(tmp));
+	printf("Faturação\t%.2f\n", getfatfat(tmp));
 }
 
 void querie8(Produto pr, Filial f) {
@@ -347,17 +423,16 @@ void querie9(Filial *f, Cliente c, int mes) {
 }
 
 void interpretador () {
-	int i, fil, mes, p;
+	int fil, mes;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
 	Filial f[3];
-	Fat ftmp;
 	char client[10], pro[10];
 	Cliente cl = inserec("");
 	Produto prod = inserep("");
-	char letra, cmd[BufferM], buffer[BufferM];
-	int verifica = 0, imes, juntos;
+	char letra, cmd[BufferM];
+	int verifica = 0;
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
@@ -381,8 +456,10 @@ void interpretador () {
 			voltamenu();
 			showmenu();
 			break;
-		case '2': if (cps == NULL)
+		case '2': if (cps == NULL) {
 				printf("Precisa de selecionar a leitura primeiro!\n");
+				showmenu();
+			}
 			else {
 				printf("Qual será a Letra?\n");
 				if (scanf("%c", &letra) == -1);
@@ -392,57 +469,22 @@ void interpretador () {
 			break;
 		case '3': if (e == NULL) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
 			}
-			else {
-				printf("Qual o código que quer saber a faturação?\n");
-				if (scanf("%s", buffer) == -1);
-				printf("Qual o mês que quer saber a faturação?\n");
-				if (scanf("%d", &imes) == -1);
-				printf("Quer o resultado global ou filial a filial?\n");
-				printf("0 - Filial a filial\n1 - Global\n");
-				if (scanf("%d", &juntos) == -1);
-				printf("AQUI TENS LINDO, TUDO O QUE PEDIRES:\n");
-				printf("Faturação do produto:\"%s\"\n", buffer);
-				if (juntos) {
-					for (p = 0; p < 2; p++) {
-						ftmp = faturacaototal(e, buffer, imes, p);
-						if (p == 0) printf("Modo Normal:\n");
-						else printf("Modo Promoção:\n");
-						printf("Quantidade:%d\nFaturação:%.2f\n", getfatquant(ftmp), getfatfat(ftmp));
-					}
-					free(ftmp);
-				}
-				else {
-					for (i = 1; i < 4; i++) {/*filial*/
-						for (p = 0; p < 2; p++) {/*promoção*/
-							ftmp = produtofat(e, i, imes, p, buffer);
-							if (p % 2 == 0) printf("Modo Normal:\n");
-							else printf("Modo Promoção:\n");
-							printf("Quantidade:%d\nFaturação:%.2f\n", getfatquant(ftmp), getfatfat(ftmp));
-						}
-					}
-					free(ftmp);
-				}
-			}
+			else querie3(e);
+			voltamenu();
+			showmenu();
 			break;
 		case '4': if (e == NULL) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
 			}
-			else {
-				printf("Qual a filial que quer saber?\n");
-				printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
-				if (scanf("%d", &i) == -1);
-				if (!i) {
-					imprimeLista(quantostotalzeroAVL(e), '/');
-				}
-				else {
-					imprimeLista(produtoszero(e, i), '/');
-				}
-			}
+			else querie4(e);
+			showmenu();
 
 			break;
 		case '5': if (verifica == 0) {
-				printf("Execute a leitura primeiro!\n");
+				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 				break;
 			}
@@ -453,19 +495,18 @@ void interpretador () {
 			showmenu();
 			break;
 		case '6': if (verifica == 0) {
-				printf("Execute a leitura primeiro!\n");
-				showmenu();
-				break;
+				printf("Precisa de selecionar a leitura primeiro\n");
 			}
-			printf("Qual o mes apartir do qual ?? FALTA AQUI UNS DIZERES GIROS\n");
-			if (scanf("%d", &i) == -1);
-			printf("Até que mês?\n");
-			if (scanf("%d", &p) == -1);
-			printfat(varremeses(e, i, p));
+			else {
+				querie6(e);
+				voltamenu();
+			}
 			showmenu();
 			break;
-		case '7': if (verifica == 0)
-				printf("Execute a leitura primeiro!\n");
+		case '7': if (verifica == 0) {
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+			}
 			else {
 				cp7 = initCatProds();
 				cp7 = makeCat(f, cp7);
@@ -473,8 +514,10 @@ void interpretador () {
 			}
 			showmenu();
 			break;
-		case '8': if (verifica == 0)
-				printf("Execute a leitura primeiro!\n");
+		case '8': if (verifica == 0) {
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+			}
 			else {
 				printf("Qual é o produto?\n");
 				if (fgets(pro, 7, stdin) == NULL)break;
@@ -489,8 +532,10 @@ void interpretador () {
 				showmenu();
 			}
 			break;
-		case '9': if (verifica == 0)
-				printf("Execute a leitura primeiro!\n");
+		case '9': if (verifica == 0) {
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+			}
 			else {
 				printf("Qual é o Cliente?\n");
 				if (fgets(client, 6, stdin) == NULL)break;
