@@ -274,7 +274,7 @@ Fat faturacaototal(Emp e, char* codigo, int imes, int p) {
 
 
 /*Faz o free de toda a memória que for alocada para guardar a informação da filial*/
-void freeEmp (Emp e) {
+void removeEmp (Emp e) {
 	int i, j, n;
 	for (i = 0; i < 3; i++) {
 		for (n = 0; n < 26; n++) {
@@ -290,6 +290,7 @@ void freeEmp (Emp e) {
 	free(e);
 }
 
+/*Retorna um int que são os que estão a zero numa AVL e preenche que um cat r com esses produtos*/
 int quantoszeroAVL(AVL a, CatProds r) {
 	int q = 0;
 	Produto p;
@@ -305,6 +306,44 @@ int quantoszeroAVL(AVL a, CatProds r) {
 	return q;
 }
 
+/*Retorna um conjunto de produtos que são os que estão a zero numa lista de AVLs*/
+CatProds produtoszero(Emp e, int f) {
+	int q = 0, car;
+	CatProds r = initCatProds();
+	for (car = 0; car < 26; car++) {
+		q += quantoszeroAVL(e->filial[f - 1]->mes[0].l[car], r);
+	}
+	return r;
+}
+
+/*Retorna um int que diz quantos elementos iguais há nas três AVLs*/
+int intquantoszeroAVL(AVL a, AVL b, AVL c) {
+	int q = 0;
+	if (a) {
+		if (getavlquant(a) == 0)
+			if (getavlquant(b) == 0 && getavlquant(c) == 0)
+				q++;
+		q += intquantoszeroAVL(getesq(a), getesq(b), getesq(c));
+		q += intquantoszeroAVL(getdir(a), getdir(b), getdir(c));
+	}
+	return q;
+}
+
+/*Retorna um int que é a quantidade de elementos iguais na lista de AVLs*/
+int inttotalzeroAVL(Emp e) {
+	int q = 0, car;
+	AVL a, b, c;
+	for (car = 0; car < 26; car++) {
+		a = e->filial[0]->mes[0].l[car];
+		b = e->filial[1]->mes[0].l[car];
+		c = e->filial[2]->mes[0].l[car];
+		q += intquantoszeroAVL(a, b, c);
+	}
+	return q;
+}
+
+/*retorna um int que é a quantidade de elementos iguais, e preenche o r com os devidos valores
+todos os produtos ficam no catalogo tal como a quantidade total*/
 int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 	int q = 0;
 	Produto p;
@@ -321,7 +360,7 @@ int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 	return q;
 }
 
-
+/*Retorna um CatProds que tem todos os elementos que são iguais em todas as AVLs*/
 CatProds quantostotalzeroAVL(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
@@ -335,22 +374,14 @@ CatProds quantostotalzeroAVL(Emp e) {
 	return r;
 }
 
-/*retorna um conjunto de produtos que pode ser impresso pela main*/
-CatProds produtoszero(Emp e, int f) {
-	int q = 0, car;
-	CatProds r = initCatProds();
-	for (car = 0; car < 26; car++) {
-		q += quantoszeroAVL(e->filial[f - 1]->mes[0].l[car], r);
-	}
-	return r;
-}
+
 /*foi para debug
 AVL* primeiraAVL(Emp e){
 	return e->filial[2]->mes[0].l;
 }
 */
 
-
+/*Retorna a faturação total num intervalo de meses*/
 Fat varremeses(Emp e, int init, int fim) {
 	int i, f, j;
 	Fat r = alocafat(0, 0);

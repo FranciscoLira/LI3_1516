@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "boolean.h"
 #include "myavl.h"
 #include "avlfil.h"
@@ -136,9 +137,9 @@ CatProds lerprod(CatProds cps, Filial *f) {
 			strtok(str, "\n\r");
 			p = alterap(str, p);
 			cps = insereProduto(cps, p);
-			f[0] = insereProds(f[0],p);
-			f[1] = insereProds(f[1],p);
-			f[2] = insereProds(f[2],p);
+			f[0] = insereProds(f[0], p);
+			f[1] = insereProds(f[1], p);
+			f[2] = insereProds(f[2], p);
 		}
 		else break;
 	}
@@ -422,16 +423,16 @@ void querie9(Filial *f, Cliente c, int mes) {
 	printf("\n");
 }
 
-void querie10(Filial *f, int n, int x){
+void querie10(Filial *f, int n, int x) {
 	char** codigos;
 	int*quantidades;
 	int i;
 	AVLfil res = NULL;
 	codigos = (char**)malloc(sizeof(char*)*n);
-	quantidades = (int*)malloc(sizeof(int)*n);
+	quantidades = (int*)malloc(sizeof(int) * n);
 	res = funcao10(f);
-	ordenaDecre(res,codigos,quantidades,n);
-		for (i = 0; i < 50; i++) {
+	ordenaDecre(res, codigos, quantidades, n);
+	for (i = 0; i < 50; i++) {
 		printf("%s\n", codigos[i]);
 		printf("%d\n", quantidades[i]);
 	}
@@ -439,7 +440,8 @@ void querie10(Filial *f, int n, int x){
 
 
 void interpretador () {
-	int fil, mes,z;
+	time_t timeinit, timeend;
+	int fil, mes, z;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -449,29 +451,34 @@ void interpretador () {
 	Produto prod = inserep("");
 	char letra, cmd[BufferM];
 	int verifica = 0;
-	for (z = 0; z < 3; z++) {
-		f[z] = initFilial();
-	}
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
 		switch (cmd[0]) {
-		case '1': if (verifica != 0) {
+		case '1': timeinit = time(NULL);
+			if (verifica != 0) {
 				removeCatClient(ccl);
 				removeCatProd(cps);
+				removeEmp(e);
 				removeFilial(f[0]);
 				removeFilial(f[1]);
 				removeFilial(f[2]);
+				printf("Leitura anterior removida\n");
+			}
+			for (z = 0; z < 3; z++) {
+				f[z] = initFilial();
 			}
 			ccl = initCatClients();
 			ccl = lerclient(ccl);
 			printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
 			cps = initCatProds();
-			cps = lerprod(cps,f);
+			cps = lerprod(cps, f);
 			printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 			e = leituravendas(ccl, cps, f);
 			printf("\nLido Vendas.txt\n\n");
 			verifica++;
+			timeend = time(NULL);
+			printf("passaram %f seg\n",difftime(timeend,timeinit));
 			voltamenu();
 			showmenu();
 			break;
@@ -545,8 +552,11 @@ void interpretador () {
 				printf("Qual é a filial?\n");
 				if (scanf(" %d", &fil));
 				fil--;
+				timeinit = time(NULL);
 				if (fil > -1 && fil < 3)
 					querie8(prod, f[fil]);
+				timeend = time(NULL);
+				printf("passaram %f seg\n",difftime(timeend,timeinit));
 				voltamenu();
 				showmenu();
 			}
@@ -565,28 +575,28 @@ void interpretador () {
 				mes--;
 				if (mes > -1 && mes < 12)
 					querie9(f, cl, mes);
+
 				voltamenu();
 				showmenu();
 			}
 			break;
-		case 'A':if (verifica == 0) {
+		case 'A': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
-				}
-				querie10(f,171008,3);
-				break;
+			}
+			querie10(f, 171008, 3);
+			break;
 		case 'B':
 			break;
-		case 'C':if (verifica == 0) {
+		case 'C': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
-				}
-				printf("O número de produtos que ninguém comprou é: %d\n",
-				totalProdutos(quantostotalzeroAVL(e)));
-				/*
-				printf("O número de clientes registados quenunca realizaram compras é: %d\n",
-				clientesaZ(f));*/
-				break;
+			}
+			printf("O número de produtos que ninguém comprou é: %d\n", inttotalzeroAVL(e));
+			/*
+			printf("O número de clientes registados quenunca realizaram compras é: %d\n",
+			clientesaZ(f));*/
+			break;
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}
@@ -596,6 +606,7 @@ void interpretador () {
 		removeFilial(f[0]);
 		removeFilial(f[1]);
 		removeFilial(f[2]);
+		removeEmp(e);
 	}
 }
 

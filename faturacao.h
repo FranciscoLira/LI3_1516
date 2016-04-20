@@ -32,8 +32,9 @@ Emp insereVenda (Emp e, Vendatmp v);
 void printfat(Fat a);
 Fat produtofat(Emp e, int f, int imes, int p, char* produto);
 Fat faturacaototal(Emp e, char* codigo, int imes, int p);
-void freeEmp(Emp e);
+void removeEmp(Emp e);
 CatProds quantostotalzeroAVL(Emp e);
+int inttotalzeroAVL(Emp e);
 CatProds produtoszero(Emp e, int f);
 /*AVL* primeiraAVL(Emp e);*/
 Fat varremeses(Emp e, int init, int fim);
