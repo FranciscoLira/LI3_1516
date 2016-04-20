@@ -36,5 +36,6 @@ void freeEmp(Emp e);
 CatProds quantostotalzeroAVL(Emp e);
 CatProds produtoszero(Emp e, int f);
 /*AVL* primeiraAVL(Emp e);*/
+Fat varremeses(Emp e, int init, int fim);
 
 #endif

@@ -28,7 +28,7 @@ struct avl {
 
 typedef struct fatmes {
 	AVL codigos[2];
-	int totalvendas[2];
+	int totalvendas[2];/*quantidade*/
 	double totalfat[2];
 }*Fatmes;
 
@@ -52,6 +52,11 @@ struct empresa {
 
 double getfatfat(Fat a) {
 	return (a->faturacao);
+}
+
+void setaddfat(Fat a, double f, int q) {
+	a->faturacao += f;
+	a->quantidade += q;
 }
 
 int getfatquant(Fat a) {
@@ -190,6 +195,12 @@ void addfatnodo(AVL a, Fat f) {
 	a->extra->faturacao += f->faturacao;
 	a->extra->quantidade += f->quantidade;
 }
+
+/*Põe em a a soma das duas faturações*/
+/*void addfatfat(Fat a, Fat b) {
+	a->faturacao += b->faturacao;
+	a->quantidade += b->quantidade;
+}*/
 
 /*Insere a faturação de um produto(codigo) na lista de 26 AVL*/
 void inserefattot(AVL* a, Fat f, char* codigo) {
@@ -338,3 +349,19 @@ AVL* primeiraAVL(Emp e){
 	return e->filial[2]->mes[0].l;
 }
 */
+
+
+Fat varremeses(Emp e, int init, int fim) {
+	int i, f, j;
+	Fat r = alocafat(0, 0);
+	Fatmes tmp;
+	for (f = 0; f < 3; f++) {
+		for (i = init; i < fim + 1; i++) {
+			tmp = e->filial[f]->mes[i].f;
+			for (j = 0; j < 2; j++) {
+				setaddfat(r, tmp->totalfat[j], tmp->totalvendas[j]);
+			}
+		}
+	}
+	return r;
+}

@@ -416,7 +416,7 @@ void interpretador () {
 					for (i = 1; i < 4; i++) {/*filial*/
 						for (p = 0; p < 2; p++) {/*promoção*/
 							ftmp = produtofat(e, i, imes, p, buffer);
-							if (p%2 == 0) printf("Modo Normal:\n");
+							if (p % 2 == 0) printf("Modo Normal:\n");
 							else printf("Modo Promoção:\n");
 							printf("Quantidade:%d\nFaturação:%.2f\n", getfatquant(ftmp), getfatfat(ftmp));
 						}
@@ -433,10 +433,10 @@ void interpretador () {
 				printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
 				if (scanf("%d", &i) == -1);
 				if (!i) {
-					imprimeLista(quantostotalzeroAVL(e),'/');
+					imprimeLista(quantostotalzeroAVL(e), '/');
 				}
 				else {
-					imprimeLista(produtoszero(e, i),'/');
+					imprimeLista(produtoszero(e, i), '/');
 				}
 			}
 
@@ -452,7 +452,17 @@ void interpretador () {
 			querie5(f, cl);
 			showmenu();
 			break;
-		case '6':
+		case '6': if (verifica == 0) {
+				printf("Execute a leitura primeiro!\n");
+				showmenu();
+				break;
+			}
+			printf("Qual o mes apartir do qual ?? FALTA AQUI UNS DIZERES GIROS\n");
+			if (scanf("%d", &i) == -1);
+			printf("Até que mês?\n");
+			if (scanf("%d", &p) == -1);
+			printfat(varremeses(e, i, p));
+			showmenu();
 			break;
 		case '7': if (verifica == 0)
 				printf("Execute a leitura primeiro!\n");
