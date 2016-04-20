@@ -64,6 +64,7 @@ void removeFilial(Filial f){
 	for (i = 0; i < 26; i++) {
 		freeTreefil(f->clientes[i], 0);
 	}
+	freeTreefil(f->prods,1);
 	free(f);
 } 
 /*Devolve o número de produtos que um cliente comprou num mes*/
