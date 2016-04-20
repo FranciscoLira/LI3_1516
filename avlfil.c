@@ -225,7 +225,8 @@ char** quemComprou(char** lista, char *prod, AVLfil t, int *i, int z, int *tam) 
 		lista = quemComprou(lista,prod, t->esq, i,z,tam);
 		for(j=0;j<12;j++){
 			if(existeAVLfil(t->produtos[j]->mes[z], prod)){
-				lista[*i] = malloc(sizeof(char) * 10);
+				lista = realloc(lista, (*i)+1);
+				lista[*i] = malloc(sizeof(char) * (strlen(prod)+1));
 				strcpy(lista[(*i)++], t->codigo);
 				(*tam)++;
 			}

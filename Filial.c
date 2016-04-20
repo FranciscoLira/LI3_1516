@@ -88,7 +88,7 @@ ConjComprados comprou(Produto p, Filial f, int tipo){
 	int i=0,tam=0,j; 
 	char *str=getStringp(p);
 	ConjComprados s=malloc(sizeof(struct comprou));
-	char **l =malloc(sizeof(char *)*60); /*Sera alocaçao dinamica, mas pra ja esta assim DEAL WITH IT*/
+	char **l =malloc(sizeof(char *));
 	for(j=0;j<26;j++)
 		l=quemComprou(l,str,f->clientes[j],&i,tipo,&tam);
 	s->lista=l;

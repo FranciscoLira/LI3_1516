@@ -17,7 +17,7 @@ typedef struct avlp {
 }*Trees;
 
 struct prod {
-	char nomeprod[10];
+	char *nomeprod;
 };
 
 struct prods {
@@ -39,6 +39,7 @@ AVL* getTree(CatProds cps) {
 
 Produto inserep(char *x) {
 	Produto p = malloc(sizeof(struct prod));
+	p->nomeprod = malloc(sizeof(char)*(strlen(x)+1));
 	strcpy(p->nomeprod, x);
 	return p;
 }
