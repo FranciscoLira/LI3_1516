@@ -11,7 +11,7 @@ typedef struct avlc {
 }*Trees;
 
 struct client {
-	char nomeclient[10];
+	char* nomeclient;
 };
 
 struct clients {
@@ -24,6 +24,7 @@ AVL getAvlC (CatClients ccs, int i) {
 
 Cliente inserec(char *x) {
 	Cliente c = malloc(sizeof(struct client));
+	c->nomeclient = malloc(sizeof(char)*strlen(x)+1);
 	strcpy(c->nomeclient, x);
 	return c;
 }
