@@ -24,10 +24,6 @@ struct prods {
 	Trees cP[26];
 };
 
-AVL getAvlP (CatProds cps, int i) {
-	return (cps->cP[i]->root);
-}
-
 AVL* getTree(CatProds cps) {
 	int i;
 	AVL* r = (AVL*)malloc(sizeof(AVL)*26);

@@ -6,11 +6,7 @@ typedef struct prods* CatProds;
 typedef struct prod* Produto;
 typedef struct conjProd* ConjProds;
 
-AVL getAvlP (CatProds cps, int i);
-
 AVL* getTree(CatProds cps);
-
-
 /*Insere string em Produto */
 Produto inserep(char *x);
 

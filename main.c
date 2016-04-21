@@ -546,18 +546,19 @@ void interpretador () {
 		case '7': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
-			}
-			else {
+				}
+				else {
 				cp7 = initCatProds();
 				cp7 = makeCat(f, cp7);
 				imprimeLista(cp7, '/');
-			}
-			showmenu();
-			break;
+				free(cp7);
+				}
+				showmenu();
+				break;
 		case '8': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
-			}
+				}
 			else {
 				printf("Qual é o produto?\n");
 				if (fgets(pro, 7, stdin) == NULL)break;
@@ -603,16 +604,20 @@ void interpretador () {
 			printf("%d\n",getQuantosClientes(f[1],prod));
 			break;
 		case 'B':
-			break;
+				break;
 		case 'C': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
-			}
-			printf("O número de produtos que ninguém comprou é: %d\n", inttotalzeroAVL(e));
-			/*
-			printf("O número de clientes registados quenunca realizaram compras é: %d\n",
-			clientesaZ(f));*/
-			break;
+				}
+				printf("O número de produtos que ninguém comprou é: %d\n", inttotalzeroAVL(e));
+				cp7 = initCatProds();
+				cp7 = makeCat(f, cp7);
+				printf("O número de clientes registados que nunca realizaram compras é: %d\n",
+				totalClientes(ccl)-totalProdutos(cp7)); 
+				free(cp7);
+				voltamenu();
+				showmenu();
+				break;
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}

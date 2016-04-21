@@ -202,7 +202,7 @@ void freeTreefil (AVLfil a, int x) {
 /* Esta função devolve um Catalogo de produtos com os clientes que fizeram compras
 nas 3 filiais para ser imprimido na main (querie 7)*/
 CatProds funcaocat(CatProds cps, AVLfil x1, AVLfil x2,AVLfil x3){
-	Produto p= inserep("");
+	Produto p= inserep("      ");
 	AVLfil a = x1;
 	if(a){
  		funcaocat(cps,a->esq,x2,x3);
@@ -215,7 +215,6 @@ CatProds funcaocat(CatProds cps, AVLfil x1, AVLfil x2,AVLfil x3){
  	}
  	return cps;
 }
-
 /*Falta tratar do encapsulamento, mas para já nao*/
 char** quemComprou(char** lista, char *prod, AVLfil t, int *i, int z, int *tam) {
 	int j;
