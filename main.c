@@ -56,7 +56,7 @@ int verificaPreco (double preco) {
 
 Boolean verificaPro(CatProds cps, char* c) {
 	Produto p = inserep(c);
-	if((existeProduto(cps, p))){
+	if ((existeProduto(cps, p))) {
 		free(p);
 		return true;
 	}
@@ -66,7 +66,7 @@ Boolean verificaPro(CatProds cps, char* c) {
 
 Boolean verificaCat(CatClients ccs, char* c) {
 	Cliente cl = inserec(c);
-	if((existeCliente(ccs, cl))){
+	if ((existeCliente(ccs, cl))) {
 		free(cl);
 		return true;
 	}
@@ -91,7 +91,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	FILE *p;
 	char *aux;
 	double preco;
-	int i, cont, mes, filial, quant,contador=0;
+	int i, cont, mes, filial, quant, contador = 0;
 	char buffer[BufferM];
 	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
@@ -131,7 +131,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 			contador++;
 		}
 	}
-	printf("\nLido o ficheiro de Vendas. Validadas: %d\n",contador);
+	printf("\nLido o ficheiro de Vendas. Validadas: %d\n", contador);
 	return e;
 }
 
@@ -162,7 +162,7 @@ CatProds lerprod(CatProds cps, Filial *f) {
 CatClients lerclient(CatClients cps) {
 	FILE *f1;
 	char str[10];
-	Cliente p =NULL;
+	Cliente p = NULL;
 	f1 = fopen("Dados/Clientes.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
@@ -330,7 +330,7 @@ void querie3(Emp e) {
 			ftmp = faturacaototal(e, buffer, imes, p);
 			if (p == 0) printf("Modo Normal:\n");
 			else printf("Modo Promoção:\n");
-			printf("\tQuantidade:\t%d\n\tFaturação:\t%.2f\n\n", getfatquant(ftmp), getfatfat(ftmp));
+			printf("\tQuantidade:\t%d\n\tFaturação:\t%.2f\n\n", getfatvendas(ftmp), getfatfat(ftmp));
 		}
 		free(ftmp);
 	}
@@ -341,7 +341,7 @@ void querie3(Emp e) {
 				ftmp = produtofat(e, i, imes, p, buffer);
 				if (p % 2 == 0) printf("\tModo Normal:\n");
 				else printf("\tModo Promoção:\n");
-				printf("\t\tQuantidade:\t%d\n\t\tFaturação:\t%.2f\n\n", getfatquant(ftmp), getfatfat(ftmp));
+				printf("\t\tQuantidade:\t%d\n\t\tFaturação:\t%.2f\n\n", getfatvendas(ftmp), getfatfat(ftmp));
 			}
 		}
 		free(ftmp);
@@ -397,7 +397,7 @@ void querie6(Emp e) {
 	if (scanf("%d", &p) == -1);
 	printf("\n[%d,%d]\n", i, p);
 	tmp = varremeses(e, i, p);
-	printf("Quantidade:\t%d\n", getfatquant(tmp));
+	printf("Quantidade:\t%d\n", getfatvendas(tmp));
 	printf("Faturação\t%.2f\n", getfatfat(tmp));
 }
 
@@ -553,8 +553,11 @@ void interpretador () {
 				showmenu();
 			}
 			else {
+				timeinit = clock();
 				cp7 = initCatProds();
 				cp7 = makeCat(f, cp7);
+				timeend = clock();
+				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 				imprimeLista(cp7, '/');
 			}
 			showmenu();
@@ -592,9 +595,11 @@ void interpretador () {
 				printf("Qual é o mes?\n");
 				if (scanf("%d", &mes));
 				mes--;
+				timeinit = clock();
 				if (mes > -1 && mes < 12)
 					querie9(f, cl, mes);
-
+				timeend = clock();
+				printf("passaram %f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
@@ -605,7 +610,10 @@ void interpretador () {
 			}
 			printf("Qual a filial de que quer saber os valores?\n");
 			if (scanf("%d", &fil));
+			timeinit = clock();
 			querie10(e, f, fil, 171008, 20);
+			timeend = clock();
+			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 			voltamenu();
 			showmenu();
 			break;

@@ -16,6 +16,7 @@ struct vendatmp {
 struct fat {
 	int quantidade;
 	double faturacao;
+	int vendas;
 };
 
 struct avl {
@@ -28,8 +29,9 @@ struct avl {
 
 typedef struct fatmes {
 	AVL codigos[2];
-	int totalvendas[2];/*quantidade*/
+	int totalquantidade[2];/*quantidade*/
 	double totalfat[2];
+	int totalvendas[2];
 }*Fatmes;
 
 typedef struct fatall {
@@ -91,10 +93,12 @@ Fat getfat(AVL a) {
 	if (a->extra) {
 		r->faturacao = a->extra->faturacao;
 		r->quantidade = a->extra->quantidade;
+		r->vendas = a->extra->vendas;
 	}
 	else {
 		r->faturacao = 0;
 		r->quantidade = 0;
+		r->vendas = 0;
 	}
 	return r;
 }
@@ -103,13 +107,18 @@ double getfatfat(Fat a) {
 	return (a->faturacao);
 }
 
-void setaddfat(Fat a, double f, int q) {
-	a->faturacao += f;
-	a->quantidade += q;
-}
-
 int getfatquant(Fat a) {
 	return a->quantidade;
+}
+
+int getfatvendas(Fat a) {
+	return a->vendas;
+}
+
+void setaddfat(Fat a, double f, int q, int v) {
+	a->faturacao += f;
+	a->quantidade += q;
+	a->vendas += v;
 }
 
 double getPreco(Vendatmp v) {
@@ -185,8 +194,9 @@ Fatmes initFatmes() {
 
 	for (i = 0; i < 2; i++) {
 		r->codigos[i] = NULL;
-		r->totalvendas[i] = 0;
+		r->totalquantidade[i] = 0;
 		r->totalfat[i] = 0;
+		r->totalvendas[i] = 0;
 	}
 	return r;
 }
@@ -228,10 +238,11 @@ Emp initEmpresa() {
 }
 
 /*Recebe quais os campos a aplicar no fat e aloca memória para ele*/
-Fat alocafat(double faturacao, int quantidade) {
+Fat alocafat(double faturacao, int quantidade, int vendas) {
 	Fat r = (Fat)malloc(sizeof(struct fat));
 	r->faturacao = faturacao;
 	r->quantidade = quantidade;
+	r->vendas = vendas;
 	return r;
 }
 
@@ -240,7 +251,7 @@ Fat alocafat(double faturacao, int quantidade) {
 Fat convvendafat(Vendatmp tmp) {
 	double a = (tmp->quantidade) * (tmp->preco);
 	int b = tmp->quantidade;
-	Fat r = alocafat(a, b);
+	Fat r = alocafat(a, b, 1);
 	return r;
 }
 
@@ -249,16 +260,18 @@ Aloca memória se for necessário e coloca-a a zero nesse caso,
 Apenas soma à anterior se já havia faturação para esse produto*/
 void addfatnodo(AVL a, Fat f) {
 	if (a->extra == NULL) {
-		a->extra = alocafat(0, 0);
+		a->extra = alocafat(0, 0, 0);
 	}
 	a->extra->faturacao += f->faturacao;
 	a->extra->quantidade += f->quantidade;
+	a->extra->vendas += f->vendas;
 }
 
 /*Põe em a a soma das duas faturações*/
 /*void addfatfat(Fat a, Fat b) {
 	a->faturacao += b->faturacao;
 	a->quantidade += b->quantidade;
+	a->vendas += b->vendas;
 }*/
 
 /*Insere a faturação de um produto(codigo) na lista de 26 AVL*/
@@ -284,7 +297,8 @@ Emp insereVenda(Emp e, Vendatmp v) {
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo] = insereAVL(e->filial[(v->filial) - 1]->mes[(v->mes)].f->codigos[v->promo], v->produto, r);
 	inserefattot(e->filial[(v->filial) - 1]->mes[0].l, r, v->produto);
 	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalfat[v->promo] += r->faturacao;
-	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r->quantidade;
+	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalquantidade[v->promo] += r->quantidade;
+	e->filial[(v->filial) - 1]->mes[(v->mes)].f->totalvendas[v->promo] += r->vendas;
 	return e;
 }
 
@@ -307,10 +321,10 @@ Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
 	AVL atmp = e->filial[f - 1]->mes[imes].f->codigos[p];
 	Fat ftmp = getfatfromavl(atmp, produto);
 	if (ftmp) {
-		r = alocafat(ftmp->faturacao, ftmp->quantidade);
+		r = alocafat(ftmp->faturacao, ftmp->quantidade, ftmp->vendas);
 	}
 	else {
-		r = alocafat(0, 0);
+		r = alocafat(0, 0, 0);
 	}
 	return r;
 }
@@ -320,7 +334,7 @@ Aloca memória e deve ser feito o free da mesma*/
 Fat faturacaototal(Emp e, char* codigo, int imes, int p) {
 	int f;
 	Fat tmp;
-	Fat r = alocafat(0, 0);
+	Fat r = alocafat(0, 0, 0);
 	for (f = 1; f < 4; f++) {
 		tmp = produtofat(e, f, imes, p, codigo);
 		if (tmp) {
@@ -444,13 +458,13 @@ AVL* primeiraAVL(Emp e){
 /*Retorna a faturação total num intervalo de meses*/
 Fat varremeses(Emp e, int init, int fim) {
 	int i, f, j;
-	Fat r = alocafat(0, 0);
+	Fat r = alocafat(0, 0, 0);
 	Fatmes tmp;
 	for (f = 0; f < 3; f++) {
 		for (i = init; i < fim + 1; i++) {
 			tmp = e->filial[f]->mes[i].f;
 			for (j = 0; j < 2; j++) {
-				setaddfat(r, tmp->totalfat[j], tmp->totalvendas[j]);
+				setaddfat(r, tmp->totalfat[j], tmp->totalquantidade[j], tmp->totalvendas[j]);
 			}
 		}
 	}
@@ -459,15 +473,17 @@ Fat varremeses(Emp e, int init, int fim) {
 
 Fat somafat(Fat a, Fat b, Fat c) {
 	if (!a) {
-		a = alocafat(0, 0);
+		a = alocafat(0, 0, 0);
 	}
 	if (b) {
 		a->faturacao += b->faturacao;
 		a->quantidade += b->quantidade;
+		a->vendas += b->vendas;
 	}
 	if (c) {
 		a->faturacao += c->faturacao;
 		a->quantidade += c->quantidade;
+		a->vendas += b->vendas;
 	}
 	return a;
 }
@@ -522,9 +538,9 @@ void quickSort(int* quant, char** cod, int l, int r) {
 Codquant ordenaDecre(AVL r, Codquant cq, int n) {
 	int i = 0;
 	char** codigos = getcod(cq);
-	int* quantidades = getquant(cq);
-	inseredaAvl(r, quantidades, codigos, &i);
-	quickSort(quantidades, codigos, 0, n - 1);
+	int* quantidade = getquant(cq);
+	inseredaAvl(r, quantidade, codigos, &i);
+	quickSort(quantidade, codigos, 0, n - 1);
 	return cq;
 }
 
