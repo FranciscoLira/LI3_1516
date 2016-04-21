@@ -164,9 +164,10 @@ char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
 	AVLfil res = NULL;
 	res = funcao9(f, mes, c);
 	n = numAVL(res);
-	codigos = (char**)malloc(sizeof(char*)*n);
+	codigos = (char**)malloc(sizeof(char*)*n+1);
 	quantidades = (int*)malloc(sizeof(int) * n);
 	ordenaDecrefil(res, codigos, quantidades, n);
+	codigos[n]=NULL;
 	return codigos;
 }
 
