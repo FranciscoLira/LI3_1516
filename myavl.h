@@ -15,7 +15,7 @@ AVL getdir(AVL a);
 /*set para futuro??*/
 double getavlfat(AVL a);
 int getavlquant(AVL a);
-void setextra(AVL a, double fat, int quant);
+void setextra(AVL a, double fat, int quant, int vendas);
 AVL newAVL();
 AVL insereAVL(AVL a, char* codigo, Fat v);
 int existequantAVL(AVL a, char* codigo);

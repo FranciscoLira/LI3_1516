@@ -15,6 +15,7 @@ struct avl {
 struct fat {
 	int quantidade;
 	double faturacao;
+	int vendas;
 };
 
 int max (int a, int b) {
@@ -71,13 +72,14 @@ int getavlquant(AVL a) {
 }
 
 /*este também serve para adicionar, não só para setter*/
-void setextra(AVL a, double fat, int quant) {
+void setextra(AVL a, double fat, int quant, int vendas) {
 	if (a->extra) {
 		a->extra->quantidade += quant;
 		a->extra->faturacao += fat;
+		a->extra->vendas += vendas;
 	}
 	else {
-		a->extra = alocafat(fat, quant);
+		a->extra = alocafat(fat, quant, vendas);
 	}
 }
 
@@ -249,7 +251,7 @@ AVL avlcpy(AVL a) {
 	if (a) {
 		r = initAVL(a->altura, a->codigo, NULL, avlcpy(a->esq), avlcpy(a->dir));
 		if (a->extra) {
-			setextra(r, getfatfat(a->extra), getfatquant(a->extra));
+			setextra(r, getfatfat(a->extra), getfatquant(a->extra), getfatvendas(a->extra));
 		}
 	}
 	return r;

@@ -172,7 +172,6 @@ AVLfil funcao10(Filial *f){
 int getQuantosClientes(Filial f, Produto p){
 	int r;
 	char *l = getStringp(p);
-	printf("%s\n",l );
 	r=quantosClientes(f->prods,l);
 	free(l);
 	return r;
