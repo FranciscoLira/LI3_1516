@@ -10,13 +10,14 @@ typedef struct empresa *Emp;
 typedef struct codquant *Codquant;
 
 Codquant initcodquant(int n);
-Fat getfat(AVL a);
 double getfatfat(Fat a);
 int getfatquant(Fat a);
 int getfatvendas(Fat a);
+void setaddfat(Fat a, double f, int q, int v);
 int* getquant(Codquant a);
 char* getcodi(Codquant a, int i);
 int getquanti(Codquant a, int i);
+Vendatmp initvendatmp();
 
 double getPreco(Vendatmp v);
 int getQuantidade(Vendatmp v);

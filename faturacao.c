@@ -19,14 +19,6 @@ struct fat {
 	int vendas;
 };
 
-struct avl {
-	int altura;
-	char* codigo;
-	Fat extra;
-	struct avl* esq;
-	struct avl* dir;
-};
-
 typedef struct fatmes {
 	AVL codigos[2];
 	int totalquantidade[2];/*quantidade*/
@@ -56,6 +48,7 @@ struct codquant {
 	char** codigos;
 	int* quant;
 };
+
 
 char** getcod(Codquant a) {
 	return a->codigos;
@@ -88,18 +81,12 @@ Vendatmp initvendatmp() {
 	return r;
 }
 
-Fat getfat(AVL a) {
+/*Recebe quais os campos a aplicar no fat e aloca memória para ele*/
+Fat alocafat(double faturacao, int quantidade, int vendas) {
 	Fat r = (Fat)malloc(sizeof(struct fat));
-	if (a->extra) {
-		r->faturacao = a->extra->faturacao;
-		r->quantidade = a->extra->quantidade;
-		r->vendas = a->extra->vendas;
-	}
-	else {
-		r->faturacao = 0;
-		r->quantidade = 0;
-		r->vendas = 0;
-	}
+	r->faturacao = faturacao;
+	r->quantidade = quantidade;
+	r->vendas = vendas;
 	return r;
 }
 
@@ -115,7 +102,11 @@ int getfatvendas(Fat a) {
 	return a->vendas;
 }
 
+
 void setaddfat(Fat a, double f, int q, int v) {
+	if (!a) {
+		a = alocafat(0, 0, 0);
+	}
 	a->faturacao += f;
 	a->quantidade += q;
 	a->vendas += v;
@@ -237,15 +228,6 @@ Emp initEmpresa() {
 	/*insereProdVaziosEmp (r, produtos); tem de ser feito, mas na main pois precisa de receber a AVL Prod*/
 }
 
-/*Recebe quais os campos a aplicar no fat e aloca memória para ele*/
-Fat alocafat(double faturacao, int quantidade, int vendas) {
-	Fat r = (Fat)malloc(sizeof(struct fat));
-	r->faturacao = faturacao;
-	r->quantidade = quantidade;
-	r->vendas = vendas;
-	return r;
-}
-
 /*Retorna a faturação de uma certa venda.
   Aloca a memória necessária para ela, se for para fazer copia tem de fazer free depois.*/
 Fat convvendafat(Vendatmp tmp) {
@@ -259,12 +241,12 @@ Fat convvendafat(Vendatmp tmp) {
 Aloca memória se for necessário e coloca-a a zero nesse caso,
 Apenas soma à anterior se já havia faturação para esse produto*/
 void addfatnodo(AVL a, Fat f) {
-	if (a->extra == NULL) {
-		a->extra = alocafat(0, 0, 0);
+	if (getextra(a) == NULL) {
+		setextra(a, 0, 0, 0);
 	}
-	a->extra->faturacao += f->faturacao;
-	a->extra->quantidade += f->quantidade;
-	a->extra->vendas += f->vendas;
+	getextra(a)->faturacao += f->faturacao;
+	getextra(a)->quantidade += f->quantidade;
+	getextra(a)->vendas += f->vendas;
 }
 
 /*Põe em a a soma das duas faturações*/
@@ -280,13 +262,13 @@ void inserefattot(AVL* a, Fat f, char* codigo) {
 	AVL aux = a[car];
 	int i;
 	while (aux) {
-		i = strcmp (codigo, aux->codigo);
+		i = strcmp (codigo, getcodigo(aux));
 		if (i == 0)
 			addfatnodo(aux, f);
 		if (i > 0)
-			aux = aux->dir;
+			aux = getdir(aux);
 		else
-			aux = aux->esq;
+			aux = getesq(aux);
 	}
 }
 
@@ -371,7 +353,7 @@ int quantoszeroAVL(AVL a, CatProds r) {
 	if (a) {
 		if (getavlquant(a) == 0) {
 			q++;
-			p = inserep(a->codigo);
+			p = inserep(getcodigo(a));
 			r = insereProduto(r, p);
 		}
 		q += quantoszeroAVL(getesq(a), r);
@@ -425,7 +407,7 @@ int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 		if (getavlquant(a) == 0)
 			if (getavlquant(b) == 0 && getavlquant(c) == 0) {
 				q++;
-				p = inserep(a->codigo);
+				p = inserep(getcodigo(a));
 				r = insereProduto(r, p);
 			}
 		q += quantosauxAVL(getesq(a), getesq(b), getesq(c), r);
@@ -472,34 +454,38 @@ Fat varremeses(Emp e, int init, int fim) {
 }
 
 Fat somafat(Fat a, Fat b, Fat c) {
+	Fat r = alocafat(0, 0, 0);
 	if (!a) {
-		a = alocafat(0, 0, 0);
+		r->faturacao += a->faturacao;
+		r->quantidade += a->quantidade;
+		r->vendas += a->vendas;
 	}
 	if (b) {
-		a->faturacao += b->faturacao;
-		a->quantidade += b->quantidade;
-		a->vendas += b->vendas;
+		r->faturacao += b->faturacao;
+		r->quantidade += b->quantidade;
+		r->vendas += b->vendas;
 	}
 	if (c) {
-		a->faturacao += c->faturacao;
-		a->quantidade += c->quantidade;
-		a->vendas += b->vendas;
+		r->faturacao += c->faturacao;
+		r->quantidade += c->quantidade;
+		r->vendas += b->vendas;
 	}
-	return a;
+	return r;
 }
 
 void somasavlsquant(AVL a, AVL b, AVL c) {
 	if (a) {
-		a->extra = somafat(a->extra, b->extra, c->extra);
-		somasavlsquant(a->esq, b->esq, c->esq);
-		somasavlsquant(a->dir, b->dir, c->dir);
+		Fat tmp = somafat(getextra(a), getextra(b), getextra(c));
+		setextra(a, tmp->faturacao, tmp->quantidade, tmp->vendas);
+		somasavlsquant(getesq(a), getesq(b), getesq(c));
+		somasavlsquant(getdir(a), getdir(b), getdir(c));
 	}
 }
 
 /*Dada uma avl a e uma avl b junta tudo na avl a*/
 AVL juntaavls(AVL a, AVL b) {
 	if (b) {
-		a = insereAVL(a, getcodigo(b), getfat(b));
+		a = insereAVL(a, getcodigo(b), getextra(b));
 		a = juntaavls(a, getesq(b));
 		a = juntaavls(a, getdir(b));
 	}
@@ -548,7 +534,10 @@ Codquant ordenaDecre(AVL r, Codquant cq, int n) {
 AVL juntaquantidades(Emp e, int f) {
 	int j;
 	AVL r;
-	AVL* copia = (AVL*)malloc(sizeof(struct avl) * 26);
+	AVL copia[26];
+	for (j = 0; j < 26; j++) {
+		copia[j] = newAVL();
+	}
 	/*for (j = 0; j < 26; j++) {
 		copia[j] = avlcpy(e->filial[0]->mes[0].l[j]);
 		somasavlsquant(copia[j], e->filial[1]->mes[0].l[j], e->filial[2]->mes[0].l[j]);
