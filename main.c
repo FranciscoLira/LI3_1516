@@ -3,8 +3,6 @@
 #include <string.h>
 #include <time.h>
 #include "boolean.h"
-#include "myavl.h"
-#include "avlfil.h"
 #include "CatProd.h"
 #include "CatClient.h"
 #include "faturacao.h"
@@ -424,17 +422,11 @@ void querie8(Produto pr, Filial f) {
 }
 
 void querie9(Filial *f, Cliente c, int mes) {
-	int n, i;
-	char** codigos;
-	int* quantidades;
-	AVLfil res = NULL;
-	res = funcao9(f, mes, c);
-	n = numAVL(res);
-	codigos = (char**)malloc(sizeof(char*)*n);
-	quantidades = (int*)malloc(sizeof(int) * n);
-	ordenaDecrefil(res, codigos, quantidades, n);
+	int i;
+	char **codigos;
+	codigos = getCodQMaisComprou(f,mes,c);
 	printf("Produtos:\n");
-	for (i = 0; i < n; i++) {
+	for (i = 0; codigos[i]; i++) {
 		printf("%s\n", codigos[i]);
 	}
 	printf("\n");

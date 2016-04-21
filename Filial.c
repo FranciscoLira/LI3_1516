@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Filial.h"
+#include "avlfil.h"
 
 /*Estrutura que serve para guardar os clientes que compraram
 um determinado produto*/
@@ -136,11 +137,6 @@ void quickSortfil(int* quant, char** cod, int l, int r) {
    }
 }
 
-void init (int n, char** codigos, int* quant) {
-     codigos = (char**)malloc(sizeof(char*)*n);
-	 quant = (int*)malloc(sizeof(int)*n);
-}
-
 void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n) {
 	 int i;
 	 i = 0;
@@ -161,12 +157,17 @@ AVLfil funcao9(Filial *f, int mes, Cliente c){
 	return res;
 }
 
-AVLfil funcao10(Filial *f){
-	int i;
+char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
+	int n;
+	char** codigos;
+	int* quantidades;
 	AVLfil res = NULL;
-	for(i=0;i<3;i++)
-		res = auxiliarInsere(res,f[i]->prods);
-	return res;
+	res = funcao9(f, mes, c);
+	n = numAVL(res);
+	codigos = (char**)malloc(sizeof(char*)*n);
+	quantidades = (int*)malloc(sizeof(int) * n);
+	ordenaDecrefil(res, codigos, quantidades, n);
+	return codigos;
 }
 
 int getQuantosClientes(Filial f, Produto p){
