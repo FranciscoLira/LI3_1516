@@ -480,6 +480,7 @@ void somasavlsquant(AVL a, AVL b, AVL c) {
 	}
 }
 
+/*Dada uma avl a e uma avl b junta tudo na avl a*/
 AVL juntaavls(AVL a, AVL b) {
 	if (b) {
 		a = insereAVL(a, getcodigo(b), getfat(b));
@@ -527,6 +528,7 @@ Codquant ordenaDecre(AVL r, Codquant cq, int n) {
 	return cq;
 }
 
+/*Junta as 26 avls de produtos que estavam ordenadas por letras*/
 AVL juntaquantidades(Emp e, int f) {
 	int j;
 	AVL r;

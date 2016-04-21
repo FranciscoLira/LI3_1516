@@ -129,13 +129,14 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 CatProds lerprod(CatProds cps, Filial *f) {
 	FILE *f1;
 	char str[10];
-	Produto p = inserep("");
+	Produto p = NULL;
 	f1 = fopen("Dados/Produtos.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			p = alterap(str, p);
+			free(p);
+			p = inserep(str);
 			cps = insereProduto(cps, p);
 			f[0] = insereProds(f[0], p);
 			f[1] = insereProds(f[1], p);
@@ -150,13 +151,14 @@ CatProds lerprod(CatProds cps, Filial *f) {
 CatClients lerclient(CatClients cps) {
 	FILE *f1;
 	char str[10];
-	Cliente p = inserec("");
+	Cliente p =NULL;
 	f1 = fopen("Dados/Clientes.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			p = alterac(str, p);
+			free(p);
+			p = inserec(str);
 			cps = insereCliente(cps, p);
 		}
 		else break;
@@ -425,20 +427,23 @@ void querie9(Filial *f, Cliente c, int mes) {
 	printf("\n");
 }
 
-void querie10(Emp e, Filial *f, int n, int x) {
+/*recebe a empresa, a filial em questão, qual a filial(ifil) nprod é quantos produtos há, e o N é o do user */
+void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	int i;
+	Filial tmp = f[ifil - 1];
+	Produto prod = inserep("             ");
 	/*AVLfil res = NULL;*/
 	AVL avq = NULL;
-	Codquant* r = (Codquant*)malloc(sizeof(Codquant)*3);
+	Codquant r;
 	/*res = funcao10(f);*/
-	for (i = 0; i < 3; i++) {
-		r[i] = initcodquant(n);
-		avq = juntaquantidades(e, i);
-		ordenaDecre(avq, r[i], n);
-	}
-	for (i = 0; i < 1; i++) {
-		printf("%s\n", getcodi(r[1],i));
-		printf("%d\n", getquanti(r[1],i));
+	r = initcodquant(nprod);
+	avq = juntaquantidades(e, ifil - 1);
+	ordenaDecre(avq, r, nprod);
+	for (i = 0; i < N; i++) {
+		prod = alterap(getcodi(r, i), prod);
+		printf("%s\n", getcodi(r, i));
+		printf("%d\n", getquanti(r, i));
+		printf("%d\n", getQuantosClientes(tmp, prod));
 	}
 }
 
@@ -588,9 +593,9 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 			}
-			querie10(e, f, 171008, 3);
-			prod=alterap("JC1030",prod);
-			printf("%d\n",getQuantosClientes(f[1],prod));
+			printf("Qual a filial de que quer saber os valores?\n");
+			if (scanf("%d", &fil));
+			querie10(e, f, fil, 171008, 20);
 			break;
 		case 'B':
 			break;
