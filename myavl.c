@@ -12,12 +12,6 @@ struct avl {
 	struct avl* dir;
 };
 
-struct fat {
-	int quantidade;
-	double faturacao;
-	int vendas;
-};
-
 int max (int a, int b) {
 	return (a > b ? a : b);
 }
@@ -52,10 +46,13 @@ AVL getdir(AVL a) {
 	return a-> dir;
 }
 
+Fat getextra(AVL a){
+	return a->extra;
+}
 
 double getavlfat(AVL a) {
 	if (a->extra) {
-		return a->extra->faturacao;
+		return getfatfat(a->extra);
 	}
 	else {
 		return 0;
@@ -64,7 +61,7 @@ double getavlfat(AVL a) {
 
 int getavlquant(AVL a) {
 	if (a->extra) {
-		return a->extra->quantidade;
+		return getfatquant(a->extra);
 	}
 	else {
 		return 0;
@@ -73,10 +70,9 @@ int getavlquant(AVL a) {
 
 /*este também serve para adicionar, não só para setter*/
 void setextra(AVL a, double fat, int quant, int vendas) {
+	
 	if (a->extra) {
-		a->extra->quantidade += quant;
-		a->extra->faturacao += fat;
-		a->extra->vendas += vendas;
+		setaddfat(a->extra,fat,quant,vendas);
 	}
 	else {
 		a->extra = alocafat(fat, quant, vendas);
@@ -175,7 +171,7 @@ int existequantAVL(AVL a, char* codigo) {
 	int i;
 	while (aux) {
 		i = strcmp (codigo, aux->codigo);
-		if (i == 0 && (!a->extra || a->extra->quantidade == 0))
+		if (i == 0 && (!a->extra || getfatquant(a->extra) == 0))
 			return 1;
 		if (i > 0)
 			aux = aux->dir;
@@ -279,7 +275,7 @@ void inseredaAvl(AVL r, int* quantidades, char** codigos, int *i) {
 		codigos[*i] = malloc(sizeof(char) * 10);
 		strcpy(codigos[*i], r->codigo);
 		if (r->extra)
-			quantidades[*i] = r->extra->quantidade;
+			quantidades[*i] = getfatquant(r->extra);
 		else {
 			quantidades[*i] = 0;
 		}

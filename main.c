@@ -12,15 +12,6 @@
 #define NR_CLIENTES 20000
 #define BufferM 128
 
-struct vendatmp {
-	char produto[10];
-	double preco;
-	int quantidade;
-	int promo;
-	char cliente[10];
-	int mes;
-	int filial;
-};
 
 /*Verifica se a venda é N ou P*/
 int verificaVenda (char promo) {
@@ -82,7 +73,7 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 
 
 Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
-	Vendatmp v;
+	Vendatmp v = initvendatmp();
 	Emp e = initEmpresa();
 	Cliente c = inserec("");
 	Produto pr = inserep("");
@@ -91,7 +82,6 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	double preco;
 	int i, cont, mes, filial, quant, contador = 0;
 	char buffer[BufferM];
-	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
 	e = insereProdVaziosEmp(e, getTree(cps));
 	cont = 0;

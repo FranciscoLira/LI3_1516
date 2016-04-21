@@ -12,6 +12,7 @@ char* getcodigo(AVL a);
 void setcodigo(AVL a, char* codigo);
 AVL getesq(AVL a);
 AVL getdir(AVL a);
+Fat getextra(AVL a);
 /*set para futuro??*/
 double getavlfat(AVL a);
 int getavlquant(AVL a);
