@@ -7,8 +7,16 @@ typedef struct vendatmp *Vendatmp;
 
 typedef struct empresa *Emp;
 
+typedef struct codquant *Codquant;
+
+Codquant initcodquant(int n);
+Fat getfat(AVL a);
 double getfatfat(Fat a);
 int getfatquant(Fat a);
+int* getquant(Codquant a);
+char* getcodi(Codquant a, int i);
+int getquanti(Codquant a, int i);
+
 double getPreco(Vendatmp v);
 int getQuantidade(Vendatmp v);
 int getPromo(Vendatmp v);
@@ -38,5 +46,7 @@ int inttotalzeroAVL(Emp e);
 CatProds produtoszero(Emp e, int f);
 /*AVL* primeiraAVL(Emp e);*/
 Fat varremeses(Emp e, int init, int fim);
+Codquant ordenaDecre(AVL r, Codquant cq, int n);
+AVL juntaquantidades(Emp e, int f);
 
 #endif

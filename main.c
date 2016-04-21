@@ -199,63 +199,65 @@ void imprimeLista(CatProds cps, char letra) {
 	l = getList(cps, letra);
 	lista = getLista(l);
 	n = getSize(l);
-	np = n / 90;
-	if (n % 90) np++;
-	down = 0; up = 90;
-	lista[n] = NULL;
-	while (a != 'Q' && a != 'q') {
-		clear();
-		j = down; m = up;
-		if (j == 0 && (a == 'A' || a == 'a'))
-			printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
-		if (m == n && (a == 'S' || a == 's'))
-			printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
-		if ((a == 'P' || a == 'p') && (pag < 1 || pag > np))
-			printf("\nA opção escolhida não é válida!\n\n");
-		printf("Numero total de elementos:%d\n", n);
-		printf("O numero de paginas: %.0f\n\n", np );
-		printf("                        Página %d\n\n", getPagina(l));
-		while (down < up) {
-			for (t = 0; t < 6; t++) {
-				if (lista[down]) printf("%s    ", lista[down++]);
+	if (n) {
+		np = n / 90;
+		if (n % 90) np++;
+		down = 0; up = 90;
+		lista[n] = NULL;
+		while (a != 'Q' && a != 'q') {
+			clear();
+			j = down; m = up;
+			if (j == 0 && (a == 'A' || a == 'a'))
+				printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
+			if (m == n && (a == 'S' || a == 's'))
+				printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
+			if ((a == 'P' || a == 'p') && (pag < 1 || pag > np))
+				printf("\nA opção escolhida não é válida!\n\n");
+			printf("Numero total de elementos:%d\n", n);
+			printf("O numero de paginas: %.0f\n\n", np );
+			printf("                        Página %d\n\n", getPagina(l));
+			while (down < up) {
+				for (t = 0; t < 6; t++) {
+					if (lista[down]) printf("%s    ", lista[down++]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		printf("\n\n");
-		printf("O que pretende fazer a seguir: \n\n");
-		if (j == 0) {
-			printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
-		}
-		else {
-			if (j != 0 && m != n) {
-				printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+			printf("\n\n");
+			printf("O que pretende fazer a seguir: \n\n");
+			if (j == 0) {
+				printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
 			}
 			else {
-				printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
+				if (j != 0 && m != n) {
+					printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+				}
+				else {
+					printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
+				}
 			}
-		}
-		if (scanf("%s", &a) != 0) {;}
-		printf("\n");
-		if (a == 'S' || a == 's') {
-			if (m != n) alteraPaginamais(l);
-		}
-		else if (a == 'A' || a == 'a') {
-			if (j != 0) alteraPaginamenos(l);
-		}
-		else if (a == 'P' || a == 'p') {
-			printf("Qual é a página que deseja consultar:  \n");
-			if (scanf("%d", &pag) == 0) {;}
-			if (pag >= 1 && pag <= np) {
-				if (pag > getPagina(l))
-					while ((pag - getPagina(l) != 0))
-						alteraPaginamais(l);
-				else
-					while ((getPagina(l) - pag != 0))
-						alteraPaginamenos(l);
+			if (scanf("%s", &a) != 0) {;}
+			printf("\n");
+			if (a == 'S' || a == 's') {
+				if (m != n) alteraPaginamais(l);
 			}
+			else if (a == 'A' || a == 'a') {
+				if (j != 0) alteraPaginamenos(l);
+			}
+			else if (a == 'P' || a == 'p') {
+				printf("Qual é a página que deseja consultar:  \n");
+				if (scanf("%d", &pag) == 0) {;}
+				if (pag >= 1 && pag <= np) {
+					if (pag > getPagina(l))
+						while ((pag - getPagina(l) != 0))
+							alteraPaginamais(l);
+					else
+						while ((getPagina(l) - pag != 0))
+							alteraPaginamenos(l);
+				}
+			}
+			up = auxImprimeUp(up, getPagina(l), np, n);
+			down = auxImprimeDown(down, up, getPagina(l), np);
 		}
-		up = auxImprimeUp(up, getPagina(l), np, n);
-		down = auxImprimeDown(down, up, getPagina(l), np);
 	}
 }
 
@@ -415,7 +417,7 @@ void querie9(Filial *f, Cliente c, int mes) {
 	n = numAVL(res);
 	codigos = (char**)malloc(sizeof(char*)*n);
 	quantidades = (int*)malloc(sizeof(int) * n);
-	ordenaDecre(res, codigos, quantidades, n);
+	ordenaDecrefil(res, codigos, quantidades, n);
 	printf("Produtos:\n");
 	for (i = 0; i < n; i++) {
 		printf("%s\n", codigos[i]);
@@ -423,18 +425,20 @@ void querie9(Filial *f, Cliente c, int mes) {
 	printf("\n");
 }
 
-void querie10(Filial *f, int n, int x) {
-	char** codigos;
-	int*quantidades;
+void querie10(Emp e, Filial *f, int n, int x) {
 	int i;
 	AVLfil res = NULL;
-	codigos = (char**)malloc(sizeof(char*)*n);
-	quantidades = (int*)malloc(sizeof(int) * n);
+	AVL avq = NULL;
 	res = funcao10(f);
-	ordenaDecre(res, codigos, quantidades, n);
-	for (i = 0; i < 50; i++) {
-		printf("%s\n", codigos[i]);
-		printf("%d\n", quantidades[i]);
+	Codquant* r = (Codquant*)malloc(sizeof(Codquant)*3);
+	for (i = 0; i < 3; i++) {
+		r[i] = initcodquant(n);
+		avq = juntaquantidades(e, i);
+		ordenaDecre(avq, r[i], n);
+	}
+	for (i = 0; i < 100; i++) {
+		printf("%s\n", getcodi(r[1],i));
+		printf("%d\n", getquanti(r[1],i));
 	}
 }
 
@@ -478,7 +482,7 @@ void interpretador () {
 			printf("\nLido Vendas.txt\n\n");
 			verifica++;
 			timeend = clock();
-			printf("passaram %.3f seg\n",(double)(timeend - timeinit)/CLOCKS_PER_SEC);
+			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 			voltamenu();
 			showmenu();
 			break;
@@ -556,7 +560,7 @@ void interpretador () {
 				if (fil > -1 && fil < 3)
 					querie8(prod, f[fil]);
 				timeend = clock();
-				printf("passaram %.3f seg\n",(double)(timeend - timeinit)/CLOCKS_PER_SEC);
+				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
@@ -584,7 +588,7 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 			}
-			querie10(f, 171008, 3);
+			querie10(e, f, 171008, 3);
 			break;
 		case 'B':
 			break;

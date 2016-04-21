@@ -4,11 +4,11 @@
 #include "faturacao.h"
 
 struct vendatmp {
-	char produto[10];
+	char* produto;
 	double preco;
 	int quantidade;
 	int promo;
-	char cliente[10];
+	char* cliente;
 	int mes;
 	int filial;
 };
@@ -50,6 +50,55 @@ struct empresa {
 	Fatall filial[3];
 };
 
+struct codquant {
+	char** codigos;
+	int* quant;
+};
+
+char** getcod(Codquant a) {
+	return a->codigos;
+}
+
+char* getcodi(Codquant a, int i) {
+	return a->codigos[i];
+}
+
+int* getquant(Codquant a) {
+	return a->quant;
+}
+
+int getquanti(Codquant a, int i) {
+	return a->quant[i];
+}
+
+Codquant initcodquant(int n) {
+	Codquant r = (Codquant)malloc(sizeof(struct codquant));
+	r->quant = (int*)malloc(sizeof(int) * n);
+	r->codigos = (char**)malloc(sizeof(char*)*n);
+	return r;
+}
+
+Vendatmp initvendatmp() {
+	Vendatmp r = (Vendatmp)malloc(sizeof(struct vendatmp));
+	r->produto = r->cliente = NULL;
+	r->preco = 0;
+	r->quantidade = r->promo = r->filial = 0;
+	return r;
+}
+
+Fat getfat(AVL a) {
+	Fat r = (Fat)malloc(sizeof(struct fat));
+	if (a->extra) {
+		r->faturacao = a->extra->faturacao;
+		r->quantidade = a->extra->quantidade;
+	}
+	else {
+		r->faturacao = 0;
+		r->quantidade = 0;
+	}
+	return r;
+}
+
 double getfatfat(Fat a) {
 	return (a->faturacao);
 }
@@ -84,11 +133,15 @@ int getFilial(Vendatmp v) {
 }
 
 char* getProduto(Vendatmp v) {
-	return v->produto;
+	char* r = (char*)malloc(sizeof(char) * (strlen(v->produto) + 1));
+	strcpy(r, v->produto);
+	return r;
 }
 
 char* getCliente(Vendatmp v) {
-	return v->cliente;
+	char* r = (char*)malloc(sizeof(char) * (strlen(v->cliente) + 1));
+	strcpy(r, v->cliente);
+	return r;
 }
 
 void setPreco(Vendatmp v, double preco) {
@@ -112,10 +165,16 @@ void setFilial(Vendatmp v, int filial) {
 }
 
 void setProduto(Vendatmp v, char* produto) {
+	if (!v->produto) {
+		v->produto = (char*)malloc(sizeof(char) * (strlen(produto) + 1));
+	}
 	strcpy(v->produto, produto);
 }
 
 void setCliente(Vendatmp v, char* cliente) {
+	if (!v->cliente) {
+		v->cliente = (char*)malloc(sizeof(char) * (strlen(cliente) + 1));
+	}
 	strcpy(v->cliente, cliente);
 }
 
@@ -158,7 +217,7 @@ Emp insereProdVaziosEmp(Emp e, AVL* produtos) {
 	return e;
 }
 
-Emp initEmpresa () {
+Emp initEmpresa() {
 	int i;
 	Emp r = (Emp)malloc(sizeof(struct empresa));
 	for (i = 0; i < 3; i++) {
@@ -394,6 +453,93 @@ Fat varremeses(Emp e, int init, int fim) {
 				setaddfat(r, tmp->totalfat[j], tmp->totalvendas[j]);
 			}
 		}
+	}
+	return r;
+}
+
+Fat somafat(Fat a, Fat b, Fat c) {
+	if (!a) {
+		a = alocafat(0, 0);
+	}
+	if (b) {
+		a->faturacao += b->faturacao;
+		a->quantidade += b->quantidade;
+	}
+	if (c) {
+		a->faturacao += c->faturacao;
+		a->quantidade += c->quantidade;
+	}
+	return a;
+}
+
+void somasavlsquant(AVL a, AVL b, AVL c) {
+	if (a) {
+		a->extra = somafat(a->extra, b->extra, c->extra);
+		somasavlsquant(a->esq, b->esq, c->esq);
+		somasavlsquant(a->dir, b->dir, c->dir);
+	}
+}
+
+AVL juntaavls(AVL a, AVL b) {
+	if (b) {
+		a = insereAVL(a, getcodigo(b), getfat(b));
+		a = juntaavls(a, getesq(b));
+		a = juntaavls(a, getdir(b));
+	}
+	return a;
+}
+
+
+int partition(int* quant, char** cod, int l, int r) {
+	int pivot, i, j, t;
+	char* t2 = malloc(10);
+	pivot = quant[l];
+	i = l; j = r + 1;
+	while (1) {
+		do ++i; while ( quant[i] >= pivot && i <= r );
+		do --j; while ( quant[j] < pivot );
+		if ( i >= j ) break;
+		t = quant[i]; quant[i] = quant[j]; quant[j] = t;
+		strcpy(t2, cod[i]); strcpy(cod[i], cod[j]); strcpy(cod[j], t2);
+	}
+	t = quant[l]; quant[l] = quant[j]; quant[j] = t;
+	strcpy(t2, cod[l]); strcpy(cod[l], cod[j]); strcpy(cod[j], t2);
+	free(t2);
+	return j;
+}
+
+
+void quickSort(int* quant, char** cod, int l, int r) {
+	int j;
+	if ( l < r ) {
+		j = partition(quant, cod, l, r);
+		quickSort(quant, cod, l, j - 1);
+		quickSort(quant, cod, j + 1, r);
+	}
+}
+
+Codquant ordenaDecre(AVL r, Codquant cq, int n) {
+	int i = 0;
+	char** codigos = getcod(cq);
+	int* quantidades = getquant(cq);
+	inseredaAvl(r, quantidades, codigos, &i);
+	quickSort(quantidades, codigos, 0, n - 1);
+	return cq;
+}
+
+AVL juntaquantidades(Emp e, int f) {
+	int j;
+	AVL r;
+	AVL* copia = (AVL*)malloc(sizeof(struct avl) * 26);
+	/*for (j = 0; j < 26; j++) {
+		copia[j] = avlcpy(e->filial[0]->mes[0].l[j]);
+		somasavlsquant(copia[j], e->filial[1]->mes[0].l[j], e->filial[2]->mes[0].l[j]);
+	}
+	*/
+	r = avlcpy(e->filial[f]->mes[0].l[0]);
+	for (j = 1; j < 26; j++) {
+		copia[j] = avlcpy(e->filial[f]->mes[0].l[j]);
+		r = juntaavls(r, copia[j]);
 	}
 	return r;
 }

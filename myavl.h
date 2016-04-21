@@ -2,9 +2,8 @@
 #define AVL_H_
 #include "boolean.h"
 
-
-typedef struct fat *Fat;
 typedef struct avl *AVL;
+typedef struct fat *Fat;
 
 int max(int a, int b);
 int altura(AVL a);
@@ -13,9 +12,9 @@ char* getcodigo(AVL a);
 void setcodigo(AVL a, char* codigo);
 AVL getesq(AVL a);
 AVL getdir(AVL a);
+/*set para futuro??*/
 double getavlfat(AVL a);
 int getavlquant(AVL a);
-void setcodigo(AVL a, char* codigo);
 void setextra(AVL a, double fat, int quant);
 AVL newAVL();
 AVL insereAVL(AVL a, char* codigo, Fat v);
@@ -27,5 +26,6 @@ char** auxiliarImprime(char** lista, AVL t, int *i);
 void printbool(Boolean a);
 AVL avlcpy(AVL a);
 /*int quantosnodos(AVL* a);*/
+void inseredaAvl(AVL r, int* quantidades, char** codigos, int *i);
 
 #endif

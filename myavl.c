@@ -32,7 +32,15 @@ int diferenca(AVL a, AVL b) {
 }
 
 char* getcodigo(AVL a) {
-	return a->codigo;
+	char* r = (char*)malloc(sizeof(char) * (strlen(a->codigo) + 1));
+	strcpy(r, a->codigo);
+	return r;
+}
+
+void setcodigo(AVL a, char* codigo) {
+	if (!a->codigo)
+		a->codigo = (char*)malloc(sizeof(char) * 10);
+	strcpy(a->codigo, codigo);
 }
 
 AVL getesq(AVL a) {
@@ -42,6 +50,7 @@ AVL getesq(AVL a) {
 AVL getdir(AVL a) {
 	return a-> dir;
 }
+
 
 double getavlfat(AVL a) {
 	if (a->extra) {
@@ -61,11 +70,6 @@ int getavlquant(AVL a) {
 	}
 }
 
-void setcodigo(AVL a, char* codigo) {
-	a->codigo = (char*)malloc(sizeof(char) * 10);
-	strcpy(a->codigo, codigo);
-}
-
 /*este também serve para adicionar, não só para setter*/
 void setextra(AVL a, double fat, int quant) {
 	if (a->extra) {
@@ -83,7 +87,6 @@ AVL newAVL() {
 	r->esq = r->dir = NULL;
 	r->extra = NULL;
 	r->codigo = NULL;
-
 	return r;
 }
 
@@ -266,3 +269,19 @@ int quantosnodos(AVL* a) {
 	return q;
 }
 */
+
+void inseredaAvl(AVL r, int* quantidades, char** codigos, int *i) {
+	AVL aux = r;
+	if (aux) {
+		inseredaAvl(aux->esq, quantidades, codigos, i);
+		codigos[*i] = malloc(sizeof(char) * 10);
+		strcpy(codigos[*i], r->codigo);
+		if (r->extra)
+			quantidades[*i] = r->extra->quantidade;
+		else {
+			quantidades[*i] = 0;
+		}
+		(*i)++;
+		inseredaAvl(aux->dir, quantidades, codigos, i);
+	}
+}

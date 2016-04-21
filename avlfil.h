@@ -16,7 +16,9 @@ AVLfil auxiliarInsere(AVLfil res, AVLfil prod);
 void inorder(AVLfil a);
 AVLfil auxp(AVLfil res, AVLfil prod,int mes,int tipo,char *cliente);
 void altera(AVLfil res, char * prod, int quant);
+void alteracl(AVLfil res, char * prod, char* client);
 int numAVL(AVLfil res);
-void inseredaAvl(AVLfil res, int* quantidades, char** codigos, int *i);
+void inseredaAvlfil(AVLfil res, int* quantidades, char** codigos, int *i);
+AVLfil insereCl(AVLfil a, char *codigo, char *cliente, int mes, int quant, int x);
 
 #endif

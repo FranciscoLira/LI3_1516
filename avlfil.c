@@ -145,8 +145,6 @@ AVLfil insereAVLfil (AVLfil a, char* codigo, char *produto, int mes, int quant, 
 	return insereEsqfil (a, codigo,produto,mes,quant,x);
 }
 
-
-
 /*retorna um bool para saber se um elemento está ou não na avl*/
 Boolean existeAVLfil (AVLfil a, char* codigo) {
 	AVLfil aux = a;
@@ -236,6 +234,37 @@ char** quemComprou(char** lista, char *prod, AVLfil t, int *i, int z, int *tam) 
 	return lista;
 }
 
+AVLfil alocastrmes(AVLfil a){
+	a->produtos[0]= malloc(sizeof(struct meses));
+	a->produtos[0]->mes[0]=NULL;
+	return a;
+}
+
+AVLfil inserenoscl(char* client, AVLfil a){
+	AVLfil aux = a->produtos[0]->mes[0];
+	a->produtos[0]->mes[0]=insereAVLfil(aux, client, "",0,0,0);
+	return a;
+}
+
+void alteracl(AVLfil res, char * prod, char* client){
+	AVLfil aux = res;
+	int i;
+	while (aux) {
+		i = strcmp (prod, aux->codigo);
+		if (i == 0){
+			if(aux->numpt==0) aux = alocastrmes(aux);
+			if(!existeAVLfil(aux->produtos[0]->mes[0],client)){
+				aux = inserenoscl(client,aux);
+				aux->numpt+=1;
+			}
+		}
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+}
+
 void altera(AVLfil res, char * prod, int quant){
 	AVLfil aux = res;
 	int i;
@@ -268,10 +297,9 @@ AVLfil auxp(AVLfil res, AVLfil prod,int mes,int tipo,char *cliente){
 }
 
 void inorder(AVLfil a){
-	if(a){
-		inorder(a->esq);
-		printf("%s\n",a->codigo );
-		inorder(a->dir);
+	if(a->esq->esq->esq){
+		printf("%d\n",a->esq->esq->esq->numpt );
+		printf("%s\n",a->esq->esq->esq->codigo);
 	}
 }
 
@@ -295,14 +323,14 @@ int numAVL(AVLfil res){
 	else return 1+(numAVL(aux->esq))+(numAVL(aux->dir));
 }
 
-void inseredaAvl(AVLfil res, int* quantidades, char** codigos, int *i) {
+void inseredaAvlfil(AVLfil res, int* quantidades, char** codigos, int *i) {
 	AVLfil aux = res;
 	if (aux) {
-		inseredaAvl(aux->esq, quantidades, codigos, i);
+		inseredaAvlfil(aux->esq, quantidades, codigos, i);
 		codigos[*i] = malloc(sizeof(char)*10);
 		strcpy(codigos[*i],res->codigo);
 		quantidades[*i] = res->numpt;
 		(*i)++;
-		inseredaAvl(aux->dir, quantidades, codigos, i);
+		inseredaAvlfil(aux->dir, quantidades, codigos, i);
 	}
 }
