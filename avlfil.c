@@ -296,13 +296,6 @@ AVLfil auxp(AVLfil res, AVLfil prod,int mes,int tipo,char *cliente){
 	return res;
 }
 
-void inorder(AVLfil a){
-	if(a->esq->esq->esq){
-		printf("%d\n",a->esq->esq->esq->numpt );
-		printf("%s\n",a->esq->esq->esq->codigo);
-	}
-}
-
 AVLfil auxiliarInsere(AVLfil res, AVLfil prod){
 	AVLfil a = prod;
 	if(a){
@@ -333,4 +326,19 @@ void inseredaAvlfil(AVLfil res, int* quantidades, char** codigos, int *i) {
 		(*i)++;
 		inseredaAvlfil(aux->dir, quantidades, codigos, i);
 	}
+}
+
+int quantosClientes(AVLfil t, char* prod){
+	AVLfil aux = t;
+	int i;
+	while (aux) {
+		i = strcmp (prod, aux->codigo);
+		if (i == 0)
+			return aux->numpt;
+		if (i > 0)
+			aux = aux->dir;
+		else
+			aux = aux->esq;
+	}
+	return 0;
 }

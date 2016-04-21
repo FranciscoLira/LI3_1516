@@ -427,16 +427,16 @@ void querie9(Filial *f, Cliente c, int mes) {
 
 void querie10(Emp e, Filial *f, int n, int x) {
 	int i;
-	AVLfil res = NULL;
+	/*AVLfil res = NULL;*/
 	AVL avq = NULL;
-	res = funcao10(f);
 	Codquant* r = (Codquant*)malloc(sizeof(Codquant)*3);
+	/*res = funcao10(f);*/
 	for (i = 0; i < 3; i++) {
 		r[i] = initcodquant(n);
 		avq = juntaquantidades(e, i);
 		ordenaDecre(avq, r[i], n);
 	}
-	for (i = 0; i < 100; i++) {
+	for (i = 0; i < 1; i++) {
 		printf("%s\n", getcodi(r[1],i));
 		printf("%d\n", getquanti(r[1],i));
 	}
@@ -589,6 +589,8 @@ void interpretador () {
 				showmenu();
 			}
 			querie10(e, f, 171008, 3);
+			prod=alterap("JC1030",prod);
+			printf("%d\n",getQuantosClientes(f[1],prod));
 			break;
 		case 'B':
 			break;

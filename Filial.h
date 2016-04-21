@@ -28,7 +28,6 @@ void freeConj(ConjComprados c);
 void init (int n, char** codigos, int* quant);
 void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n);
 AVLfil funcao9(Filial *f, int mes, Cliente c);
-AVLfil funcao10(Filial *f);
-void printalgo(Filial f);
+int getQuantosClientes(Filial f, Produto p);
 
 #endif

@@ -157,7 +157,7 @@ AVLfil funcao9(Filial *f, int mes, Cliente c){
 	for(i=0;i<3; i++)
 		for(j=0;j<2;j++)
 			res = auxp(res, f[i]->clientes[k], mes,j,str);
-    free(str);
+	free(str);
 	return res;
 }
 
@@ -169,7 +169,12 @@ AVLfil funcao10(Filial *f){
 	return res;
 }
 
-void printalgo(Filial f){
-	inorder(f->prods);
+int getQuantosClientes(Filial f, Produto p){
+	int r;
+	char *l = getStringp(p);
+	printf("%s\n",l );
+	r=quantosClientes(f->prods,l);
+	free(l);
+	return r;
 }
 
