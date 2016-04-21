@@ -55,15 +55,23 @@ int verificaPreco (double preco) {
 }
 
 Boolean verificaPro(CatProds cps, char* c) {
-	int i;
-	i = (c[0]) - 'A';
-	return (existeAVL(getAvlP(cps, i), c));
+	Produto p = inserep(c);
+	if((existeProduto(cps, p))){
+		free(p);
+		return true;
+	}
+	free(p);
+	return false;
 }
 
 Boolean verificaCat(CatClients ccs, char* c) {
-	int i;
-	i = (c[0]) - 'A';
-	return (existeAVL(getAvlC(ccs, i), c));
+	Cliente cl = inserec(c);
+	if((existeCliente(ccs, cl))){
+		free(cl);
+		return true;
+	}
+	free(cl);
+	return false;
 }
 
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
@@ -83,7 +91,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	FILE *p;
 	char *aux;
 	double preco;
-	int i, cont, mes, filial, quant;
+	int i, cont, mes, filial, quant,contador=0;
 	char buffer[BufferM];
 	v = (Vendatmp)malloc(sizeof(struct vendatmp));
 	p = fopen("Dados/Vendas_1M.txt", "r");
@@ -120,8 +128,10 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 			filial--;
 			e = insereVenda(e, v);
 			f[filial] = insereFilial(f[filial], c, pr, getMes(v), getQuantidade(v), getPromo(v));
+			contador++;
 		}
 	}
+	printf("\nLido o ficheiro de Vendas. Validadas: %d\n",contador);
 	return e;
 }
 
@@ -144,6 +154,7 @@ CatProds lerprod(CatProds cps, Filial *f) {
 		else break;
 	}
 	fclose(f1);
+	printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 	return cps;
 }
 /*Lê o ficheiro Clientes.txt*/
@@ -162,6 +173,7 @@ CatClients lerclient(CatClients cps) {
 		else break;
 	}
 	fclose(f1);
+	printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(cps));
 	return cps;
 }
 
@@ -402,6 +414,7 @@ void querie8(Produto pr, Filial f) {
 	for (i = 0; i < tamn; i++)
 		printf("%s ", n[i]);
 	printf("\nTipo P: (nº %d)\n", tamp);
+	printf("Clientes: ");
 	for (i = 0; i < tamp; i++)
 		printf("%s ", p[i]);
 	printf("\n");
@@ -474,12 +487,9 @@ void interpretador () {
 			}
 			ccl = initCatClients();
 			ccl = lerclient(ccl);
-			printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(ccl));
 			cps = initCatProds();
 			cps = lerprod(cps, f);
-			printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 			e = leituravendas(ccl, cps, f);
-			printf("\nLido Vendas.txt\n\n");
 			verifica++;
 			timeend = clock();
 			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
