@@ -606,6 +606,8 @@ void interpretador () {
 			printf("Qual a filial de que quer saber os valores?\n");
 			if (scanf("%d", &fil));
 			querie10(e, f, fil, 171008, 20);
+			voltamenu();
+			showmenu();
 			break;
 		case 'B':
 			break;
