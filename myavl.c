@@ -91,7 +91,7 @@ AVL newAVL() {
 AVL initAVL(int alt, char* codigo, Fat extra, AVL esq, AVL dir) {
 	AVL r = (AVL)malloc(sizeof(struct avl));
 	r->altura = alt;
-	r->codigo = (char*)malloc(sizeof(char) * 10);
+	r->codigo = (char*)malloc(sizeof(char) * (strlen(codigo)+1));
 	strcpy(r->codigo, codigo);
 	r->extra = extra;
 	r->dir = dir;

@@ -72,9 +72,8 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 }
 
 
-Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
+Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 	Vendatmp v = initvendatmp();
-	Emp e = initEmpresa();
 	Cliente c = inserec("");
 	Produto pr = inserep("");
 	FILE *p;
@@ -83,7 +82,6 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	int i, cont, mes, filial, quant, contador = 0;
 	char buffer[BufferM];
 	p = fopen("Dados/Vendas_1M.txt", "r");
-	e = insereProdVaziosEmp(e, getTree(cps));
 	cont = 0;
 	for (i = 0; fgets(buffer, BufferM, p); i++) {
 		aux = strtok(buffer, " ");
@@ -124,7 +122,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 }
 
 /*Lê o ficheiro Produtos.txt*/
-CatProds lerprod(CatProds cps, Filial *f) {
+CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 	FILE *f1;
 	char str[10];
 	Produto p = NULL;
@@ -136,6 +134,7 @@ CatProds lerprod(CatProds cps, Filial *f) {
 			free(p);
 			p = inserep(str);
 			cps = insereProduto(cps, p);
+			e = inserePEmp(e,getStringp(p));
 			f[0] = insereProds(f[0], p);
 			f[1] = insereProds(f[1], p);
 			f[2] = insereProds(f[2], p);
@@ -427,13 +426,8 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	int i;
 	Filial tmp = f[ifil - 1];
 	Produto prod = inserep("             ");
-	/*AVLfil res = NULL;*/
-	AVL avq = NULL;
 	Codquant r;
-	/*res = funcao10(f);*/
-	r = initcodquant(nprod);
-	avq = juntaquantidades(e, ifil - 1);
-	ordenaDecre(avq, r, nprod);
+	r = initcodquant(nprod, ifil, e);
 	for (i = 0; i < N; i++) {
 		prod = alterap(getcodi(r, i), prod);
 		printf("%s\n", getcodi(r, i));
@@ -475,8 +469,9 @@ void interpretador () {
 			ccl = initCatClients();
 			ccl = lerclient(ccl);
 			cps = initCatProds();
-			cps = lerprod(cps, f);
-			e = leituravendas(ccl, cps, f);
+			e = initEmpresa();
+			cps = lerprod(cps, f, e);
+			e = leituravendas(ccl, cps, f, e);
 			verifica++;
 			timeend = clock();
 			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
@@ -592,6 +587,8 @@ void interpretador () {
 				showmenu();
 			}
 			printf("Qual a filial de que quer saber os valores?\n");
+			if (scanf("%d", &fil));
+			printf("Quantos valores quer saber?\n");
 			if (scanf("%d", &fil));
 			timeinit = clock();
 			querie10(e, f, fil, 171008, 20);
