@@ -4,8 +4,8 @@
 #include "Filial.h"
 #include "avlfil.h"
 
-/*Estrutura que serve para guardar os clientes que compraram
-um determinado produto*/
+/* Estrutura que serve para guardar os clientes que compraram
+um determinado produto */
 struct comprou {
 	char **lista;
 	int tam;
@@ -28,32 +28,30 @@ Filial initFilial() {
 Filial insereProds(Filial f, Produto p) {
 	char* l = malloc(10);
 	strcpy(l, getStringp(p));
-	f->prods = insereAVLfil(f->prods, l, "", 0, 0, 0);
+	f->prods = insereAVLfil(f->prods, l, "", 0, 0, 0,0);
 	free(l);
 	return f;
 }
-/*Verifica se um cliente ja esta na estrutura*/
+/* Verifica se um cliente ja esta na estrutura */
 Boolean existeCl(Filial f, char *c) {
 	int indice = c[0] - 65;
 	return (existeAVLfil(f->clientes[indice], c));
 }
 /*Insere na estrutura. Este int m é o P ou N, em que N=0, P=1*/
-Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m) {
+Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m, double preco) {
 	int indice;
 	AVLfil aux;
-	char *stringp = (char *)malloc(sizeof(char) * 10);
-	char *stringc = (char *)malloc(sizeof(char) * 10);
-	strcpy(stringc, getStringc(c));
-	strcpy(stringp, getStringp(p));
+	char *stringp = getStringp(p);
+	char *stringc = getStringc(c);
 	indice = stringc[0] - 65;
 	aux = f->clientes[indice];
 	if (!existeCl(f, stringc)){
-		aux = insereAVLfil(aux, stringc, stringp, mes, quant, m);
+		aux = insereAVLfil(aux, stringc, stringp, mes, quant, m,preco);
 		f->clientes[indice] = aux;
 		alteracl(f->prods, stringp, stringc);
 	}
 	else{
-		insereprod(aux, stringc, stringp,mes,quant,m);
+		insereprod(aux, stringc, stringp,mes,quant,m,preco);
 		alteracl(f->prods, stringp, stringc);
 	}
 	free(stringp); free(stringc);
@@ -167,6 +165,21 @@ char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
 	codigos = (char**)malloc(sizeof(char*)*n+1);
 	quantidades = (int*)malloc(sizeof(int) * n);
 	ordenaDecrefil(res, codigos, quantidades, n);
+	codigos[n]=NULL;
+	return codigos;
+}
+
+char** getCodQMaisComprouAno(Filial *f, Cliente c){
+	int n,mes;
+	char** codigos;
+	int* quantidades;
+	AVLfil res = NULL;
+	for(mes=0;mes<12;mes++)
+		res = funcao9(f,mes,c);
+	n = numAVL(res);
+	codigos = (char**)malloc(sizeof(char*)*n+1);
+	quantidades = (int*)malloc(sizeof(int)*n);
+	ordenaDecrefil(res,codigos,quantidades,n);
 	codigos[n]=NULL;
 	return codigos;
 }

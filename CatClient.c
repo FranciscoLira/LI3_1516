@@ -83,5 +83,7 @@ void removeCatClient(CatClients ccl) {
 }
 
 char* getStringc(Cliente c){
-	return c->nomeclient;
+	char *l=malloc(sizeof(char)*strlen(c->nomeclient)+1);
+	strcpy(l,c->nomeclient);
+	return l;
 }

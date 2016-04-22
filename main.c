@@ -115,7 +115,8 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 		if (cont == 1) {
 			filial--;
 			e = insereVenda(e, v);
-			f[filial] = insereFilial(f[filial], c, pr, getMes(v), getQuantidade(v), getPromo(v));
+			f[filial] = insereFilial(f[filial], c, pr, 
+			getMes(v), getQuantidade(v), getPromo(v),getPreco(v));
 			contador++;
 		}
 	}
@@ -442,7 +443,6 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	}
 }
 
-
 void interpretador () {
 	clock_t timeinit, timeend;
 	int fil, mes, z;
@@ -451,9 +451,10 @@ void interpretador () {
 	Emp e = NULL;
 	Filial f[3];
 	char client[10], pro[10];
-	Cliente cl = inserec("");
-	Produto prod = inserep("");
+	Cliente cl = inserec("     ");
+	Produto prod = inserep("      ");
 	char letra, cmd[BufferM];
+	char** lista;
 	int verifica = 0;
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
@@ -600,7 +601,11 @@ void interpretador () {
 			voltamenu();
 			showmenu();
 			break;
-		case 'B':
+		case 'B':cl = alterac("Z5000",cl);
+				lista = getCodQMaisComprouAno(f,cl);
+				for (z = 0; z<3; z++) {
+					printf("%s\n", lista[z]);
+				}
 				break;
 		case 'C': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");

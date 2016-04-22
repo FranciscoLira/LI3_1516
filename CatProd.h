@@ -28,7 +28,6 @@ int totalProdutos(CatProds cps);
 /* Dá quantos produtos existem com uma dada letra */
 int totalProdutosLetra(CatProds cps, char letra);
 
-/* Temp */
 void removeCatProd(CatProds cps);
 
 int getPagina(ConjProds l);
