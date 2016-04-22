@@ -13,8 +13,7 @@ struct conj_Strings {
     int pagTotal;
 };
 
-Conj_Strings initConjun(Conj_Strings s, char** l, int size, char* exemplo) {
-	int i;
+Conj_Strings initConjun(Conj_Strings s, char** l, int size) {
 	s = (Conj_Strings) malloc(sizeof(struct conj_Strings));
 	s->size = size;
 	s->pageSize = 90;
@@ -24,9 +23,6 @@ Conj_Strings initConjun(Conj_Strings s, char** l, int size, char* exemplo) {
 	s->pagTotal = s->size/s->pageSize;
 	if (s->size % s->pageSize) s->pagTotal++;
 	s->listapagina = (char**)malloc(sizeof(char*)*s->pageSize);
-	for (i = 0; i < s->pageSize; i++) {
-		s->listapagina[i] = (char*)malloc(sizeof(strlen(exemplo)+1));
-	}
 	s->listapagina = s->lista;
 	s->pagina = 1;
 	s->pagTotal = s->size/s->pageSize;
@@ -70,6 +66,7 @@ char* getNextString2(Conj_Strings s, int i) {
 }
 
 Conj_Strings getPag2(Conj_Strings s) {
+	s->listapagina = s->lista;
 	s->listapagina += s->pageSize*(s->pagina-1);
 	return s;
 }

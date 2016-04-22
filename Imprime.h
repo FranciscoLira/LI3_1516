@@ -3,7 +3,7 @@
 
 typedef struct conj_Strings* Conj_Strings;
 
-Conj_Strings initConjun(Conj_Strings s, char** l, int size, char* exemplo);
+Conj_Strings initConjun(Conj_Strings s, char** l, int size);
 
 Conj_Strings alteraPaginamais2(Conj_Strings s);
 

@@ -174,17 +174,11 @@ void clear() {
 		if (system("cls"));
 }
 
-void imprimeLista2(char** lista, char letra, int n) {
+void imprimeLista2(char** lista, int n) {
 	int i, t, pag;
 	char a;
-	char* exemplo = lista[0];
 	Conj_Strings l = NULL; 
-	l = initConjun(l, lista, n, exemplo);
-	if (letra != '/')
-		if ((letra - 65) < 0 || (letra - 65) > 25) {
-			printf("Letra maiúscula!\n");
-			return;
-		}
+	l = initConjun(l, lista, n);
 	while (a != 'Q' && a != 'q') {
 		clear();
 		if ( (getPagina2(l) == 0) && (a == 'A' || a == 'a') )
@@ -561,12 +555,17 @@ void interpretador () {
 			}
 			else {
 				printf("Qual será a Letra?\n");
-				if (scanf("%c", &letra) == -1);
+				while(1){
+				if (scanf(" %c", &letra) == -1);
+				if(letra-65<0 || letra-65>0)
+					printf("Letra maiúscula!\n");
+				else break;
+				}
 				/*
 				imprimeLista(cps, letra);*/
 				j = getSize(getList(cps, letra));
 				l = getLista(getList(cps, letra));
-				imprimeLista2(l, letra, j);
+				imprimeLista2(l,j);
 			}
 			showmenu();
 			break;
@@ -616,7 +615,7 @@ void interpretador () {
 				cp7 = makeCat(f, cp7);
 				timeend = clock();
 				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
-				imprimeLista(cp7, '/');
+				imprimeLista2(getLista(getList(cp7,'/')),totalProdutos(cp7));
 				free(cp7);
 				}
 				showmenu();
