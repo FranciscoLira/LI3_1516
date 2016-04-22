@@ -3,30 +3,30 @@
 
 typedef struct conj_Strings* Conj_Strings;
 
-Conj_Strings initConjun(Conj_Strings s, char** l, int size);
+Conj_Strings initConjun(Conj_Strings s, char** l, int size, char* exemplo);
 
-Conj_Strings alteraPaginamais(Conj_Strings s);
+Conj_Strings alteraPaginamais2(Conj_Strings s);
 
-Conj_Strings alteraPaginamenos(Conj_Strings s);
+Conj_Strings alteraPaginamenos2(Conj_Strings s);
 
-Conj_Strings alteraPagina(Conj_Strings s, int pag);
+Conj_Strings alteraPagina2(Conj_Strings s, int pag);
 
-int getPagina(Conj_Strings s);
+int getPagina2(Conj_Strings s);
 
-int getSize(Conj_Strings s);
+int getSize2(Conj_Strings s);
 
-int getpagTotal(Conj_Strings s);
+int getpagTotal2(Conj_Strings s);
 
-int getSizePag(Conj_Strings s);
+int getSizePag2(Conj_Strings s);
 
-char* getNextString(Conj_Strings s, int i);
+char* getNextString2(Conj_Strings s, int i);
 
-Conj_Strings getPag(Conj_Strings s);
+Conj_Strings getPag2(Conj_Strings s);
 
-Conj_Strings getPaginaSeguinte(Conj_Strings s);
+Conj_Strings getPaginaSeguinte2(Conj_Strings s);
 
-Conj_Strings getPaginaAnterior(Conj_Strings s);
+Conj_Strings getPaginaAnterior2(Conj_Strings s);
 
-int calculaTamanho(char** lista);
+int existe(Conj_Strings s, int i);
 
 #endif

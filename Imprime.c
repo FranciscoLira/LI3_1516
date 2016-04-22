@@ -13,109 +13,80 @@ struct conj_Strings {
     int pagTotal;
 };
 
-Conj_Strings initConjun(Conj_Strings s, char** l, int size) {
+Conj_Strings initConjun(Conj_Strings s, char** l, int size, char* exemplo) {
 	int i;
 	s = (Conj_Strings) malloc(sizeof(struct conj_Strings));
 	s->size = size;
 	s->pageSize = 90;
 	s->lista = l;
-	s->listapagina = (char**)malloc(sizeof(char*)*s->pageSize);
-	for (i = 0; i < s->pageSize; i++) 
-		s->listapagina[i] = (char*)malloc(sizeof(char)*10);
+	l[s->size] = NULL;
 	s->pagina = 1;
 	s->pagTotal = s->size/s->pageSize;
 	if (s->size % s->pageSize) s->pagTotal++;
+	s->listapagina = (char**)malloc(sizeof(char*)*s->pageSize);
+	for (i = 0; i < s->pageSize; i++) {
+		s->listapagina[i] = (char*)malloc(sizeof(strlen(exemplo)+1));
+	}
+	s->listapagina = s->lista;
+	s->pagina = 1;
+	s->pagTotal = s->size/s->pageSize;
+	if (s->size % s->pageSize) s->pagTotal++;
+	return s;
 }
 
-Conj_Strings alteraPaginamais(Conj_Strings s) {
+Conj_Strings alteraPaginamais2(Conj_Strings s) {
 	s->pagina++;
 	return s;
 }
 
-Conj_Strings alteraPaginamenos(Conj_Strings s) {
+Conj_Strings alteraPaginamenos2(Conj_Strings s) {
 	s->pagina--;
 	return s;
 }
 
-Conj_Strings alteraPagina(Conj_Strings s, int pag) {
+Conj_Strings alteraPagina2(Conj_Strings s, int pag) {
 	s->pagina = pag;
 	return s;  
 }
 
-int getPagina(Conj_Strings s) {
+int getPagina2(Conj_Strings s) {
 	return s->pagina;
 }
 
-int getSize(Conj_Strings s) {
+int getSize2(Conj_Strings s) {
 	return s->size;
 }
 
-int getpagTotal(Conj_Strings s) {
+int getpagTotal2(Conj_Strings s) {
 	return s->pagTotal;
 }
 
-int getSizePag(Conj_Strings s) {
+int getSizePag2(Conj_Strings s) {
 	return s->pageSize;
 }
 
-char* getNextString(Conj_Strings s, int i) {
- 	char* temp = (char*)malloc(sizeof(char)*10);
- 	strcpy(temp,s->listapagina[i]);
- 	return temp;
+char* getNextString2(Conj_Strings s, int i) {
+ 	return s->listapagina[i];
 }
 
-Conj_Strings getPag(Conj_Strings s) {
-	int up, down;
-	if (s->pagina == 1) {
-		up = s->pageSize;
-		down = 0;
-	}
-	else if (s->pagina == s->pagTotal) {
-		up = s->size;
-		down = (s->pagina - 1) * s->pageSize;
-	}
-	else {
-		up = s->pagina * s->pageSize;
-		down = up - s->pageSize;
-	}
-	s->listapagina[0] = s->lista[down];
-	s->listapagina[s->pageSize] = s->lista[up];
+Conj_Strings getPag2(Conj_Strings s) {
+	s->listapagina += s->pageSize*(s->pagina-1);
 	return s;
 }
 
-Conj_Strings getPaginaSeguinte(Conj_Strings s) {
-	char* temp;
-	if (s->pagina  == s->pagTotal) {
-		s->listapagina[0] = s->listapagina[s->pageSize];
-		s->listapagina[s->pageSize] = s->lista[s->size];
-	}
-	else {
-		s->listapagina[0] = s->listapagina[s->pageSize];
-		temp = s->listapagina[s->pageSize];
-		s->listapagina[s->pageSize] = temp + s->pageSize;
-	}
+Conj_Strings getPaginaSeguinte2(Conj_Strings s) {
+	s->listapagina += s->pageSize;
 	return s;
 }
 
-Conj_Strings getPaginaAnterior(Conj_Strings s) {
-	char* temp;
-	if (s->pagina == s->pagTotal) {
-		s->listapagina[s->pageSize] = s->lista[s->size-((s->pagTotal-1)*(s->pageSize))];
-		s->listapagina[0] = s->listapagina[s->pageSize] - s->pageSize;
-	}
-	else {
-		temp = s->listapagina[s->pageSize];
-		s->listapagina[s->pageSize] = temp;
-		s->listapagina[0] = s->listapagina[s->pageSize] - s->pageSize;
-	}
+Conj_Strings getPaginaAnterior2(Conj_Strings s) {
+	s->listapagina -=  s->pageSize;
 	return s;
 }
 
-int calculaTamanho(char** lista) {
-	int c = 0;
-	int i = 0;
-	while(lista[i]) {
-		c++;
-		i++;
-	}
+
+int existe(Conj_Strings s, int i) {
+ 	if (s->listapagina[i]) return 0;
+ 	else return 1;
 }
+
