@@ -52,10 +52,7 @@ CatClients insereCliente(CatClients ccl, Cliente c) {
 Boolean existeCliente(CatClients ccl, Cliente c) {
 	int i = (c->nomeclient[0] - 65);
 	if (i < 0 || i > 25) return false;
-	if (existeAVL(ccl->cP[i]->root, c->nomeclient)){
-		return true;
-	}
-	else return false;
+	return existeAVL(ccl->cP[i]->root, c->nomeclient);
 }
 
 int totalClientes(CatClients ccl) {

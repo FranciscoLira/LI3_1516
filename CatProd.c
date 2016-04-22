@@ -60,9 +60,7 @@ CatProds insereProduto(CatProds cps, Produto p) {
 Boolean existeProduto(CatProds cps, Produto p) {
 	int i = (p->nomeprod[0] - 65);
 	if (i < 0 || i > 25) return false;
-	if (existeAVL(cps->cP[i]->root, p->nomeprod))
-		return true;
-	else return false;
+	return existeAVL(cps->cP[i]->root, p->nomeprod);
 }
 
 int totalProdutos(CatProds cps) {
