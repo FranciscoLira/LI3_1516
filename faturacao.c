@@ -66,12 +66,7 @@ int getquanti(Codquant a, int i) {
 	return a->quant[i];
 }
 
-Codquant initcodquant(int n) {
-	Codquant r = (Codquant)malloc(sizeof(struct codquant));
-	r->quant = (int*)malloc(sizeof(int) * n);
-	r->codigos = (char**)malloc(sizeof(char*)*n);
-	return r;
-}
+
 
 Vendatmp initvendatmp() {
 	Vendatmp r = (Vendatmp)malloc(sizeof(struct vendatmp));
@@ -197,7 +192,7 @@ Fatall initFatall() {
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
 	r->mes[0].l = (AVL*)malloc(sizeof(AVL) * 26);
 	for (i = 0; i < 26; i++) {
-		r->mes[0].l[i] = newAVL();
+		r->mes[0].l[i] =NULL;
 	}
 	for (i = 1; i < 13; i++) {
 		r->mes[i].f = initFatmes();
@@ -208,12 +203,11 @@ Fatall initFatall() {
 /*Insere na posição 0 do array, todos os produtos
 
 */
-Emp insereProdVaziosEmp(Emp e, AVL* produtos) {
-	int i, j;
+
+Emp inserePEmp(Emp e, char* p) {
+	int j = p[0] - 'A',i;
 	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 26; j++) {
-			e->filial[i]->mes[0].l[j] = avlcpy(produtos[j]);
-		}
+		e->filial[i]->mes[0].l[j] = insereAVL(e->filial[i]->mes[0].l[j], p, NULL);
 	}
 	return e;
 }
@@ -548,5 +542,15 @@ AVL juntaquantidades(Emp e, int f) {
 		copia[j] = avlcpy(e->filial[f]->mes[0].l[j]);
 		r = juntaavls(r, copia[j]);
 	}
+	return r;
+}
+
+Codquant initcodquant(int n, int ifil, Emp e) {
+	AVL avq;
+	Codquant r = (Codquant)malloc(sizeof(struct codquant));
+	r->quant = (int*)malloc(sizeof(int) * n);
+	r->codigos = (char**)malloc(sizeof(char*)*n);
+	avq = juntaquantidades(e, ifil -1);
+	ordenaDecre(avq, r, n);
 	return r;
 }

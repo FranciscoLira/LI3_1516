@@ -24,14 +24,8 @@ struct prods {
 	Trees cP[26];
 };
 
-AVL* getTree(CatProds cps) {
-	int i;
-	AVL* r = (AVL*)malloc(sizeof(AVL)*26);
-	for (i = 0; i < 26; i++) {
-		r[i] = avlcpy(cps->cP[i]->root);
-	}
-	return r;
-}
+
+
 
 Produto inserep(char *x) {
 	Produto p = malloc(sizeof(struct prod));

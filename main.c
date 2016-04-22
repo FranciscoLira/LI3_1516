@@ -7,6 +7,7 @@
 #include "CatClient.h"
 #include "faturacao.h"
 #include "Filial.h"
+#include "Imprime.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -72,9 +73,8 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 }
 
 
-Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
+Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 	Vendatmp v = initvendatmp();
-	Emp e = initEmpresa();
 	Cliente c = inserec("");
 	Produto pr = inserep("");
 	FILE *p;
@@ -83,7 +83,6 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 	int i, cont, mes, filial, quant, contador = 0;
 	char buffer[BufferM];
 	p = fopen("Dados/Vendas_1M.txt", "r");
-	e = insereProdVaziosEmp(e, getTree(cps));
 	cont = 0;
 	for (i = 0; fgets(buffer, BufferM, p); i++) {
 		aux = strtok(buffer, " ");
@@ -125,7 +124,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f) {
 }
 
 /*Lê o ficheiro Produtos.txt*/
-CatProds lerprod(CatProds cps, Filial *f) {
+CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 	FILE *f1;
 	char str[10];
 	Produto p = NULL;
@@ -137,6 +136,7 @@ CatProds lerprod(CatProds cps, Filial *f) {
 			free(p);
 			p = inserep(str);
 			cps = insereProduto(cps, p);
+			e = inserePEmp(e,getStringp(p));
 			f[0] = insereProds(f[0], p);
 			f[1] = insereProds(f[1], p);
 			f[2] = insereProds(f[2], p);
@@ -168,6 +168,84 @@ CatClients lerclient(CatClients cps) {
 	return cps;
 }
 
+
+void clear() {
+	if (system("clear") == -1)
+		if (system("cls"));
+}
+
+void imprimeLista2(char** lista, char letra, int n) {
+	int i, t, pag;
+	char a;
+	char* exemplo = lista[0];
+	Conj_Strings l = NULL; 
+	l = initConjun(l, lista, n, exemplo);
+	if (letra != '/')
+		if ((letra - 65) < 0 || (letra - 65) > 25) {
+			printf("Letra maiúscula!\n");
+			return;
+		}
+	while (a != 'Q' && a != 'q') {
+		clear();
+		if ( (getPagina2(l) == 0) && (a == 'A' || a == 'a') )
+			printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
+		if ( (getPagina2(l) == getpagTotal2(l)) && (a == 'S' || a == 's'))
+			printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
+		if ((a == 'P' || a == 'p') && (pag < 1 || pag > getpagTotal2(l)))
+			printf("\nA opção escolhida não é válida!\n\n");
+		printf("Numero total de elementos:%d\n", getSize2(l));
+		printf("O numero de paginas: %.d\n\n", getpagTotal2(l));
+		printf("                        Página %d\n\n", getPagina2(l));
+		i = 0;
+		while(i < 90) {
+			for (t = 0; t < 6; t++) {
+				if ((existe(l, i) == 0)) printf("%s    ", getNextString2(l, i));
+				else break;
+				i++;
+			}
+			if (t != 6) break;
+			printf("\n");
+		}
+		printf("\n\n");
+		printf("O que pretende fazer a seguir: \n\n");
+		if (getPagina2(l) == 1) {
+			printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+		}
+		else {
+			if (getPagina2(l) != getpagTotal2(l)) {
+				printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+			}
+			else {
+				printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
+			}
+		}
+		if (scanf("%s", &a) != 0) {;}
+		printf("\n");
+		if (a == 'S' || a == 's') {
+			if (getPagina2(l) != getpagTotal2(l)) {
+				l = alteraPaginamais2(l);
+				l = getPaginaSeguinte2(l);
+			}
+		}
+		else if (a == 'A' || a == 'a') {
+			if (getPagina2(l) != 1) {
+				l = alteraPaginamenos2(l);
+				l = getPaginaAnterior2(l);
+			}
+		}
+		else if (a == 'P' || a == 'p') {
+			printf("Qual é a página que deseja consultar:  \n");
+			if (scanf("%d", &pag) == 0) {;}
+			if (pag >= 1 && pag <= getpagTotal2(l)) {
+			l = alteraPagina2(l, pag);
+			l = getPag2(l);
+			}
+		}
+	}
+}
+
+
+
 int auxImprimeDown(int down, int up, int pag, int np) {
 	if (pag == 1) down = 0;
 	else if (pag == np) down = (pag - 1) * 90;
@@ -182,10 +260,6 @@ int auxImprimeUp(int up, int pag, int np, int n) {
 	return up;
 }
 
-void clear() {
-	if (system("clear") == -1)
-		if (system("cls"));
-}
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
@@ -428,13 +502,8 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	int i;
 	Filial tmp = f[ifil - 1];
 	Produto prod = inserep("             ");
-	/*AVLfil res = NULL;*/
-	AVL avq = NULL;
 	Codquant r;
-	/*res = funcao10(f);*/
-	r = initcodquant(nprod);
-	avq = juntaquantidades(e, ifil - 1);
-	ordenaDecre(avq, r, nprod);
+	r = initcodquant(nprod, ifil, e);
 	for (i = 0; i < N; i++) {
 		prod = alterap(getcodi(r, i), prod);
 		printf("%s\n", getcodi(r, i));
@@ -444,8 +513,9 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 }
 
 void interpretador () {
+	char** l;
 	clock_t timeinit, timeend;
-	int fil, mes, z;
+	int fil, mes, z, j;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -476,8 +546,9 @@ void interpretador () {
 			ccl = initCatClients();
 			ccl = lerclient(ccl);
 			cps = initCatProds();
-			cps = lerprod(cps, f);
-			e = leituravendas(ccl, cps, f);
+			e = initEmpresa();
+			cps = lerprod(cps, f, e);
+			e = leituravendas(ccl, cps, f, e);
 			verifica++;
 			timeend = clock();
 			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
@@ -491,7 +562,11 @@ void interpretador () {
 			else {
 				printf("Qual será a Letra?\n");
 				if (scanf("%c", &letra) == -1);
-				imprimeLista(cps, letra);
+				/*
+				imprimeLista(cps, letra);*/
+				j = getSize(getList(cps, letra));
+				l = getLista(getList(cps, letra));
+				imprimeLista2(l, letra, j);
 			}
 			showmenu();
 			break;
@@ -593,6 +668,8 @@ void interpretador () {
 				showmenu();
 			}
 			printf("Qual a filial de que quer saber os valores?\n");
+			if (scanf("%d", &fil));
+			printf("Quantos valores quer saber?\n");
 			if (scanf("%d", &fil));
 			timeinit = clock();
 			querie10(e, f, fil, 171008, 20);
