@@ -7,6 +7,7 @@
 #include "CatClient.h"
 #include "faturacao.h"
 #include "Filial.h"
+#include "Imprime.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -166,6 +167,84 @@ CatClients lerclient(CatClients cps) {
 	return cps;
 }
 
+
+void clear() {
+	if (system("clear") == -1)
+		if (system("cls"));
+}
+
+void imprimeLista2(char** lista, char letra, int n) {
+	int i, t, pag;
+	char a;
+	char* exemplo = lista[0];
+	Conj_Strings l = NULL; 
+	l = initConjun(l, lista, n, exemplo);
+	if (letra != '/')
+		if ((letra - 65) < 0 || (letra - 65) > 25) {
+			printf("Letra maiúscula!\n");
+			return;
+		}
+	while (a != 'Q' && a != 'q') {
+		clear();
+		if ( (getPagina2(l) == 0) && (a == 'A' || a == 'a') )
+			printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
+		if ( (getPagina2(l) == getpagTotal2(l)) && (a == 'S' || a == 's'))
+			printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
+		if ((a == 'P' || a == 'p') && (pag < 1 || pag > getpagTotal2(l)))
+			printf("\nA opção escolhida não é válida!\n\n");
+		printf("Numero total de elementos:%d\n", getSize2(l));
+		printf("O numero de paginas: %.d\n\n", getpagTotal2(l));
+		printf("                        Página %d\n\n", getPagina2(l));
+		i = 0;
+		while(i < 90) {
+			for (t = 0; t < 6; t++) {
+				if ((existe(l, i) == 0)) printf("%s    ", getNextString2(l, i));
+				else break;
+				i++;
+			}
+			if (t != 6) break;
+			printf("\n");
+		}
+		printf("\n\n");
+		printf("O que pretende fazer a seguir: \n\n");
+		if (getPagina2(l) == 1) {
+			printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+		}
+		else {
+			if (getPagina2(l) != getpagTotal2(l)) {
+				printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
+			}
+			else {
+				printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
+			}
+		}
+		if (scanf("%s", &a) != 0) {;}
+		printf("\n");
+		if (a == 'S' || a == 's') {
+			if (getPagina2(l) != getpagTotal2(l)) {
+				l = alteraPaginamais2(l);
+				l = getPaginaSeguinte2(l);
+			}
+		}
+		else if (a == 'A' || a == 'a') {
+			if (getPagina2(l) != 1) {
+				l = alteraPaginamenos2(l);
+				l = getPaginaAnterior2(l);
+			}
+		}
+		else if (a == 'P' || a == 'p') {
+			printf("Qual é a página que deseja consultar:  \n");
+			if (scanf("%d", &pag) == 0) {;}
+			if (pag >= 1 && pag <= getpagTotal2(l)) {
+			l = alteraPagina2(l, pag);
+			l = getPag2(l);
+			}
+		}
+	}
+}
+
+
+
 int auxImprimeDown(int down, int up, int pag, int np) {
 	if (pag == 1) down = 0;
 	else if (pag == np) down = (pag - 1) * 90;
@@ -180,10 +259,6 @@ int auxImprimeUp(int up, int pag, int np, int n) {
 	return up;
 }
 
-void clear() {
-	if (system("clear") == -1)
-		if (system("cls"));
-}
 
 void imprimeLista(CatProds cps, char letra) {
 	char a;
@@ -438,8 +513,9 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 
 
 void interpretador () {
+	char** l;
 	clock_t timeinit, timeend;
-	int fil, mes, z;
+	int fil, mes, z, j;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
 	Emp e = NULL;
@@ -485,7 +561,11 @@ void interpretador () {
 			else {
 				printf("Qual será a Letra?\n");
 				if (scanf("%c", &letra) == -1);
-				imprimeLista(cps, letra);
+				/*
+				imprimeLista(cps, letra);*/
+				j = getSize(getList(cps, letra));
+				l = getLista(getList(cps, letra));
+				imprimeLista2(l, letra, j);
 			}
 			showmenu();
 			break;
