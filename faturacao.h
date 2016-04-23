@@ -87,7 +87,7 @@ Emp initEmpresa ();
 /*Liberta toda a memória que foi usada para armazenar informação relativamente à faturação*/
 void removeEmp(Emp e);
 
-/**/
+/*Retorna um int que é a quantidade de elementos com a faturação a zero em todas as filiais*/
 int inttotalzeroAVL(Emp e);
 
 /*Insere um Produto numa empresa*/
