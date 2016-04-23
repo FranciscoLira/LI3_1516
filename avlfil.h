@@ -1,7 +1,7 @@
 #ifndef AVLFIL_H_
 #define AVLFIL_H_
 #include "boolean.h"
-#include "CatProd.h"
+#include "catprod.h"
 
 typedef struct avlfil* AVLfil;
 AVLfil insereAVLfil (AVLfil a, char* x, char *y, int i, int j, int k, double w);

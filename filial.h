@@ -1,7 +1,7 @@
 #ifndef FILIAL_H_
 #define FILIAL_H_
-#include "CatClient.h"
-#include "CatProd.h"
+#include "catclient.h"
+#include "catprod.h"
 
 typedef struct comprou *ConjComprados;
 typedef struct filial *Filial;

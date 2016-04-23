@@ -1,7 +1,7 @@
 #ifndef faturacao_H_
 #define faturacao_H_
 #include "myavl.h"
-#include "CatProd.h"
+#include "catprod.h"
 
 typedef struct vendatmp *Vendatmp;
 

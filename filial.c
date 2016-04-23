@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Filial.h"
+#include "filial.h"
 #include "avlfil.h"
 
 /* Estrutura que serve para guardar os clientes que compraram

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "Imprime.h"
+#include "imprime.h"
 
 
 struct conj_Strings {

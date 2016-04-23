@@ -3,11 +3,11 @@
 #include <string.h>
 #include <time.h>
 #include "boolean.h"
-#include "CatProd.h"
-#include "CatClient.h"
+#include "catprod.h"
+#include "catclient.h"
 #include "faturacao.h"
-#include "Filial.h"
-#include "Imprime.h"
+#include "filial.h"
+#include "imprime.h"
 
 #define NR_PRODUTOS 200000
 #define NR_CLIENTES 20000
@@ -79,7 +79,7 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 }
 
 Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
-	clock_t inicio,fim;
+	clock_t inicio, fim;
 	Vendatmp v = initvendatmp();
 	Cliente c = inserec("      ");
 	Produto pr = inserep("       ");
@@ -88,13 +88,13 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
 	double preco;
 	int i, cont, mes, filial, quant, contador = 0;
 	char buffer[BufferM];
-	if(fich==3)
-		p = fopen("Vendas_5M.txt","r");
-	else if(fich==2)
-		p = fopen("Vendas_3M.txt","r");
+	if (fich == 3)
+		p = fopen("Vendas_5M.txt", "r");
+	else if (fich == 2)
+		p = fopen("Vendas_3M.txt", "r");
 	else
-		p = fopen("Vendas_1M.txt","r");
-	if(!p){
+		p = fopen("Vendas_1M.txt", "r");
+	if (!p) {
 		return NULL;
 	}
 	cont = 0;
@@ -137,7 +137,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
 	fim = clock();
 	printf("\nLido o ficheiro de Vendas. Validadas: %d\n", contador);
 	printf("Lido em: %.3f s\n",
-	(double)(fim - inicio) / CLOCKS_PER_SEC);
+	       (double)(fim - inicio) / CLOCKS_PER_SEC);
 	return e;
 }
 
@@ -170,7 +170,7 @@ CatProds lerprod(CatProds cps, Filial *f, Emp e) {
 	fim = clock();
 	printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 	printf("Lido em: %.3f s\n",
-	(double)(fim - inicio) / CLOCKS_PER_SEC);
+	       (double)(fim - inicio) / CLOCKS_PER_SEC);
 	return cps;
 }
 /*Lê o ficheiro Clientes.txt*/
@@ -192,10 +192,10 @@ CatClients lerclient(CatClients cps) {
 	}
 	fclose(f1);
 	free(p);
-	fim=clock();
+	fim = clock();
 	printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(cps));
 	printf("Lido em: %.3f s\n",
-	(double)(fim - inicio) / CLOCKS_PER_SEC);
+	       (double)(fim - inicio) / CLOCKS_PER_SEC);
 	return cps;
 }
 
@@ -304,7 +304,6 @@ void querie3(Emp e) {
 	int imes, juntos, p, i;
 	Fat ftmp;
 	char buffer[BufferM];
-	clear();
 	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
 	printf("Qual o código que quer saber da faturação?\n");
 	if (scanf("%s", buffer) == -1);
@@ -341,8 +340,6 @@ void querie3(Emp e) {
 
 void querie4(Emp e) {
 	int i;
-	clear();
-	printf("4. Códigos de produtos que ninguém comprou\n");
 	printf("Qual a filial que quer saber?\n");
 	printf("0 - Geral\n1 - Filial 1\n2 - Filial 2\n3 - Filial 3\n");
 	if (scanf("%d", &i) == -1);
@@ -424,7 +421,7 @@ void querie9(Filial *f, Cliente c, int mes) {
 	codigos = getCodQMaisComprou(f, mes, c);
 	printf("Produtos:\n");
 	for (i = 0; codigos[i]; i++) {
-		printf("%dº: %s\n",i+1, codigos[i]);
+		printf("%dº: %s\n", i + 1, codigos[i]);
 	}
 	printf("\n");
 }
@@ -478,68 +475,70 @@ void interpretador () {
 	if (fgets(cmd, BufferM, stdin) != NULL);
 	while (cmd[0] != 'Q') {
 		switch (cmd[0]) {
-		case '1':if (verifica != 0) {
-					removeCatClient(ccl);
-					removeCatProd(cps);
-					removeEmp(e);
-					for(z=0;z<3;z++)
-						removeFilial(f[z]);
-					printf("Leitura anterior removida\n");
-				}
-				for (z = 0; z < 3; z++) {
-					f[z] = initFilial();
-				}
-				clear();
-				printf("Para facilitar a leitura");
-				printf(", insira os ficheiros na pasta atual.\n"); 
-				printf("Serão lidos os ficheiros Produtos.txt e Clientes.txt default.\n");
-				printf("Selecione qual ficheiro de vendas pretende ler:\n");
-				printf("[1] Ler Vendas_1M.txt\n");
-				printf("[2] Ler Vendas_3M.txt\n");
-				printf("[3] Ler Vendas_5M.txt\n");
-				printf("Se inserir um número inválido é lido Vendas_1M.txt\n");
-				if(scanf(" %d", &fich)==-1){
-					printf("Erro ao ler opção\n");
-					voltamenu();
-					showmenu();
-					break;
-				}
-				ccl = initCatClients();
-				ccl = lerclient(ccl);
-				if(ccl==NULL){
-					printf("O ficheiro Clientes.txt não está na pasta atual\n");
-					voltamenu();
-					showmenu();
-					break;
-				}				
-				cps = initCatProds();
-				e = initEmpresa();
-				cps = lerprod(cps, f, e);
-				if(cps==NULL){
-					printf("O ficheiro Produtos.txt não está na pasta atual\n");
-					removeCatClient(ccl);
-					voltamenu();
-					showmenu();
-					break;
-				}
-				e = leituravendas(ccl, cps, f, e, fich);
-				if(e==NULL){
-					printf("O ficheiro Vendas solicitado não está na pasta atual\n");
-					removeCatClient(ccl);
-					removeCatProd(cps);
-					voltamenu();
-					showmenu();
-					break;
-				}
-				verifica++;
+		case '1': if (verifica != 0) {
+				removeCatClient(ccl);
+				removeCatProd(cps);
+				removeEmp(e);
+				for (z = 0; z < 3; z++)
+					removeFilial(f[z]);
+				printf("Leitura anterior removida\n");
+			}
+			for (z = 0; z < 3; z++) {
+				f[z] = initFilial();
+			}
+			clear();
+			printf("Para facilitar a leitura");
+			printf(", insira os ficheiros na pasta atual.\n");
+			printf("Serão lidos os ficheiros Produtos.txt e Clientes.txt default.\n");
+			printf("Selecione qual ficheiro de vendas pretende ler:\n");
+			printf("[1] Ler Vendas_1M.txt\n");
+			printf("[2] Ler Vendas_3M.txt\n");
+			printf("[3] Ler Vendas_5M.txt\n");
+			printf("Se inserir um número inválido é lido Vendas_1M.txt\n");
+			if (scanf(" %d", &fich) == -1) {
+				printf("Erro ao ler opção\n");
 				voltamenu();
 				showmenu();
 				break;
+			}
+			ccl = initCatClients();
+			ccl = lerclient(ccl);
+			if (ccl == NULL) {
+				printf("O ficheiro Clientes.txt não está na pasta atual\n");
+				voltamenu();
+				showmenu();
+				break;
+			}
+			cps = initCatProds();
+			e = initEmpresa();
+			cps = lerprod(cps, f, e);
+			if (cps == NULL) {
+				printf("O ficheiro Produtos.txt não está na pasta atual\n");
+				removeCatClient(ccl);
+				voltamenu();
+				showmenu();
+				break;
+			}
+			e = leituravendas(ccl, cps, f, e, fich);
+			if (e == NULL) {
+				printf("O ficheiro Vendas solicitado não está na pasta atual\n");
+				removeCatClient(ccl);
+				removeCatProd(cps);
+				voltamenu();
+				showmenu();
+				break;
+			}
+			verifica++;
+			voltamenu();
+			showmenu();
+			break;
 		case '2': if (cps == NULL) {
 				printf("Precisa de selecionar a leitura primeiro!\n");
 				showmenu();
 			}
 			else {
+				clear();
+				printf("2. Lista de produtos começados por alguma letra(maiúscula)\n");
 				printf("Qual será a Letra?\n");
 				while (1) {
 					if (scanf(" %c", &letra) == -1);
@@ -557,7 +556,10 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 			}
-			else querie3(e);
+			else {
+				printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
+				querie3(e);
+			}
 			voltamenu();
 			showmenu();
 			break;
@@ -565,7 +567,11 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 			}
-			else querie4(e);
+			else {
+				clear();
+				printf("4. Códigos de produtos que ninguém comprou\n");
+				querie4(e);
+			}
 			showmenu();
 
 			break;
@@ -574,16 +580,22 @@ void interpretador () {
 				showmenu();
 				break;
 			}
-			printf("Qual é o cliente?\n");
-			if (fgets(client, 6, stdin) == NULL)break;
-			cl = alterac(client, cl);
-			querie5(f, cl);
-			showmenu();
-			break;
+			else {
+				clear();
+				printf("5. Tabela com nº total de produtos comprados por um cliente mês a mês\n");
+				printf("Qual é o cliente?\n");
+				if (fgets(client, 6, stdin) == NULL)break;
+				cl = alterac(client, cl);
+				querie5(f, cl);
+				showmenu();
+				break;
+			}
 		case '6': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 			}
 			else {
+				clear();
+				printf("6. Total de vendas e total faturado num intervalo de meses(Ex:3..7)\n");
 				querie6(e);
 				voltamenu();
 			}
@@ -593,6 +605,8 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 			}
 			else {
+				clear();
+				printf("7. Lista ordenada de clientes que realizaram compras em todas as filiais\n");
 				cp7 = initCatProds();
 				cp7 = makeCat(f, cp7);
 				imprimeLista(getLista(getList(cp7, '/')), totalProdutos(cp7));
@@ -605,19 +619,23 @@ void interpretador () {
 				showmenu();
 			}
 			else {
+				clear();
+				printf("8. Dado um produto e uma filial mostra codigos de clientes que o compraram(N e P)\n");
 				printf("Qual é o produto?\n");
 				if (fgets(pro, 7, stdin) == NULL)break;
-				if (tamanho(pro) == 6)
+				if (tamanho(pro) == 6){
 					prod = alterap(pro, prod);
+				}
 				printf("Qual é a filial?\n");
 				if (scanf(" %d", &fil));
 				fil--;
 				inicio = clock();
-				if (fil > -1 && fil < 3)
+				if (fil > -1 && fil < 3){
 					querie8(prod, f[fil]);
+				}
 				fim = clock();
-				printf("Executou em %.3f seg\n", 
-				(double)(fim - inicio) / CLOCKS_PER_SEC);
+				printf("Executou em %.3f seg\n",
+				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
@@ -627,6 +645,8 @@ void interpretador () {
 				showmenu();
 			}
 			else {
+				clear();
+				printf("9. Dado um cliente e um mes, determina lista descendente de produtos mais comprados\n");
 				printf("Qual é o Cliente?\n");
 				if (fgets(client, 6, stdin) == NULL)break;
 				if (tamanho(client) == 5)
@@ -638,16 +658,19 @@ void interpretador () {
 				if (mes > -1 && mes < 12)
 					querie9(f, cl, mes);
 				fim = clock();
-				printf("Executou em %f seg\n", 
-				(double)(fim - inicio) / CLOCKS_PER_SEC);
+				printf("Executou em %f seg\n",
+				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
 			break;
 		case 'A': if (verifica == 0) {
-					printf("Precisa de selecionar a leitura primeiro\n");
-					showmenu();
-				}
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+			}
+			else {
+				clear();
+				printf("A. Lista dos N produtos mais vendidos no ano. Indica nº und e clientes nas filiais\n");
 				printf("Qual a filial de que quer saber os valores?\n");
 				if (scanf("%d", &fil));
 				if (fil > 3 || fil < 1) {
@@ -661,18 +684,21 @@ void interpretador () {
 				inicio = clock();
 				querie10(e, f, fil, 171008, j);
 				fim = clock();
-				printf("passaram %.3f seg\n", 
-				(double)(fim - inicio) / CLOCKS_PER_SEC);
+				printf("passaram %.3f seg\n",
+				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 				break;
+			}
 		case 'B': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				voltamenu();
 				showmenu();
 				break;
-				}
-				else {
+			}
+			else {
+				clear();
+				printf("B. Dado um cliente, apresenta os 3 produtos em que gastou mais dinheiro\n");
 				printf("Qual será o cliente?\n");
 				if (fgets(client, 6, stdin) == NULL)break;
 				inicio = clock();
@@ -682,39 +708,42 @@ void interpretador () {
 				}
 				else
 					printf("O cliente não é válido!\n");
-				}
-				fim = clock();
-				printf("passaram %.3f seg\n", 
-				(double)(fim - inicio) / CLOCKS_PER_SEC);
-				voltamenu();
-				showmenu();
-				break;
+			}
+			fim = clock();
+			printf("passaram %.3f seg\n",
+			       (double)(fim - inicio) / CLOCKS_PER_SEC);
+			voltamenu();
+			showmenu();
+			break;
 		case 'C': if (verifica == 0) {
-					printf("Precisa de selecionar a leitura primeiro\n");
-					showmenu();
-				}
+				printf("Precisa de selecionar a leitura primeiro\n");
+				showmenu();
+			}
+			else {
 				inicio = clock();
-				printf("O número de produtos que ninguém comprou é: %d\n", 
-				inttotalzerofil(e));
+
+				printf("O número de produtos que ninguém comprou é: %d\n",
+				       inttotalzerofil(e));
 				cp7 = initCatProds();
 				cp7 = makeCat(f, cp7);
 				printf("O número de clientes registados que nunca realizaram compras é: %d\n",
-			    totalClientes(ccl) - totalProdutos(cp7));
+				       totalClientes(ccl) - totalProdutos(cp7));
 				fim = clock();
-				printf("passaram %.3f seg\n", 
-				(double)(fim - inicio) / CLOCKS_PER_SEC);
+				printf("passaram %.3f seg\n",
+				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				free(cp7);
 				voltamenu();
 				showmenu();
 				break;
+			}
 		}
 		if (fgets(cmd, BufferM, stdin) != NULL);
 	}
 	if (verifica != 0) {
 		removeCatClient(ccl);
 		removeCatProd(cps);
-		for(z=0;z<3;z++)
-		removeFilial(f[z]);
+		for (z = 0; z < 3; z++)
+			removeFilial(f[z]);
 		removeEmp(e);
 	}
 }

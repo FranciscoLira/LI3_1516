@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "myavl.h"
-#include "Filial.h"
-#include "CatProd.h"
+#include "filial.h"
+#include "catprod.h"
 
 struct conjProd {
 	char** lista;
