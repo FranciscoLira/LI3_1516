@@ -21,7 +21,7 @@ struct fat {
 
 typedef struct fatmes {
 	AVL codigos[2];
-	int totalquantidade[2];/*quantidade*/
+	int totalquantidade[2];
 	double totalfat[2];
 	int totalvendas[2];
 }*Fatmes;
@@ -86,7 +86,7 @@ Fat alocafat(double faturacao, int quantidade, int vendas) {
 }
 
 double getfatfat(Fat a) {
-	return (a->faturacao);
+	return a->faturacao;
 }
 
 int getfatquant(Fat a) {
@@ -192,7 +192,7 @@ Fatall initFatall() {
 	Fatall r = (Fatall)malloc(sizeof(struct fatall));
 	r->mes[0].l = (AVL*)malloc(sizeof(AVL) * 26);
 	for (i = 0; i < 26; i++) {
-		r->mes[0].l[i] =NULL;
+		r->mes[0].l[i] = NULL;
 	}
 	for (i = 1; i < 13; i++) {
 		r->mes[i].f = initFatmes();
@@ -205,7 +205,7 @@ Fatall initFatall() {
 */
 
 Emp inserePEmp(Emp e, char* p) {
-	int j = p[0] - 'A',i;
+	int j = p[0] - 'A', i;
 	for (i = 0; i < 3; i++) {
 		e->filial[i]->mes[0].l[j] = insereAVL(e->filial[i]->mes[0].l[j], p, NULL);
 	}
@@ -313,8 +313,8 @@ Fat faturacaototal(Emp e, char* codigo, int imes, int p) {
 	Fat r = alocafat(0, 0, 0);
 	for (f = 1; f < 4; f++) {
 		tmp = produtofat(e, f, imes, p, codigo);
-		if (tmp) {
-			r -> quantidade += tmp ->quantidade;
+		if (tmp) {/*PODE SAIR O IF*/
+			r ->vendas += tmp ->vendas;
 			r->faturacao += tmp -> faturacao;
 		}
 	}
@@ -550,7 +550,7 @@ Codquant initcodquant(int n, int ifil, Emp e) {
 	Codquant r = (Codquant)malloc(sizeof(struct codquant));
 	r->quant = (int*)malloc(sizeof(int) * n);
 	r->codigos = (char**)malloc(sizeof(char*)*n);
-	avq = juntaquantidades(e, ifil -1);
+	avq = juntaquantidades(e, ifil - 1);
 	ordenaDecre(avq, r, n);
 	return r;
 }

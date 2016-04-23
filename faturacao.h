@@ -17,7 +17,6 @@ int* getquant(Codquant a);
 char* getcodi(Codquant a, int i);
 int getquanti(Codquant a, int i);
 Vendatmp initvendatmp();
-
 double getPreco(Vendatmp v);
 int getQuantidade(Vendatmp v);
 int getPromo(Vendatmp v);
