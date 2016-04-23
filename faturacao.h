@@ -115,7 +115,4 @@ Fat varremeses(Emp e, int init, int fim);
 /*Inicializa a estrutura onde é armazenada a informação de */
 Codquant initcodquant(int n, int filial, Emp e);
 
-/*Ordena os produtos dentro da estrutura*/
-Codquant ordenaDecre(AVL r, Codquant cq, int n);
-
 #endif
