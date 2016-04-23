@@ -180,6 +180,12 @@ void freeTreefil (AVLfil a, int x) {
 				freeTreefil(a->produtos[i]->mes[1],1);
 				free(a->produtos[i]);
 			}
+		if(x==10){
+			if(a->numpt!=0){
+				freeTreefil(a->produtos[0]->mes[0],1);
+				free(a->produtos[0]);
+			}
+		}
 		free(a->codigo);
 		free (a);
 	}

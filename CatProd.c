@@ -142,7 +142,12 @@ ConjProds getList (CatProds cps, char letra) {
 }
 
 char* getStringp(Produto p){
-	char* tmp= (char*)malloc(sizeof(char)*strlen(p->nomeprod));
+	char* tmp= (char*)malloc(sizeof(char)*(strlen(p->nomeprod)+1));
 	strcpy(tmp, p->nomeprod);
 	return tmp;
 }	
+
+void freeProduto(Produto p){
+	free(p->nomeprod);
+	free(p);
+}

@@ -26,8 +26,7 @@ Filial initFilial() {
 	return f;
 }
 Filial insereProds(Filial f, Produto p) {
-	char* l = malloc(10);
-	strcpy(l, getStringp(p));
+	char* l = getStringp(p);
 	f->prods = insereAVLfil(f->prods, l, "", 0, 0, 0,0);
 	free(l);
 	return f;
@@ -63,7 +62,7 @@ void removeFilial(Filial f){
 	for (i = 0; i < 26; i++) {
 		freeTreefil(f->clientes[i], 0);
 	}
-	freeTreefil(f->prods,1);
+	freeTreefil(f->prods,10);
 	free(f);
 } 
 /*Devolve o número de produtos que um cliente comprou num mes*/
@@ -72,6 +71,7 @@ int numprodutos(Filial f, Cliente c, int mes){
 	char *str = getStringc(c);
 	int indice = str[0] - 'A';
 	num = getnum(f->clientes[indice], str, m);
+	free(str);
 	return num;
 }
 /*Função para querie7... Falar com o professor sobre o facto de utilizar Catprods*/
@@ -92,6 +92,7 @@ ConjComprados comprou(Produto p, Filial f, int tipo){
 		l=quemComprou(l,str,f->clientes[j],&i,tipo,&tam);
 	s->lista=l;
 	s->tam=tam;
+	free(str);
 	return s;
 }
 /*Free do conjunto de clientes(nao completo ainda!!)*/
@@ -177,10 +178,9 @@ void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n) {
 }
 
 AVLfil funcao9(Filial *f, int mes, Cliente c){
-	char* str=malloc(10);
+	char* str=getStringc(c);
 	int i, j, k;
 	AVLfil res = NULL;
-	strcpy(str,getStringc(c));
 	k=str[0]-65;
 	for(i=0;i<3; i++)
 		for(j=0;j<2;j++)
@@ -198,6 +198,7 @@ AVLfil funcao11(Filial *f, Cliente c){
 		for(y=0; y<12; y++)
 			for(j=0; j<2; j++)
 				res = auxp(res, f[i]->clientes[k],y,j,str);
+	free(str);
 	return res;
 }
 

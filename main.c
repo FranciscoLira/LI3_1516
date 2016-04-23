@@ -67,8 +67,12 @@ Boolean verificaCat(CatClients ccs, char* c) {
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 	int cont = 0;
-	if ((verificaPro(cps, getProduto(v))) &&
-	        (verificaCat(ccs, getCliente(v)))) cont = 1;
+	char* cliente = getCliente(v);
+	char* prod = getProduto(v);
+	if ((verificaPro(cps, prod)) &&
+	        (verificaCat(ccs, cliente))) cont = 1;
+	free(cliente);
+	free(prod);
 	return cont;
 }
 
@@ -127,16 +131,18 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 	FILE *f1;
 	char str[10];
-	Produto p = NULL;
+	char* aux;
+	Produto p = inserep("      ");
 	f1 = fopen("Dados/Produtos.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			free(p);
-			p = inserep(str);
+			p = alterap(str,p);
 			cps = insereProduto(cps, p);
-			e = inserePEmp(e,getStringp(p));
+			aux = getStringp(p);
+			e = inserePEmp(e,aux);
+			free(aux);
 			f[0] = insereProds(f[0], p);
 			f[1] = insereProds(f[1], p);
 			f[2] = insereProds(f[2], p);
@@ -144,6 +150,7 @@ CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 		else break;
 	}
 	fclose(f1);
+	free(p);
 	printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 	return cps;
 }
@@ -151,19 +158,19 @@ CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 CatClients lerclient(CatClients cps) {
 	FILE *f1;
 	char str[10];
-	Cliente p = NULL;
+	Cliente p = inserec("     ");
 	f1 = fopen("Dados/Clientes.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			free(p);
-			p = inserec(str);
+			p = alterac(str,p);
 			cps = insereCliente(cps, p);
 		}
 		else break;
 	}
 	fclose(f1);
+	free(p);
 	printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(cps));
 	return cps;
 }
@@ -336,7 +343,8 @@ void querie4(Emp e) {
 
 void querie5(Filial *f, Cliente c) {
 	int mes, filial;
-	if (tamanho(getStringc(c)) < 5)
+	char* aux = getStringc(c);
+	if (tamanho(aux) < 5)
 		printf("O cliente não é válido\n");
 	else {
 		printf("    MES\tFILIAL1\tFILIAL2\tFILIAL3\n\n");
@@ -348,6 +356,7 @@ void querie5(Filial *f, Cliente c) {
 		}
 		printf("\n");
 	}
+	free(aux);
 	voltamenu();
 }
 
@@ -406,10 +415,6 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	Produto prod = inserep("      ");
 	Codquant r;
 	char** lista = (char**)malloc(sizeof(char*)*N*3);
-	if(ifil>3 || ifil < 1){
-		printf("A filial não é válida!\n");
-		return;
-	}
 	tmp = f[ifil - 1];
 	r = initcodquant(nprod, ifil, e);
 	for (i = 0; i < N; i++) {
@@ -421,7 +426,7 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 		lista[j]=malloc(sizeof(char)*20);
 		sprintf(lista[j++],"NºCl: %2d", getQuantosClientes(tmp, prod));
 	}
-	imprimeLista2(lista,j-1);
+	imprimeLista2(lista,j);
 	for(i=0;i<j;i++){
 		free(lista[i]);
 	}
@@ -597,6 +602,12 @@ void interpretador () {
 				}
 				printf("Qual a filial de que quer saber os valores?\n");
 				if (scanf("%d", &fil));
+				if(fil>3 || fil < 1){
+					printf("A filial não é válida!\n");
+					voltamenu();
+					showmenu();
+					break;
+				}
 				printf("Quantos valores quer saber?\n");
 				if (scanf("%d", &j));
 				timeinit = clock();

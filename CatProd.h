@@ -44,4 +44,6 @@ ConjProds getList (CatProds cps, char letra);
 
 char* getStringp(Produto p);
 
+void freeProduto(Produto p);
+
 #endif

@@ -28,5 +28,6 @@ int totalClientes(CatClients ccl);
 int totalClientesLetra(CatClients ccl, char letra);
 void removeCatClient(CatClients ccl);
 char* getStringc(Cliente c);
+void freeCliente(Cliente c);
 
 #endif
