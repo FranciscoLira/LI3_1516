@@ -33,12 +33,7 @@ typedef struct fatall {
 	} mes[13];
 }*Fatall;
 
-/* Exemplo de utilização por causa do Union, pode dar jeito no relatório
 
- Fatall a
- a->mes[1].f->...
- a->mes[0].l ...
-*/
 
 struct empresa {
 	Fatall filial[3];
@@ -49,6 +44,13 @@ struct codquant {
 	int* quant;
 };
 
+Vendatmp initvendatmp() {
+	Vendatmp r = (Vendatmp)malloc(sizeof(struct vendatmp));
+	r->produto = r->cliente = NULL;
+	r->preco = 0;
+	r->quantidade = r->promo = r->filial = 0;
+	return r;
+}
 
 char** getcod(Codquant a) {
 	return a->codigos;
@@ -68,13 +70,7 @@ int getquanti(Codquant a, int i) {
 
 
 
-Vendatmp initvendatmp() {
-	Vendatmp r = (Vendatmp)malloc(sizeof(struct vendatmp));
-	r->produto = r->cliente = NULL;
-	r->preco = 0;
-	r->quantidade = r->promo = r->filial = 0;
-	return r;
-}
+
 
 /*Recebe quais os campos a aplicar no fat e aloca memória para ele*/
 Fat alocafat(double faturacao, int quantidade, int vendas) {
@@ -279,17 +275,6 @@ Emp insereVenda(Emp e, Vendatmp v) {
 }
 
 
-/*Para debug*/
-void printfat(Fat a) {
-	if (a == NULL) {
-		printf("deumerda!\n");
-	}
-	else {
-		printf("%d\n", a->quantidade);
-		printf("%f\n", a->faturacao);
-	}
-}
-
 /*Retorna uma faturação de um dado produto, recebendo a filial (f) o mes (imes) e se é ou não promoção
 Aloca memória por isso deve ser feito o free*/
 Fat produtofat(Emp e, int f, int imes, int p, char* produto) {
@@ -357,7 +342,7 @@ int quantoszeroAVL(AVL a, CatProds r) {
 	return q;
 }
 
-/*Retorna um conjunto de produtos que são os que estão a zero numa lista de AVLs*/
+/*Retorna um conjunto de produtos que são os que estão a zero*/
 CatProds produtoszero(Emp e, int f) {
 	int q = 0, car;
 	CatProds r = initCatProds();
@@ -411,7 +396,7 @@ int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 	return q;
 }
 
-/*Retorna um CatProds que tem todos os elementos que são iguais em todas as AVLs*/
+/*Retorna um CatProds que tem todos os elementos que são iguais a zero em todas as AVLs*/
 CatProds quantostotalzeroAVL(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
