@@ -271,13 +271,15 @@ void alteracl(AVLfil res, char * prod, char* client){
 	}
 }
 
-void altera(AVLfil res, char * prod, int quant){
+void altera(AVLfil res, char * prod, int quant, double faturacao){
 	AVLfil aux = res;
 	int i;
 	while (aux) {
 		i = strcmp (prod, aux->codigo);
-		if (i == 0)
+		if (i == 0){
+			aux->faturacao+=faturacao;
 			aux->numpt+=quant;
+		}
 		if (i > 0)
 			aux = aux->dir;
 		else
@@ -297,8 +299,10 @@ AVLfil auxp(AVLfil res, AVLfil prod,int mes,int tipo,char *cliente){
 		else
 			a = a->esq;
 	}
+	if(a){
 	a=a->produtos[mes]->mes[tipo];
 	res=auxiliarInsere(res,a);
+	}
 	return res;
 }
 
@@ -306,10 +310,12 @@ AVLfil auxiliarInsere(AVLfil res, AVLfil prod){
 	AVLfil a = prod;
 	if(a){
 		res = auxiliarInsere(res, a->esq);
-		if(!existeAVLfil(res,a->codigo))
+		if(!existeAVLfil(res,a->codigo)){
 			res = insereAVLfil(res,a->codigo,"",0,a->numpt,0,0);
+			altera(res,a->codigo,0,a->faturacao);
+		}
 		else{
-			altera(res,a->codigo,a->numpt);
+			altera(res,a->codigo,a->numpt, a->faturacao);
 		}
 		res = auxiliarInsere(res, a->dir);
 	}
@@ -331,6 +337,18 @@ void inseredaAvlfil(AVLfil res, int* quantidades, char** codigos, int *i) {
 		quantidades[*i] = res->numpt;
 		(*i)++;
 		inseredaAvlfil(aux->dir, quantidades, codigos, i);
+	}
+}
+
+void inseredaAvlfat(AVLfil res, double* quantidades, char** codigos, int *i) {
+	AVLfil aux = res;
+	if (aux) {
+		inseredaAvlfat(aux->esq, quantidades, codigos, i);
+		codigos[*i] = malloc(sizeof(char)*10);
+		strcpy(codigos[*i],res->codigo);
+		quantidades[*i] = res->faturacao;
+		(*i)++;
+		inseredaAvlfat(aux->dir, quantidades, codigos, i);
 	}
 }
 

@@ -13,10 +13,11 @@ CatProds funcaocat(CatProds cps, AVLfil x1, AVLfil x2,AVLfil x3);
 char** quemComprou(char** lista, char *prod, AVLfil t, int *i, int z, int *tam);
 AVLfil auxiliarInsere(AVLfil res, AVLfil prod);
 AVLfil auxp(AVLfil res, AVLfil prod,int m,int t,char *c);
-void altera(AVLfil res, char* p, int q);
+void altera(AVLfil res, char* p, int q, double f);
 void alteracl(AVLfil res, char* p, char* c);
 int numAVL(AVLfil res);
 void inseredaAvlfil(AVLfil res, int* q, char** c, int *i);
+void inseredaAvlfat(AVLfil res, double* q, char** c, int *i);
 AVLfil insereCl(AVLfil a, char *c, char *cl, int m, int q, int x);
 int quantosClientes(AVLfil t, char* p);
 

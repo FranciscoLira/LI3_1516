@@ -108,6 +108,33 @@ int getTamConj(ConjComprados c){
 	return c->tam;
 }
 
+int partitionfat(double* quant, char** cod, int l, int r) {
+   int pivot, i, j, t;
+   char* t2 = malloc(10);
+   pivot = quant[l];
+   i = l; j = r+1;
+	while(1) {
+   	do ++i; while( quant[i] >= pivot && i <= r );
+   	do --j; while( quant[j] < pivot );
+   	if( i >= j ) break;
+   	t = quant[i]; quant[i] = quant[j]; quant[j] = t;
+   	strcpy(t2,cod[i]); strcpy(cod[i],cod[j]); strcpy(cod[j],t2);
+   }
+   t = quant[l]; quant[l] = quant[j]; quant[j] = t;
+   strcpy(t2,cod[l]); strcpy(cod[l],cod[j]); strcpy(cod[j],t2);
+   free(t2);
+   return j;
+}
+
+void quickSortfat(double* quant, char** cod, int l, int r) {
+   int j;
+   if( l < r ) {
+       j = partitionfat(quant, cod, l, r);
+       quickSortfat(quant, cod, l, j-1);
+       quickSortfat(quant, cod, j+1, r);
+   }
+}
+
 int partitionfil(int* quant, char** cod, int l, int r) {
    int pivot, i, j, t;
    char* t2 = malloc(10);
@@ -135,6 +162,13 @@ void quickSortfil(int* quant, char** cod, int l, int r) {
    }
 }
 
+void ordenaDecrefat (AVLfil res, char** codigos, double* quantidades, int n) {
+	 int i;
+	 i = 0;
+	 inseredaAvlfat(res, quantidades, codigos, &i);
+	 quickSortfat(quantidades, codigos, 0, n-1);
+}
+
 void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n) {
 	 int i;
 	 i = 0;
@@ -155,6 +189,18 @@ AVLfil funcao9(Filial *f, int mes, Cliente c){
 	return res;
 }
 
+AVLfil funcao11(Filial *f, Cliente c){
+	char* str = getStringc(c);
+	int i,j,k,y;
+	AVLfil res = NULL;
+	k = str[0]-65;
+	for(i=0; i<3; i++)
+		for(y=0; y<12; y++)
+			for(j=0; j<2; j++)
+				res = auxp(res, f[i]->clientes[k],y,j,str);
+	return res;
+}
+
 char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
 	int n;
 	char** codigos;
@@ -170,16 +216,16 @@ char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
 }
 
 char** getCodQMaisComprouAno(Filial *f, Cliente c){
-	int n,mes;
+	int n;
 	char** codigos;
-	int* quantidades;
+	double* quantidades;
 	AVLfil res = NULL;
-	for(mes=0;mes<12;mes++)
-		res = funcao9(f,mes,c);
+	res = funcao11(f,c);
 	n = numAVL(res);
+	if(n==0) return NULL;
 	codigos = (char**)malloc(sizeof(char*)*n+1);
-	quantidades = (int*)malloc(sizeof(int)*n);
-	ordenaDecrefil(res,codigos,quantidades,n);
+	quantidades = (double*)malloc(sizeof(double)*n);
+	ordenaDecrefat(res,codigos,quantidades,n);
 	codigos[n]=NULL;
 	return codigos;
 }
