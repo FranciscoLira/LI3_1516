@@ -286,7 +286,7 @@ void querie3(Emp e) {
 	char buffer[BufferM];
 	clear();
 	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
-	printf("Qual o código que quer saber a faturação?\n");
+	printf("Qual o código que quer saber da faturação?\n");
 	if (scanf("%s", buffer) == -1);
 	printf("Qual o mês que quer saber a faturação?\n");
 	if (scanf("%d", &imes) == -1);
@@ -307,6 +307,7 @@ void querie3(Emp e) {
 	else {
 		for (i = 1; i < 4; i++) {/*filial*/
 			printf("Filial nº%d:\n", i);
+			printf("Mês: %d\n", imes );
 			for (p = 0; p < 2; p++) {/*promoção*/
 				ftmp = produtofat(e, i, imes, p, buffer);
 				if (p % 2 == 0) printf("\tModo Normal:\n");

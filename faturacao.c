@@ -313,9 +313,10 @@ Fat faturacaototal(Emp e, char* codigo, int imes, int p) {
 	Fat r = alocafat(0, 0, 0);
 	for (f = 1; f < 4; f++) {
 		tmp = produtofat(e, f, imes, p, codigo);
-		if (tmp) {/*PODE SAIR O IF*/
+		if (tmp) {
 			r ->vendas += tmp ->vendas;
 			r->faturacao += tmp -> faturacao;
+			r->quantidade += tmp -> quantidade;
 		}
 	}
 	return r;
