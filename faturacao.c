@@ -366,7 +366,7 @@ int intquantoszeroAVL(AVL a, AVL b, AVL c) {
 }
 
 /*Retorna um int que é a quantidade de elementos com a faturação a zero em todas as filiais*/
-int inttotalzeroAVL(Emp e) {
+int inttotalzerofil(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
 	for (car = 0; car < 26; car++) {
@@ -397,7 +397,7 @@ int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 }
 
 /*Retorna um CatProds que tem todos os elementos que são iguais a zero em todas as AVLs*/
-CatProds quantostotalzeroAVL(Emp e) {
+CatProds quantostotalzerofil(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
 	CatProds r = initCatProds();

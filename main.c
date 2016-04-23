@@ -359,8 +359,8 @@ void querie4(Emp e) {
 		if (scanf("%d", &i) == -1);
 	}
 	if (!i) {
-		imprimeLista(getLista(getList(quantostotalzeroAVL(e), '/')),
-		             totalProdutos(quantostotalzeroAVL(e)));
+		imprimeLista(getLista(getList(quantostotalzerofil(e), '/')),
+		             totalProdutos(quantostotalzerofil(e)));
 	}
 	else {
 		imprimeLista(getLista(getList(produtoszero(e, i), '/')),
@@ -661,7 +661,7 @@ void interpretador () {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
 			}
-			printf("O número de produtos que ninguém comprou é: %d\n", inttotalzeroAVL(e));
+			printf("O número de produtos que ninguém comprou é: %d\n", inttotalzerofil(e));
 			cp7 = initCatProds();
 			cp7 = makeCat(f, cp7);
 			printf("O número de clientes registados que nunca realizaram compras é: %d\n",
