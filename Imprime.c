@@ -30,53 +30,53 @@ Conj_Strings initConjun(Conj_Strings s, char** l, int size) {
 	return s;
 }
 
-Conj_Strings alteraPaginamais2(Conj_Strings s) {
+Conj_Strings incrementapagina(Conj_Strings s) {
 	s->pagina++;
 	return s;
 }
 
-Conj_Strings alteraPaginamenos2(Conj_Strings s) {
+Conj_Strings decrementapagina(Conj_Strings s) {
 	s->pagina--;
 	return s;
 }
 
-Conj_Strings alteraPagina2(Conj_Strings s, int pag) {
+Conj_Strings alteraPagina(Conj_Strings s, int pag) {
 	s->pagina = pag;
 	return s;  
 }
 
-int getPagina2(Conj_Strings s) {
+int getpagina(Conj_Strings s) {
 	return s->pagina;
 }
 
-int getSize2(Conj_Strings s) {
+int getsize(Conj_Strings s) {
 	return s->size;
 }
 
-int getpagTotal2(Conj_Strings s) {
+int getpagTotal(Conj_Strings s) {
 	return s->pagTotal;
 }
 
-int getSizePag2(Conj_Strings s) {
+int getSizePag(Conj_Strings s) {
 	return s->pageSize;
 }
 
-char* getNextString2(Conj_Strings s, int i) {
+char* getNextString(Conj_Strings s, int i) {
  	return s->listapagina[i];
 }
 
-Conj_Strings getPag2(Conj_Strings s) {
+Conj_Strings getPag(Conj_Strings s) {
 	s->listapagina = s->lista;
 	s->listapagina += s->pageSize*(s->pagina-1);
 	return s;
 }
 
-Conj_Strings getPaginaSeguinte2(Conj_Strings s) {
+Conj_Strings getPaginaSeguinte(Conj_Strings s) {
 	s->listapagina += s->pageSize;
 	return s;
 }
 
-Conj_Strings getPaginaAnterior2(Conj_Strings s) {
+Conj_Strings getPaginaAnterior(Conj_Strings s) {
 	s->listapagina -=  s->pageSize;
 	return s;
 }
