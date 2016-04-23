@@ -352,7 +352,7 @@ CatProds produtoszero(Emp e, int f) {
 	return r;
 }
 
-/*Retorna um int que diz quantos elementos iguais há nas três AVLs*/
+/*Retorna um int que diz quantos elementos iguais há nas três AVLs tendo esses elementos de ser iguais a zero*/
 int intquantoszeroAVL(AVL a, AVL b, AVL c) {
 	int q = 0;
 	if (a) {
@@ -365,8 +365,8 @@ int intquantoszeroAVL(AVL a, AVL b, AVL c) {
 	return q;
 }
 
-/*Retorna um int que é a quantidade de elementos iguais na lista de AVLs*/
-int inttotalzeroAVL(Emp e) {
+/*Retorna um int que é a quantidade de elementos com a faturação a zero em todas as filiais*/
+int inttotalzerofil(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
 	for (car = 0; car < 26; car++) {
@@ -397,7 +397,7 @@ int quantosauxAVL(AVL a, AVL b, AVL c, CatProds r) {
 }
 
 /*Retorna um CatProds que tem todos os elementos que são iguais a zero em todas as AVLs*/
-CatProds quantostotalzeroAVL(Emp e) {
+CatProds quantostotalzerofil(Emp e) {
 	int q = 0, car;
 	AVL a, b, c;
 	CatProds r = initCatProds();
@@ -501,6 +501,7 @@ void quickSort(int* quant, char** cod, int l, int r) {
 	}
 }
 
+/*Ordena os produtos dentro da estrutura */
 Codquant ordenaDecre(AVL r, Codquant cq, int n) {
 	int i = 0;
 	char** codigos = getcod(cq);

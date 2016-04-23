@@ -87,8 +87,8 @@ Emp initEmpresa ();
 /*Liberta toda a memória que foi usada para armazenar informação relativamente à faturação*/
 void removeEmp(Emp e);
 
-/**/
-int inttotalzeroAVL(Emp e);
+/*Retorna um int que é a quantidade de elementos com a faturação a zero em todas as filiais*/
+int inttotalzerofil(Emp e);
 
 /*Insere um Produto numa empresa*/
 Emp inserePEmp(Emp e, char* p);
@@ -103,8 +103,8 @@ Fat produtofat(Emp e, int filial, int mes, int promo, char* produto);
 /*Retorna a faturação total distinguindo apenas pelo mes e se é ou não promoção*/
 Fat faturacaototal(Emp e, char* codigo, int mes, int promo);
 
-/*Retorna um CatProds que tem todos os elementos que são iguais a zero em todas as AVLs*/
-CatProds quantostotalzeroAVL(Emp e);
+/*Retorna um CatProds que tem todos os elementos que são iguais a zero em todas as filiais*/
+CatProds quantostotalzerofil(Emp e);
 
 /*Retorna um CatProds que são os que estão a zero numa lista de AVLs*/
 CatProds produtoszero(Emp e, int f);
