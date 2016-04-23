@@ -427,10 +427,6 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 		sprintf(lista[j++],"NºCl: %2d", getQuantosClientes(tmp, prod));
 	}
 	imprimeLista2(lista,j);
-	for(i=0;i<j;i++){
-		free(lista[i]);
-	}
-	free(lista);
 }
 
 void querie11(Cliente cl, Filial *f){
@@ -494,7 +490,7 @@ void interpretador () {
 				printf("Qual será a Letra?\n");
 				while(1){
 				if (scanf(" %c", &letra) == -1);
-				if(letra-65<0 || letra-65>0)
+				if(letra-65<0 || letra-65>26)
 					printf("Letra maiúscula!\n");
 				else break;
 				}
