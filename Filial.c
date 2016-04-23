@@ -111,7 +111,7 @@ int getTamConj(ConjComprados c){
 
 int partitionfat(double* quant, char** cod, int l, int r) {
    int pivot, i, j, t;
-   char* t2 = malloc(10);
+   char* t2 = malloc(sizeof(char)*10);
    pivot = quant[l];
    i = l; j = r+1;
 	while(1) {
@@ -138,7 +138,7 @@ void quickSortfat(double* quant, char** cod, int l, int r) {
 
 int partitionfil(int* quant, char** cod, int l, int r) {
    int pivot, i, j, t;
-   char* t2 = malloc(10);
+   char* t2 = malloc(sizeof(char)*10);
    pivot = quant[l];
    i = l; j = r+1;
 	while(1) {

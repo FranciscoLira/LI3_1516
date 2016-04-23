@@ -24,9 +24,6 @@ struct prods {
 	Trees cP[26];
 };
 
-
-
-
 Produto inserep(char *x) {
 	Produto p = malloc(sizeof(struct prod));
 	p->nomeprod = malloc(sizeof(char)*(strlen(x)+1));

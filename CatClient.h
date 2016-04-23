@@ -26,8 +26,14 @@ int totalClientes(CatClients ccl);
 
 /* Dá quantos clientes existem com uma dada letra */
 int totalClientesLetra(CatClients ccl, char letra);
+
+/* Remove Catálogo de Clientes da memória */
 void removeCatClient(CatClients ccl);
+
+/* Devolve string que representa o Cliente c dado */
 char* getStringc(Cliente c);
+
+/* Liberta memória ocupada pelo Cliente c dado */
 void freeCliente(Cliente c);
 
 #endif
