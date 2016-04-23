@@ -669,9 +669,9 @@ void interpretador () {
 			printf("Qual a filial de que quer saber os valores?\n");
 			if (scanf("%d", &fil));
 			printf("Quantos valores quer saber?\n");
-			if (scanf("%d", &fil));
+			if (scanf("%d", &j));
 			timeinit = clock();
-			querie10(e, f, fil, 171008, 20);
+			querie10(e, f, fil, 171008, j);
 			timeend = clock();
 			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
 			voltamenu();
