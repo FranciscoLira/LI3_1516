@@ -2,12 +2,12 @@ CFLAGS=-pedantic -ansi -O2 -Wall -g
 OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
 LIBS=
 
-prot: $(OBJS)
-	$(CC) $(CFLAGS) -o prot $(OBJS) $(LIBS) 
+gerevendas: $(OBJS)
+	$(CC) $(CFLAGS) -o gerevendas $(OBJS) $(LIBS) 
 
-do: prot
-	./prot
+do: gerevendas
+	./gerevendas
 
 clean: 
-	rm prot *.o 
+	rm gerevendas *.o 
 

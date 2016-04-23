@@ -79,7 +79,7 @@ int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 }
 
 Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
-	clock_t inicio, fim;
+	time_t inicio, fim;
 	Vendatmp v = initvendatmp();
 	Cliente c = inserec("      ");
 	Produto pr = inserep("       ");
@@ -98,7 +98,7 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
 		return NULL;
 	}
 	cont = 0;
-	inicio = clock();
+	inicio = time(NULL);
 	for (i = 0; fgets(buffer, BufferM, p); i++) {
 		aux = strtok(buffer, " ");
 		setProduto(v, aux);
@@ -134,23 +134,23 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e, int fich) {
 			contador++;
 		}
 	}
-	fim = clock();
+	fim = time(NULL);
 	printf("\nLido o ficheiro de Vendas. Validadas: %d\n", contador);
 	printf("Lido em: %.3f s\n",
-	       (double)(fim - inicio) / CLOCKS_PER_SEC);
+	       difftime(fim,inicio));
 	return e;
 }
 
 /*Lê o ficheiro Produtos.txt*/
 CatProds lerprod(CatProds cps, Filial *f, Emp e) {
-	clock_t inicio, fim;
+	time_t inicio, fim;
 	FILE *f1;
-	char str[10];
+	char *str=malloc(sizeof(char)*10);
 	char* aux;
 	Produto p = inserep("      ");
 	f1 = fopen("Produtos.txt", "r");
 	if (!f1) return NULL;
-	inicio = clock();
+	inicio = time(NULL);
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
@@ -167,21 +167,21 @@ CatProds lerprod(CatProds cps, Filial *f, Emp e) {
 	}
 	fclose(f1);
 	free(p);
-	fim = clock();
+	fim = time(NULL);
 	printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 	printf("Lido em: %.3f s\n",
-	       (double)(fim - inicio) / CLOCKS_PER_SEC);
+	       difftime(fim,inicio));
 	return cps;
 }
 /*Lê o ficheiro Clientes.txt*/
 CatClients lerclient(CatClients cps) {
-	clock_t inicio, fim;
+	time_t inicio, fim;
 	FILE *f1;
-	char str[10];
+	char *str=malloc(sizeof(char)*10);
 	Cliente p = inserec("     ");
 	f1 = fopen("Clientes.txt", "r");
 	if (!f1) return NULL;
-	inicio = clock();
+	inicio = time(NULL);
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
@@ -192,10 +192,10 @@ CatClients lerclient(CatClients cps) {
 	}
 	fclose(f1);
 	free(p);
-	fim = clock();
+	fim = time(NULL);
 	printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(cps));
 	printf("Lido em: %.3f s\n",
-	       (double)(fim - inicio) / CLOCKS_PER_SEC);
+	       difftime(fim,inicio));
 	return cps;
 }
 
@@ -397,12 +397,15 @@ void querie8(Produto pr, Filial f) {
 	ConjComprados c1, c2;
 	char** n; int tamn, tamp, i;
 	char** p;
+	time_t inicio, fim;
+	inicio = time(NULL);
 	c1 = comprou(pr, f, 0);
 	c2 = comprou(pr, f, 1);
 	n = getListConj(c1);
 	p = getListConj(c2);
 	tamn = getTamConj(c1);
 	tamp = getTamConj(c2);
+	fim = time(NULL);
 	printf("Tipo N: (Total %d)\n", tamn);
 	printf("Clientes: ");
 	for (i = 0; i < tamn; i++)
@@ -412,18 +415,26 @@ void querie8(Produto pr, Filial f) {
 	for (i = 0; i < tamp; i++)
 		printf("%s ", p[i]);
 	printf("\n");
+	printf("Executou em: %f\n",difftime(fim,inicio));
 	freeConj(c1); freeConj(c2);
 }
 
 void querie9(Filial *f, Cliente c, int mes) {
-	int i;
-	char **codigos;
+	int i,j;
+	char** codigos;
+	char** lista;
+	time_t inicio, fim;
+	inicio = time(NULL);
 	codigos = getCodQMaisComprou(f, mes, c);
-	printf("Produtos:\n");
+	fim = time(NULL);
+	for(j=0;codigos[j];j++);
+	lista = malloc(sizeof(char*)*j);
 	for (i = 0; codigos[i]; i++) {
-		printf("%dº: %s\n", i + 1, codigos[i]);
+		lista[i]=malloc(sizeof(char)*(strlen(codigos[i])+10));
+		sprintf(lista[i],"%dº:%s", i + 1, codigos[i]);
 	}
-	printf("\n");
+	imprimeLista(lista,j);
+	printf("Executou em: %f\n", difftime(fim,inicio));
 }
 
 /*recebe a empresa, a filial em questão, qual a filial(ifil) nprod é quantos produtos há, e o N é o do user */
@@ -432,9 +443,12 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 	Filial tmp;
 	Produto prod = inserep("      ");
 	Codquant r;
+	time_t inicio, fim;
 	char** lista = (char**)malloc(sizeof(char*)*N * 3);
+	inicio = time(NULL);
 	tmp = f[ifil - 1];
 	r = initcodquant(nprod, ifil, e);
+	fim = time(NULL);
 	for (i = 0; i < N; i++) {
 		prod = alterap(getcodi(r, i), prod);
 		lista[j] = malloc(sizeof(char) * (strlen(getcodi(r, i)) + 1));
@@ -445,6 +459,7 @@ void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
 		sprintf(lista[j++], "NºCl: %2d", getQuantosClientes(tmp, prod));
 	}
 	imprimeLista(lista, j);
+	printf("Executou em: %f\n",difftime(fim,inicio));
 }
 
 void querie11(Cliente cl, Filial *f) {
@@ -473,7 +488,7 @@ void interpretador () {
 	int verifica = 0;
 	showmenu();
 	if (fgets(cmd, BufferM, stdin) != NULL);
-	while (cmd[0] != 'Q') {
+	while (cmd[0] != 'Q' && cmd[0] != 'q') {
 		switch (cmd[0]) {
 		case '1': if (verifica != 0) {
 				removeCatClient(ccl);
@@ -629,13 +644,9 @@ void interpretador () {
 				printf("Qual é a filial?\n");
 				if (scanf(" %d", &fil));
 				fil--;
-				inicio = clock();
 				if (fil > -1 && fil < 3){
 					querie8(prod, f[fil]);
 				}
-				fim = clock();
-				printf("Executou em %.3f seg\n",
-				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
@@ -654,12 +665,8 @@ void interpretador () {
 				printf("Qual é o mes?\n");
 				if (scanf("%d", &mes));
 				mes--;
-				inicio = clock();
 				if (mes > -1 && mes < 12)
 					querie9(f, cl, mes);
-				fim = clock();
-				printf("Executou em %f seg\n",
-				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 			}
@@ -681,11 +688,7 @@ void interpretador () {
 				}
 				printf("Quantos valores quer saber?\n");
 				if (scanf("%d", &j));
-				inicio = clock();
 				querie10(e, f, fil, 171008, j);
-				fim = clock();
-				printf("passaram %.3f seg\n",
-				       (double)(fim - inicio) / CLOCKS_PER_SEC);
 				voltamenu();
 				showmenu();
 				break;
