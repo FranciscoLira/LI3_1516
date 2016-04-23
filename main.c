@@ -304,7 +304,6 @@ void querie3(Emp e) {
 	int imes, juntos, p, i;
 	Fat ftmp;
 	char buffer[BufferM];
-	printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
 	printf("Qual o código que quer saber da faturação?\n");
 	if (scanf("%s", buffer) == -1);
 	printf("Qual o mês que quer saber a faturação?\n");
@@ -475,7 +474,7 @@ void querie11(Cliente cl, Filial *f) {
 
 void interpretador () {
 	char** l;
-	clock_t inicio, fim;
+	time_t inicio, fim;
 	int fil, mes, z, j, fich;
 	CatProds cps = NULL, cp7 = NULL;
 	CatClients ccl = NULL;
@@ -549,6 +548,7 @@ void interpretador () {
 			break;
 		case '2': if (cps == NULL) {
 				printf("Precisa de selecionar a leitura primeiro!\n");
+				voltamenu();
 				showmenu();
 			}
 			else {
@@ -569,7 +569,6 @@ void interpretador () {
 			break;
 		case '3': if (e == NULL) {
 				printf("Precisa de selecionar a leitura primeiro\n");
-				showmenu();
 			}
 			else {
 				printf("3. Total faturado(N e P) com um dado produto num dado mês\n");
@@ -580,7 +579,7 @@ void interpretador () {
 			break;
 		case '4': if (e == NULL) {
 				printf("Precisa de selecionar a leitura primeiro\n");
-				showmenu();
+				voltamenu();
 			}
 			else {
 				clear();
@@ -592,6 +591,7 @@ void interpretador () {
 			break;
 		case '5': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 				showmenu();
 				break;
 			}
@@ -607,6 +607,7 @@ void interpretador () {
 			}
 		case '6': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 			}
 			else {
 				clear();
@@ -618,6 +619,7 @@ void interpretador () {
 			break;
 		case '7': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 			}
 			else {
 				clear();
@@ -631,6 +633,7 @@ void interpretador () {
 			break;
 		case '8': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 				showmenu();
 			}
 			else {
@@ -647,12 +650,16 @@ void interpretador () {
 				if (fil > -1 && fil < 3){
 					querie8(prod, f[fil]);
 				}
+				else{
+					printf("Filial inválida\n");
+				}
 				voltamenu();
 				showmenu();
 			}
 			break;
 		case '9': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 				showmenu();
 			}
 			else {
@@ -704,7 +711,7 @@ void interpretador () {
 				printf("B. Dado um cliente, apresenta os 3 produtos em que gastou mais dinheiro\n");
 				printf("Qual será o cliente?\n");
 				if (fgets(client, 6, stdin) == NULL)break;
-				inicio = clock();
+				inicio = time(NULL);
 				if (tamanho(client) == 5) {
 					cl = alterac(client, cl);
 					querie11(cl, f);
@@ -712,18 +719,19 @@ void interpretador () {
 				else
 					printf("O cliente não é válido!\n");
 			}
-			fim = clock();
+			fim = time(NULL);
 			printf("passaram %.3f seg\n",
-			       (double)(fim - inicio) / CLOCKS_PER_SEC);
+			       difftime(fim,inicio));
 			voltamenu();
 			showmenu();
 			break;
 		case 'C': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
+				voltamenu();
 				showmenu();
 			}
 			else {
-				inicio = clock();
+				inicio = time(NULL);
 
 				printf("O número de produtos que ninguém comprou é: %d\n",
 				       inttotalzerofil(e));
@@ -731,9 +739,9 @@ void interpretador () {
 				cp7 = makeCat(f, cp7);
 				printf("O número de clientes registados que nunca realizaram compras é: %d\n",
 				       totalClientes(ccl) - totalProdutos(cp7));
-				fim = clock();
-				printf("passaram %.3f seg\n",
-				       (double)(fim - inicio) / CLOCKS_PER_SEC);
+				fim = time(NULL);
+				printf("Executou em: %.3f seg\n",
+				       difftime(fim,inicio));
 				free(cp7);
 				voltamenu();
 				showmenu();
