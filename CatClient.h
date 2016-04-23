@@ -1,6 +1,6 @@
 #ifndef CatClients_H_
 #define CatClients_H_
-#include "myavl.h"
+#include "boolean.h"
 
 typedef struct clients* CatClients;
 
@@ -28,5 +28,6 @@ int totalClientes(CatClients ccl);
 int totalClientesLetra(CatClients ccl, char letra);
 void removeCatClient(CatClients ccl);
 char* getStringc(Cliente c);
+void freeCliente(Cliente c);
 
 #endif

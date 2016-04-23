@@ -4,8 +4,8 @@
 #include "Filial.h"
 #include "avlfil.h"
 
-/*Estrutura que serve para guardar os clientes que compraram
-um determinado produto*/
+/* Estrutura que serve para guardar os clientes que compraram
+um determinado produto */
 struct comprou {
 	char **lista;
 	int tam;
@@ -26,34 +26,31 @@ Filial initFilial() {
 	return f;
 }
 Filial insereProds(Filial f, Produto p) {
-	char* l = malloc(10);
-	strcpy(l, getStringp(p));
-	f->prods = insereAVLfil(f->prods, l, "", 0, 0, 0);
+	char* l = getStringp(p);
+	f->prods = insereAVLfil(f->prods, l, "", 0, 0, 0,0);
 	free(l);
 	return f;
 }
-/*Verifica se um cliente ja esta na estrutura*/
+/* Verifica se um cliente ja esta na estrutura */
 Boolean existeCl(Filial f, char *c) {
 	int indice = c[0] - 65;
 	return (existeAVLfil(f->clientes[indice], c));
 }
 /*Insere na estrutura. Este int m é o P ou N, em que N=0, P=1*/
-Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m) {
+Filial insereFilial(Filial f, Cliente c, Produto p, int mes, int quant, int m, double preco) {
 	int indice;
 	AVLfil aux;
-	char *stringp = (char *)malloc(sizeof(char) * 10);
-	char *stringc = (char *)malloc(sizeof(char) * 10);
-	strcpy(stringc, getStringc(c));
-	strcpy(stringp, getStringp(p));
+	char *stringp = getStringp(p);
+	char *stringc = getStringc(c);
 	indice = stringc[0] - 65;
 	aux = f->clientes[indice];
 	if (!existeCl(f, stringc)){
-		aux = insereAVLfil(aux, stringc, stringp, mes, quant, m);
+		aux = insereAVLfil(aux, stringc, stringp, mes, quant, m,preco);
 		f->clientes[indice] = aux;
 		alteracl(f->prods, stringp, stringc);
 	}
 	else{
-		insereprod(aux, stringc, stringp,mes,quant,m);
+		insereprod(aux, stringc, stringp,mes,quant,m,preco);
 		alteracl(f->prods, stringp, stringc);
 	}
 	free(stringp); free(stringc);
@@ -65,7 +62,7 @@ void removeFilial(Filial f){
 	for (i = 0; i < 26; i++) {
 		freeTreefil(f->clientes[i], 0);
 	}
-	freeTreefil(f->prods,1);
+	freeTreefil(f->prods,10);
 	free(f);
 } 
 /*Devolve o número de produtos que um cliente comprou num mes*/
@@ -74,6 +71,7 @@ int numprodutos(Filial f, Cliente c, int mes){
 	char *str = getStringc(c);
 	int indice = str[0] - 'A';
 	num = getnum(f->clientes[indice], str, m);
+	free(str);
 	return num;
 }
 /*Função para querie7... Falar com o professor sobre o facto de utilizar Catprods*/
@@ -94,6 +92,7 @@ ConjComprados comprou(Produto p, Filial f, int tipo){
 		l=quemComprou(l,str,f->clientes[j],&i,tipo,&tam);
 	s->lista=l;
 	s->tam=tam;
+	free(str);
 	return s;
 }
 /*Free do conjunto de clientes(nao completo ainda!!)*/
@@ -108,6 +107,33 @@ char** getListConj(ConjComprados c){
 /* Permite obter o numero de clientes no conjunto */
 int getTamConj(ConjComprados c){
 	return c->tam;
+}
+
+int partitionfat(double* quant, char** cod, int l, int r) {
+   int pivot, i, j, t;
+   char* t2 = malloc(10);
+   pivot = quant[l];
+   i = l; j = r+1;
+	while(1) {
+   	do ++i; while( quant[i] >= pivot && i <= r );
+   	do --j; while( quant[j] < pivot );
+   	if( i >= j ) break;
+   	t = quant[i]; quant[i] = quant[j]; quant[j] = t;
+   	strcpy(t2,cod[i]); strcpy(cod[i],cod[j]); strcpy(cod[j],t2);
+   }
+   t = quant[l]; quant[l] = quant[j]; quant[j] = t;
+   strcpy(t2,cod[l]); strcpy(cod[l],cod[j]); strcpy(cod[j],t2);
+   free(t2);
+   return j;
+}
+
+void quickSortfat(double* quant, char** cod, int l, int r) {
+   int j;
+   if( l < r ) {
+       j = partitionfat(quant, cod, l, r);
+       quickSortfat(quant, cod, l, j-1);
+       quickSortfat(quant, cod, j+1, r);
+   }
 }
 
 int partitionfil(int* quant, char** cod, int l, int r) {
@@ -137,6 +163,13 @@ void quickSortfil(int* quant, char** cod, int l, int r) {
    }
 }
 
+void ordenaDecrefat (AVLfil res, char** codigos, double* quantidades, int n) {
+	 int i;
+	 i = 0;
+	 inseredaAvlfat(res, quantidades, codigos, &i);
+	 quickSortfat(quantidades, codigos, 0, n-1);
+}
+
 void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n) {
 	 int i;
 	 i = 0;
@@ -145,14 +178,26 @@ void ordenaDecrefil (AVLfil res, char** codigos, int* quantidades, int n) {
 }
 
 AVLfil funcao9(Filial *f, int mes, Cliente c){
-	char* str=malloc(10);
+	char* str=getStringc(c);
 	int i, j, k;
 	AVLfil res = NULL;
-	strcpy(str,getStringc(c));
 	k=str[0]-65;
 	for(i=0;i<3; i++)
 		for(j=0;j<2;j++)
 			res = auxp(res, f[i]->clientes[k], mes,j,str);
+	free(str);
+	return res;
+}
+
+AVLfil funcao11(Filial *f, Cliente c){
+	char* str = getStringc(c);
+	int i,j,k,y;
+	AVLfil res = NULL;
+	k = str[0]-65;
+	for(i=0; i<3; i++)
+		for(y=0; y<12; y++)
+			for(j=0; j<2; j++)
+				res = auxp(res, f[i]->clientes[k],y,j,str);
 	free(str);
 	return res;
 }
@@ -167,6 +212,21 @@ char** getCodQMaisComprou(Filial *f,int mes, Cliente c){
 	codigos = (char**)malloc(sizeof(char*)*n+1);
 	quantidades = (int*)malloc(sizeof(int) * n);
 	ordenaDecrefil(res, codigos, quantidades, n);
+	codigos[n]=NULL;
+	return codigos;
+}
+
+char** getCodQMaisComprouAno(Filial *f, Cliente c){
+	int n;
+	char** codigos;
+	double* quantidades;
+	AVLfil res = NULL;
+	res = funcao11(f,c);
+	n = numAVL(res);
+	if(n==0) return NULL;
+	codigos = (char**)malloc(sizeof(char*)*n+1);
+	quantidades = (double*)malloc(sizeof(double)*n);
+	ordenaDecrefat(res,codigos,quantidades,n);
 	codigos[n]=NULL;
 	return codigos;
 }

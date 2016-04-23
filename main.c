@@ -67,16 +67,20 @@ Boolean verificaCat(CatClients ccs, char* c) {
 /*Verifica se os parametros estão corretos, se estiverem escreve no ficheiro*/
 int verifica (Vendatmp v, CatProds cps, CatClients ccs) {
 	int cont = 0;
-	if ((verificaPro(cps, getProduto(v))) &&
-	        (verificaCat(ccs, getCliente(v)))) cont = 1;
+	char* cliente = getCliente(v);
+	char* prod = getProduto(v);
+	if ((verificaPro(cps, prod)) &&
+	        (verificaCat(ccs, cliente))) cont = 1;
+	free(cliente);
+	free(prod);
 	return cont;
 }
 
 
 Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 	Vendatmp v = initvendatmp();
-	Cliente c = inserec("");
-	Produto pr = inserep("");
+	Cliente c = inserec("      ");
+	Produto pr = inserep("       ");
 	FILE *p;
 	char *aux;
 	double preco;
@@ -114,7 +118,8 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 		if (cont == 1) {
 			filial--;
 			e = insereVenda(e, v);
-			f[filial] = insereFilial(f[filial], c, pr, getMes(v), getQuantidade(v), getPromo(v));
+			f[filial] = insereFilial(f[filial], c, pr, 
+			getMes(v), getQuantidade(v), getPromo(v),getPreco(v));
 			contador++;
 		}
 	}
@@ -126,16 +131,18 @@ Emp leituravendas(CatClients ccs , CatProds cps, Filial* f, Emp e) {
 CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 	FILE *f1;
 	char str[10];
-	Produto p = NULL;
+	char* aux;
+	Produto p = inserep("      ");
 	f1 = fopen("Dados/Produtos.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			free(p);
-			p = inserep(str);
+			p = alterap(str,p);
 			cps = insereProduto(cps, p);
-			e = inserePEmp(e,getStringp(p));
+			aux = getStringp(p);
+			e = inserePEmp(e,aux);
+			free(aux);
 			f[0] = insereProds(f[0], p);
 			f[1] = insereProds(f[1], p);
 			f[2] = insereProds(f[2], p);
@@ -143,6 +150,7 @@ CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 		else break;
 	}
 	fclose(f1);
+	free(p);
 	printf("\nLido Produtos.txt. Nº: %d\n", totalProdutos(cps));
 	return cps;
 }
@@ -150,19 +158,19 @@ CatProds lerprod(CatProds cps, Filial *f,Emp e) {
 CatClients lerclient(CatClients cps) {
 	FILE *f1;
 	char str[10];
-	Cliente p = NULL;
+	Cliente p = inserec("     ");
 	f1 = fopen("Dados/Clientes.txt", "r");
 	if (f1 == NULL) return 0;
 	while (1) {
 		if (fgets(str, 9, f1) != NULL) {
 			strtok(str, "\n\r");
-			free(p);
-			p = inserec(str);
+			p = alterac(str,p);
 			cps = insereCliente(cps, p);
 		}
 		else break;
 	}
 	fclose(f1);
+	free(p);
 	printf("\nLido Clientes.txt. Nº: %d\n", totalClientes(cps));
 	return cps;
 }
@@ -173,17 +181,11 @@ void clear() {
 		if (system("cls"));
 }
 
-void imprimeLista2(char** lista, char letra, int n) {
+void imprimeLista2(char** lista, int n) {
 	int i, t, pag;
 	char a;
-	char* exemplo = lista[0];
 	Conj_Strings l = NULL; 
-	l = initConjun(l, lista, n, exemplo);
-	if (letra != '/')
-		if ((letra - 65) < 0 || (letra - 65) > 25) {
-			printf("Letra maiúscula!\n");
-			return;
-		}
+	l = initConjun(l, lista, n);
 	while (a != 'Q' && a != 'q') {
 		clear();
 		if ( (getPagina2(l) == 0) && (a == 'A' || a == 'a') )
@@ -239,100 +241,6 @@ void imprimeLista2(char** lista, char letra, int n) {
 			l = alteraPagina2(l, pag);
 			l = getPag2(l);
 			}
-		}
-	}
-}
-
-
-
-int auxImprimeDown(int down, int up, int pag, int np) {
-	if (pag == 1) down = 0;
-	else if (pag == np) down = (pag - 1) * 90;
-	else down = up - 90;
-	return down;
-}
-
-int auxImprimeUp(int up, int pag, int np, int n) {
-	if (pag == 1) up = 90;
-	else if (pag == np) up = n;
-	else up = pag * 90;
-	return up;
-}
-
-
-void imprimeLista(CatProds cps, char letra) {
-	char a;
-	int up, down, j, m, pag, t;
-	int n;
-	float np;
-	ConjProds l;
-	char** lista;
-	if (letra != '/')
-		if ((letra - 65) < 0 || (letra - 65) > 25) {
-			printf("Letra maiúscula!\n");
-			return;
-		}
-	l = getList(cps, letra);
-	lista = getLista(l);
-	n = getSize(l);
-	if (n) {
-		np = n / 90;
-		if (n % 90) np++;
-		down = 0; up = 90;
-		lista[n] = NULL;
-		while (a != 'Q' && a != 'q') {
-			clear();
-			j = down; m = up;
-			if (j == 0 && (a == 'A' || a == 'a'))
-				printf("\nEsta operação não é permitida. Encontra-se na primeira página!\n\n");
-			if (m == n && (a == 'S' || a == 's'))
-				printf("\nEsta operação não é permitida. Encontra-se na ultima página!\n\n");
-			if ((a == 'P' || a == 'p') && (pag < 1 || pag > np))
-				printf("\nA opção escolhida não é válida!\n\n");
-			printf("Numero total de elementos:%d\n", n);
-			printf("O numero de paginas: %.0f\n\n", np );
-			printf("                        Página %d\n\n", getPagina(l));
-			while (down < up) {
-				for (t = 0; t < 6; t++) {
-					if (lista[down]) printf("%s    ", lista[down++]);
-				}
-				printf("\n");
-			}
-			printf("\n\n");
-			printf("O que pretende fazer a seguir: \n\n");
-			if (j == 0) {
-				printf("(Q) SAIR                             (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
-			}
-			else {
-				if (j != 0 && m != n) {
-					printf("(Q) SAIR      (A) PÁGINA ANTERIOR    (S) PÁGINA SEGUINTE\n            (P) PÁGINA A CONSULTAR\n");
-				}
-				else {
-					printf("(Q) SAIR                    (A) PÁGINA ANTERIOR\n            (P) PÁGINA A CONSULTAR\n");
-				}
-			}
-			if (scanf("%s", &a) != 0) {;}
-			printf("\n");
-			if (a == 'S' || a == 's') {
-				if (m != n) alteraPaginamais(l);
-			}
-			else if (a == 'A' || a == 'a') {
-				if (j != 0) alteraPaginamenos(l);
-			}
-			else if (a == 'P' || a == 'p') {
-				printf("Qual é a página que deseja consultar:  \n");
-				if (scanf("%d", &pag) == 0) {;}
-				if (pag >= 1 && pag <= np) {
-					if (pag > getPagina(l))
-						while ((pag - getPagina(l) != 0))
-							alteraPaginamais(l);
-					else
-						while ((getPagina(l) - pag != 0))
-							alteraPaginamenos(l);
-				}
-			}
-			up = auxImprimeUp(up, getPagina(l), np, n);
-			down = auxImprimeDown(down, up, getPagina(l), np);
 		}
 	}
 }
@@ -424,16 +332,19 @@ void querie4(Emp e) {
 		if (scanf("%d", &i) == -1);
 	}
 	if (!i) {
-		imprimeLista(quantostotalzeroAVL(e), '/');
+		imprimeLista2(getLista(getList(quantostotalzeroAVL(e), '/')),
+		totalProdutos(quantostotalzeroAVL(e)));
 	}
 	else {
-		imprimeLista(produtoszero(e, i), '/');
+		imprimeLista2(getLista(getList(produtoszero(e, i), '/')),
+		totalProdutos(produtoszero(e, i)));
 	}
 }
 
 void querie5(Filial *f, Cliente c) {
 	int mes, filial;
-	if (tamanho(getStringc(c)) < 5)
+	char* aux = getStringc(c);
+	if (tamanho(aux) < 5)
 		printf("O cliente não é válido\n");
 	else {
 		printf("    MES\tFILIAL1\tFILIAL2\tFILIAL3\n\n");
@@ -444,8 +355,9 @@ void querie5(Filial *f, Cliente c) {
 			printf("\n");
 		}
 		printf("\n");
-		voltamenu();
 	}
+	free(aux);
+	voltamenu();
 }
 
 void querie6(Emp e) {
@@ -473,11 +385,11 @@ void querie8(Produto pr, Filial f) {
 	p = getListConj(c2);
 	tamn = getTamConj(c1);
 	tamp = getTamConj(c2);
-	printf("Tipo N: (nº %d)\n", tamn);
+	printf("Tipo N: (Total %d)\n", tamn);
 	printf("Clientes: ");
 	for (i = 0; i < tamn; i++)
 		printf("%s ", n[i]);
-	printf("\nTipo P: (nº %d)\n", tamp);
+	printf("\nTipo P: (Total %d)\n", tamp);
 	printf("Clientes: ");
 	for (i = 0; i < tamp; i++)
 		printf("%s ", p[i]);
@@ -498,19 +410,39 @@ void querie9(Filial *f, Cliente c, int mes) {
 
 /*recebe a empresa, a filial em questão, qual a filial(ifil) nprod é quantos produtos há, e o N é o do user */
 void querie10(Emp e, Filial* f, int ifil, int nprod, int N) {
-	int i;
-	Filial tmp = f[ifil - 1];
-	Produto prod = inserep("             ");
+	int i,j=0;
+	Filial tmp;
+	Produto prod = inserep("      ");
 	Codquant r;
+	char** lista = (char**)malloc(sizeof(char*)*N*3);
+	tmp = f[ifil - 1];
 	r = initcodquant(nprod, ifil, e);
 	for (i = 0; i < N; i++) {
 		prod = alterap(getcodi(r, i), prod);
-		printf("%s\n", getcodi(r, i));
-		printf("%d\n", getquanti(r, i));
-		printf("%d\n", getQuantosClientes(tmp, prod));
+		lista[j]=malloc(sizeof(char)*(strlen(getcodi(r,i))+1));
+		sprintf(lista[j++],"%4dº: %s",i+1, getcodi(r, i));
+		lista[j]=malloc(sizeof(char)*20);
+		sprintf(lista[j++],"Qnt: %4d", getquanti(r, i));
+		lista[j]=malloc(sizeof(char)*20);
+		sprintf(lista[j++],"NºCl: %2d", getQuantosClientes(tmp, prod));
 	}
+	imprimeLista2(lista,j);
+	for(i=0;i<j;i++){
+		free(lista[i]);
+	}
+	free(lista);
 }
 
+void querie11(Cliente cl, Filial *f){
+	char** lista;
+	int z;
+	lista = getCodQMaisComprouAno(f,cl);
+	if(lista != NULL)
+		for (z = 0; z<3; z++)
+			printf("%dº: %s\n", z+1, lista[z]);
+	else 
+		printf("Esse cliente não existe ou não realizou compras\n");	
+}
 
 void interpretador () {
 	char** l;
@@ -521,8 +453,8 @@ void interpretador () {
 	Emp e = NULL;
 	Filial f[3];
 	char client[10], pro[10];
-	Cliente cl = inserec("");
-	Produto prod = inserep("");
+	Cliente cl = inserec("     ");
+	Produto prod = inserep("      ");
 	char letra, cmd[BufferM];
 	int verifica = 0;
 	showmenu();
@@ -560,12 +492,15 @@ void interpretador () {
 			}
 			else {
 				printf("Qual será a Letra?\n");
-				if (scanf("%c", &letra) == -1);
-				/*
-				imprimeLista(cps, letra);*/
+				while(1){
+				if (scanf(" %c", &letra) == -1);
+				if(letra-65<0 || letra-65>0)
+					printf("Letra maiúscula!\n");
+				else break;
+				}
 				j = getSize(getList(cps, letra));
 				l = getLista(getList(cps, letra));
-				imprimeLista2(l, letra, j);
+				imprimeLista2(l,j);
 			}
 			showmenu();
 			break;
@@ -602,45 +537,44 @@ void interpretador () {
 			else {
 				querie6(e);
 				voltamenu();
-			}
+			}	
 			showmenu();
 			break;
-		case '7': if (verifica == 0) {
-				printf("Precisa de selecionar a leitura primeiro\n");
-				showmenu();
-			}
-			else {
-				timeinit = clock();
-				cp7 = initCatProds();
-				cp7 = makeCat(f, cp7);
-				timeend = clock();
-				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
-				imprimeLista(cp7, '/');
-				free(cp7);
+		case '7':if (verifica == 0) {
+					printf("Precisa de selecionar a leitura primeiro\n");
+				}
+				else {
+					timeinit = clock();
+					cp7 = initCatProds();
+					cp7 = makeCat(f, cp7);
+					timeend = clock();
+					printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
+					imprimeLista2(getLista(getList(cp7,'/')),totalProdutos(cp7));
+					free(cp7);
 				}
 				showmenu();
 				break;
-		case '8': if (verifica == 0) {
-				printf("Precisa de selecionar a leitura primeiro\n");
-				showmenu();
+		case '8':if (verifica == 0) {
+					printf("Precisa de selecionar a leitura primeiro\n");
+					showmenu();
 				}
-			else {
-				printf("Qual é o produto?\n");
-				if (fgets(pro, 7, stdin) == NULL)break;
-				if (tamanho(pro) == 6)
+				else {
+					printf("Qual é o produto?\n");
+					if (fgets(pro, 7, stdin) == NULL)break;
+					if (tamanho(pro) == 6)
 					prod = alterap(pro, prod);
-				printf("Qual é a filial?\n");
-				if (scanf(" %d", &fil));
-				fil--;
-				timeinit = clock();
-				if (fil > -1 && fil < 3)
-					querie8(prod, f[fil]);
-				timeend = clock();
-				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
-				voltamenu();
-				showmenu();
-			}
-			break;
+					printf("Qual é a filial?\n");
+					if (scanf(" %d", &fil));
+					fil--;
+					timeinit = clock();
+					if (fil > -1 && fil < 3)
+						querie8(prod, f[fil]);
+					timeend = clock();
+					printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
+					voltamenu();
+					showmenu();
+				}
+				break;
 		case '9': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");
 				showmenu();
@@ -662,22 +596,43 @@ void interpretador () {
 				showmenu();
 			}
 			break;
-		case 'A': if (verifica == 0) {
-				printf("Precisa de selecionar a leitura primeiro\n");
+		case 'A':if (verifica == 0) {
+					printf("Precisa de selecionar a leitura primeiro\n");
+					showmenu();
+				}
+				printf("Qual a filial de que quer saber os valores?\n");
+				if (scanf("%d", &fil));
+				if(fil>3 || fil < 1){
+					printf("A filial não é válida!\n");
+					voltamenu();
+					showmenu();
+					break;
+				}
+				printf("Quantos valores quer saber?\n");
+				if (scanf("%d", &j));
+				timeinit = clock();
+				querie10(e, f, fil, 171008, j);
+				timeend = clock();
+				printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
+				voltamenu();
 				showmenu();
-			}
-			printf("Qual a filial de que quer saber os valores?\n");
-			if (scanf("%d", &fil));
-			printf("Quantos valores quer saber?\n");
-			if (scanf("%d", &j));
-			timeinit = clock();
-			querie10(e, f, fil, 171008, j);
-			timeend = clock();
-			printf("passaram %.3f seg\n", (double)(timeend - timeinit) / CLOCKS_PER_SEC);
-			voltamenu();
-			showmenu();
-			break;
-		case 'B':
+				break;
+		case 'B':if(verifica==0){
+					printf("Precisa de selecionar a leitura primeiro\n");
+					showmenu();
+				}
+				else{
+					printf("Qual será o cliente?\n");
+					if (fgets(client, 6, stdin) == NULL)break;
+					if (tamanho(client) == 5){
+						cl = alterac(client, cl);
+						querie11(cl,f);
+					}
+					else
+						printf("O cliente não é válido!\n");
+				}
+				voltamenu();
+				showmenu();
 				break;
 		case 'C': if (verifica == 0) {
 				printf("Precisa de selecionar a leitura primeiro\n");

@@ -27,9 +27,7 @@ int diferenca(AVL a, AVL b) {
 }
 
 char* getcodigo(AVL a) {
-	char* r = (char*)malloc(sizeof(char) * (strlen(a->codigo) + 1));
-	strcpy(r, a->codigo);
-	return r;
+	return a->codigo;
 }
 
 void setcodigo(AVL a, char* codigo) {
