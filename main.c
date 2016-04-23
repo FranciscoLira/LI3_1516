@@ -402,7 +402,7 @@ void querie9(Filial *f, Cliente c, int mes) {
 	codigos = getCodQMaisComprou(f,mes,c);
 	printf("Produtos:\n");
 	for (i = 0; codigos[i]; i++) {
-		printf("%s\n", codigos[i]);
+		printf("%dº: %s\n",i+1, codigos[i]);
 	}
 	printf("\n");
 }
